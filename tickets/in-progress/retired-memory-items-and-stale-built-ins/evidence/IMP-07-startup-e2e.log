@@ -1,0 +1,17 @@
+# IMP-07 startup E2E files (built Studio, test-owned data)
+# command: pnpm -C autobyteus-server-ts build; env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/app-data-migrations/{remove-retired-built-in-agents,remove-skill-improvement-data,task-agent-own-run}-startup.e2e.test.ts --no-watch
+# commit: ae5f267d2e for the 20261020 and task-agent-own-run files; 91ee1603a5 for remove-retired-built-in-agents (its summary assertion fixed)
+# date: 2026-11-18T08:00:21Z
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts (3 tests) 83806ms
+     ✓ TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page attributes them, a second start changes nothing  23365ms
+     ✓ TAU-2 a run that cannot be moved leaves the app working; a copy preserved by the unfinished step is not editable yet and its follow-up waits (SR-077, SR-078); the next start converts it and the edit is saved; a later start changes nothing (needs POSIX mode bits that bind: not root, not Windows)  34592ms
+     ✓ TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every file and are listed as runs of their own (461 REQ-007)  25849ms
+ ✓ tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts (3 tests) 32502ms
+     ✓ SID-1 starts on a fresh data folder: nothing to remove, and the improver is not bootstrapped  10058ms
+     ✓ SID-2 deletes exactly the feature's data once, keeps everything else byte-identical, and other runs list and open  8526ms
+     ✓ SID-3 a helper run that cannot be deleted leaves startup working; the next start finishes (needs POSIX mode bits that bind: not root, not Windows)  13917ms
+ ✓ tests/e2e/app-data-migrations/remove-retired-built-in-agents-startup.e2e.test.ts (2 tests) 21276ms
+     ✓ RRB-1 deletes exactly the two installed copies once; other agents and every run, old item files included, stay byte-identical  15321ms
+     ✓ RRB-2 starts on a data folder that never had them: both are skipped  5954ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
