@@ -21,7 +21,7 @@
 - Current implementation revision ID: `IR-001`
 - Related solution revision IDs: `SR-003`
 - Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001` Pass, no findings (`code-review-report.md`, commit `0127302f7f`); the three implementation decisions accepted; routed to API/E2E by the Code Reviewer
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: `N/A`
