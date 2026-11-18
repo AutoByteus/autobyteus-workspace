@@ -136,7 +136,7 @@ describe("Removal of the retired built-in agents on startup (built Studio)", () 
     const first = await studio();
     const record = await first.migration();
     expect(record, JSON.stringify(record)).toMatchObject({ status: "SUCCEEDED", errorMessage: null, attempts: 1 });
-    expect(record.summary).toMatchObject({ scannedCount: 2, migratedCount: 2, skippedCount: 0, failedCount: 0 });
+    expect(record.summary).toBe("Scanned 2; migrated 2; skipped 0; failed 0.");
     for (const gone of removed) expect(await exists(path.join(root, gone)), gone).toBe(false);
     expect(keptNow(await snapshot(root))).toEqual(expected);
     for (const rel of [`memory/agents/${OLD_ITEMS_RUN}/episodic.jsonl`, `memory/agents/${OLD_ITEMS_RUN}/semantic.jsonl`,
@@ -163,7 +163,7 @@ describe("Removal of the retired built-in agents on startup (built Studio)", () 
     const studioRun = await studio();
     const record = await studioRun.migration();
     expect(record, JSON.stringify(record)).toMatchObject({ status: "SUCCEEDED", errorMessage: null });
-    expect(record.summary).toMatchObject({ scannedCount: 2, migratedCount: 0, skippedCount: 2, failedCount: 0 });
+    expect(record.summary).toBe("Scanned 2; migrated 0; skipped 2; failed 0.");
     const agents = await studioRun.agentIds();
     expect(agents).toContain("autobyteus-daily-assistant");
     expect(agents).not.toContain(EVOLVER_ID);
