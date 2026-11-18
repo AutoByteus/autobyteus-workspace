@@ -18,12 +18,13 @@
 //             - session folders inside the real runs (F-3, F-3b, F-4);
 //             - the improver definition (F-6) and the Skill Self-Evolver;
 //             - `.env` with the three keys, `ENABLE_SKILL_IMPROVEMENT=true`.
-//           - The 20261020 ledger row is removed, as on an install that never ran it.
-//           - The restarted backend deletes exactly the feature data. Every other file stays byte-identical, and
+//           - The 20261020 and 20261118 ledger rows are removed, as on an install that never ran them.
+//           - The restarted backend deletes exactly the feature data and, through 20261118 (autobyteus-491), the
+//             Skill Self-Evolver. Every other file stays byte-identical, and
 //             `.env` is back to its pre-feature bytes. A second start changes nothing.
 //           - In the browser:
 //             - the runs are listed;
-//             - the Agents page keeps the Skill Self-Evolver; the Memory page has no improver;
+//             - the Agents page no longer lists the Skill Self-Evolver; the Memory page has no improver;
 //             - Settings Basics has no card; Advanced lists no retired key and refuses re-adding one;
 //             - the existing run's and the Team member's composers show no "Improve skills";
 //             - both runs resume on their own conversations.
@@ -35,6 +36,8 @@ import { DatabaseSync } from 'node:sqlite'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const MIGRATION_ID = '20261020_remove_skill_improvement_data'
+/** autobyteus-491: removes the retired built-in Skill Self-Evolver (and Memory Compactor) on the same start. */
+const RETIRED_BUILT_INS_MIGRATION_ID = '20261118_remove_retired_built_in_agents'
 const RETIRED_KEYS = ['ENABLE_SKILL_IMPROVEMENT', 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID', 'ENABLE_SELF_EVOLUTION']
 const FEATURE_TEXT = /improve skills|skill improvement|retrospective skill improver/i
 const scriptDir = path.dirname(fileURLToPath(import.meta.url))
@@ -239,7 +242,7 @@ export function registerSkillImprovementRemovalCases(h) {
         ...fx.IMPROVER_RUNS.map((id) => fx.historyRow(id, fx.IMPROVER_ID, 'Retrospective Skill Improver')),
         fx.historyRow(fx.SERVER_HELPER_RUN, 'some-helper-agent', 'Helper'),
         fx.historyRow(fx.EVOLVER_RUNS[0], 'autobyteus-skill-evolver', 'Skill Self-Evolver')], null, 2)}\n`)
-      // F-6 and the kept Skill Self-Evolver.
+      // F-6 and the retired Skill Self-Evolver (20261118 removes it).
       const agentsDir = path.join(dataRoot, 'agents')
       await fx.put(path.join(agentsDir, fx.IMPROVER_ID, 'agent.md'), '---\nname: Retrospective Skill Improver\n---\n\nImprove skills.\n')
       await fx.put(path.join(agentsDir, fx.IMPROVER_ID, 'agent-config.json'), { skillNames: ['retrospective-skill-improver'] })
@@ -247,10 +250,12 @@ export function registerSkillImprovementRemovalCases(h) {
       await fx.put(path.join(agentsDir, 'autobyteus-skill-evolver', 'agent.md'), '---\nname: Skill Self-Evolver\ndescription: Evolves skills.\n---\n\nEvolve.\n')
       // An install that never ran the removal.
       const db = new DatabaseSync(fileURLToPath(dbUrl))
-      try { db.prepare('DELETE FROM app_data_migration_records WHERE migration_id = ?').run(MIGRATION_ID) } finally { db.close() }
+      try {
+        for (const id of [MIGRATION_ID, RETIRED_BUILT_INS_MIGRATION_ID]) db.prepare('DELETE FROM app_data_migration_records WHERE migration_id = ?').run(id)
+      } finally { db.close() }
       r.deleted = ['memory/skill_improvement', 'memory/self_evolution', ...fx.IMPROVER_RUNS.map((id) => `memory/agents/${id}`), `memory/agents/${fx.SERVER_HELPER_RUN}`,
         `memory/agents/${r.runId}/skill_improvement`, `${path.relative(dataRoot, r.memberDir)}/skill_improvement`, `${path.relative(dataRoot, r.leadDir)}/self_evolution`,
-        `agents/${fx.IMPROVER_ID}`]
+        `agents/${fx.IMPROVER_ID}`, 'agents/autobyteus-skill-evolver']
       r.before = await dataSnapshot(fx.snapshot, dataRoot)
       assert(r.deleted.every((rel) => Object.keys(r.before).some((k) => k.startsWith(rel))), 'feature data written', r.deleted)
     })
@@ -291,11 +296,11 @@ export function registerSkillImprovementRemovalCases(h) {
     assert(r.history.agentRuns.includes(r.runId) && r.history.teamRuns.includes(r.teamRunId)
       && !r.history.agentRuns.some((id) => [...fx.IMPROVER_RUNS, fx.SERVER_HELPER_RUN].includes(id)), 'run history lists the real runs and no helper run', r.history)
     r.agentIds = (await gql('{agentDefinitions{id name}}')).agentDefinitions
-    assert(r.agentIds.some((d) => d.id === 'autobyteus-skill-evolver') && !r.agentIds.some((d) => d.id === fx.IMPROVER_ID), 'definitions: the Self-Evolver kept, the improver gone', r.agentIds.map((d) => d.id))
+    assert(!r.agentIds.some((d) => d.id === 'autobyteus-skill-evolver' || d.id === fx.IMPROVER_ID), 'definitions: the Self-Evolver and the improver gone', r.agentIds.map((d) => d.id))
     await page.goto(`${env().frontUrl}/agents`, { waitUntil: 'domcontentloaded' }); await settle(page, 2500)
     await page.locator('main').getByText(r.names.agent, { exact: true }).first().waitFor({ timeout: 60000 })
     r.agentsPage = { selfEvolver: await page.locator('main').getByText('Skill Self-Evolver', { exact: true }).count(), traces: await featureTraces(page) }
-    assert(r.agentsPage.selfEvolver > 0 && !r.agentsPage.traces.text, 'Agents page: the Skill Self-Evolver is listed, nothing of the feature', r.agentsPage)
+    assert(r.agentsPage.selfEvolver === 0 && !r.agentsPage.traces.text, 'Agents page: no Skill Self-Evolver, nothing of the feature', r.agentsPage)
     await shot(page, 'SIR-002-agents-page-1280', 1280)
     await page.goto(`${env().frontUrl}/memory`, { waitUntil: 'domcontentloaded' }); await settle(page, 3000)
     await waitFor('Memory page lists the real agent', async () => (await page.locator('body').innerText()).includes(r.names.agent), 60000, 1000)
