@@ -88,3 +88,15 @@ Deliver `codex/follow-ups-of-461-500` (Project Task `autobyteus-500`, follow-ups
   - `autobyteus-server-ts/typecheck-baseline.json`
   - `autobyteus-web/tests/e2e/skill-improvement-removal-cases.mjs`
 - Routed to the implementation engineer (Local Fix); this one needs a full API/E2E round on messaging and the migration order, not a short check.
+
+## Eighth state passed; ninth refresh blocked by a release (2026-11-18)
+
+- Eighth merged state: merge `5eb8246076` of `53b72018ad` (491, 492), CRR-017 Pass; API/E2E round 7 (API-REV-007) Pass at 95% (MO-1: this ticket's two migrations, then 491's, in one first start; RC 49/49; LRN-1/2); CRR-018 Pass. Docs recheck clean (`d06ff7b9eb`).
+- Build-only release run on `179a63dfe6` (run 44354909653): all five desktop builds **success**; publish skipped. Pass.
+- `origin/personal` then moved to `2eb195603a`: release **`v1.5.14-beta.1`** (autobyteus-538), cut from `05dde06bb4`, tagged (`7bcac96456`); Android and Docker published, desktop and iOS queued. Its release recorded the released set by hand (`428d5e0055`, `1f835e3e7f`, RELEASE.md's pre-G-1 step): **46 IDs, ending with 491's `20261118_remove_retired_built_in_agents`, now released.**
+- Consequence for this ticket:
+  - its two unreleased migrations `20261117_delegated_run_own_attachment_links` and `20261117_delegated_run_own_attachment_links_after_task_agent_own_run` are dated before, and registered before (IR-009), a released migration. The order rule (guideline "Registry order and late predecessors"; the order test) requires them appended after the released 46, dated after `20261118`;
+  - the run order on users' data reverses: 491's runs first (on beta.1), then this ticket's. API/E2E MO-1 proved only the earlier order; the late-predecessor classification of 491's migration against this ticket's conversion (design M-7) is needed;
+  - `released-migration-order.json` must become beta.1's 46.
+- Merge attempt: 1 git conflict (`app-data-migration-registry-order.test.ts`: this ticket's JSON-reading test against the base's hand-updated `RELEASED`); aborted, branch clean.
+- Classification: **Design Impact** (migration IDs, registry place and predecessor classification) → the Solution Designer.
