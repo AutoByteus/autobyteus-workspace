@@ -1,0 +1,8 @@
+API-04 | 2026-11-18 | source 0df0c901e4 | Ubuntu24.04.5 x64 disposable VM current full test-origin package
+Steps: graphical --autobyteus-uninstall via root-owned provisioner; independent normal one-shot password; compare pre/post synthetic guest data hashes and assert owned resources absent
+Ubuntu will request one-shot authorization for /opt/autobyteus-desktop/1000/support/provision (program path, not a publisher verification).
+Removed "/etc/systemd/system/sockets.target.wants/autobyteus-desktop-1000.socket".
+PASS-owned-removal-and-synthetic-profile-byte-preservation
+Nov 18 14:41:17 ab5-implementation polkitd[605]: Operator of unix-session:9 successfully authenticated as unix-user:witness to gain ONE-SHOT authorization for action org.freedesktop.policykit.exec for unix-process:3796:15124 [./MyCurrentRenamed.AppImage --remote-debugging-port=18990] (owned by unix-user:witness)
+Nov 18 14:45:14 ab5-implementation polkitd[605]: Operator of unix-session:35 successfully authenticated as unix-user:witness to gain ONE-SHOT authorization for action org.freedesktop.policykit.exec for unix-process:5947:40843 [./MyCurrentRenamed.AppImage --autobyteus-uninstall] (owned by unix-user:witness)
+kernel.apparmor_restrict_unprivileged_userns = 1

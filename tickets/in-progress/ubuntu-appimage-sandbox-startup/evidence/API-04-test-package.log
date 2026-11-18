@@ -1,0 +1,29 @@
+API-04 test-origin package | 2026-11-18 | source 0df0c901e4 | full fresh renderer/server; native desktop_test loopback-only; disposable key
+  ⨯ open /home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5/test-package/stage/autobyteus.desktop: no such file or directory
+github.com/develar/app-builder/pkg/package-format/appimage.writeDesktopFile
+	/Users/runner/work/app-builder/app-builder/pkg/package-format/appimage/appLauncher.go:164
+github.com/develar/app-builder/pkg/package-format/appimage.writeAppLauncherAndRelatedFiles
+	/Users/runner/work/app-builder/app-builder/pkg/package-format/appimage/appLauncher.go:190
+github.com/develar/app-builder/pkg/package-format/appimage.AppImage
+	/Users/runner/work/app-builder/app-builder/pkg/package-format/appimage/appImage.go:78
+github.com/develar/app-builder/pkg/package-format/appimage.ConfigureCommand.func1
+	/Users/runner/work/app-builder/app-builder/pkg/package-format/appimage/appImage.go:59
+github.com/alecthomas/kingpin.(*actionMixin).applyActions
+	/Users/runner/go/pkg/mod/github.com/alecthomas/kingpin@v2.2.6+incompatible/actions.go:28
+github.com/alecthomas/kingpin.(*Application).applyActions
+	/Users/runner/go/pkg/mod/github.com/alecthomas/kingpin@v2.2.6+incompatible/app.go:557
+github.com/alecthomas/kingpin.(*Application).execute
+	/Users/runner/go/pkg/mod/github.com/alecthomas/kingpin@v2.2.6+incompatible/app.go:390
+github.com/alecthomas/kingpin.(*Application).Parse
+	/Users/runner/go/pkg/mod/github.com/alecthomas/kingpin@v2.2.6+incompatible/app.go:222
+main.main
+	/Users/runner/work/app-builder/app-builder/main.go:90
+runtime.main
+	/Users/runner/hostedtoolcache/go/1.21.13/arm64/src/runtime/proc.go:267
+runtime.goexit
+	/Users/runner/hostedtoolcache/go/1.21.13/arm64/src/runtime/asm_amd64.s:1650  
+Harness repair: app-builder CLI needs precreated stage directory; resume packaging only, no source edit.
+{"size":360243494,"sha512":"fTHz1mjYB+AvlHg5sdo1V2YDJov9fIWiWFqyYlY5D91nlNyOWx+0L+x3GYtnzGAlX1gcCNT1ls7N7fP94XDBeg==","blockMapSize":373050}Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+df66a9f8649fa94ba8a17d1ba24a61c65efd654f465f4d30624a154af275ea15  /home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5/test-package/AutoByteus_personal_linux-x64-1.5.13.AppImage
+39e8baf8d7edefdee85f85f492f9fd5771b1376a6d849da746a3856b85f95a98  /home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5/test-package/native/autobyteus-provision
+API-04-FULL-TEST-PACKAGE-READY

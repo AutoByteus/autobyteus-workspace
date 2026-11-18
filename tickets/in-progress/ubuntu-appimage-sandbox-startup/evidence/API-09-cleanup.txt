@@ -1,0 +1,4 @@
+API-09 cleanup | 2026-11-18 | source 0df0c901e4 | owned guest and host isolated instance only
+owned-installation-absent
+QMP quit acknowledged SHUTDOWN reason host-qmp-quit; snapshot-on guest discarded, original assigned guest disk untouched.
+Isolated-app list returned instances: []. No other desktop processes changed.

@@ -1,0 +1,5 @@
+Case API-07-404-feed | 2026-11-18 | source 0df0c901e4 | Ubuntu24.04.5 x64 disposable VM; full test-origin AppImage df66a9f8649fa94ba8a17d1ba24a61c65efd654f465f4d30624a154af275ea15
+Command/steps: API-04-guest-gui.sh; graphical consent/auth actions; API-07-refusals.py for negatives. No production data/keys.
+Serving HTTP on 127.0.0.1 port 18889 (http://127.0.0.1:18889/) ...
+127.0.0.1 - - [18/Nov/2026 14:46:32] code 404, message File not found
+127.0.0.1 - - [18/Nov/2026 14:46:32] "GET /AutoByteus/autobyteus-workspace/releases/download/v1.5.13/AutoByteus_personal_linux-x64-1.5.13.AppImage.release.json HTTP/1.1" 404 -

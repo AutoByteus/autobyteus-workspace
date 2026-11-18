@@ -1,0 +1,37 @@
+API-02 | 2026-11-18 | source 0df0c901e4 | Ubuntu26 native x64; excerpt from API-02-fresh-build.log. Exact commands in API-02-fresh-build.sh
+API-02 | 2026-11-18T14:28:38Z | source 0df0c901e4 | Ubuntu26 x64 fresh clone, disposable trust only
+go version go1.27.4 linux/amd64
+Lockfile is up to date, resolution step is skipped
+# Subtest: production trust cannot use absent provisioning or a build-only key implicitly
+ok 1 - production trust cannot use absent provisioning or a build-only key implicitly
+# Subtest: build-only trust is fresh, separate from supplied production public key
+ok 2 - build-only trust is fresh, separate from supplied production public key
+# tests 15
+# pass 15
+> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm typecheck && cross-env AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH=x64 pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux --x64
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+┌  Building Nuxt for production...
+ℹ vite v7.3.7 building client environment for production...
+ℹ vite v7.3.7 building ssr environment for production...
+✔ Rebuild Complete
+> cross-env NODE_ENV=production BUILD_TARGET=electron nuxt generate
+┌  Building Nuxt for production...
+[Electron Module] Configuring production settings
+[Electron Module] Vite config resolved: { mode: 'production', base: './', buildTarget: 'electron' }
+ℹ vite v7.3.7 building client environment for production...
+[Electron Module] Vite config resolved: { mode: 'production', base: '/', buildTarget: 'electron' }
+ℹ vite v7.3.7 building ssr environment for production...
+[Electron Module] Running production build steps
+vite v7.3.7 building client environment for production...
+vite v7.3.7 building client environment for production...
+Building with environment: production
+Using environment file: .env.production
+Build completed: [
+Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+Datasource "db": SQLite database "production.db" at "file:/tmp/autobyteus-packaged-server-pSy0jd/db/production.db"
+SQLite database production.db created at file:/tmp/autobyteus-packaged-server-pSy0jd/db/production.db
+Packaged server startup validation passed for /home/ryan-ai/hdd_drive/autobyteus_org/api-e2e-autobyteus-5/fresh/autobyteus-web/electron-dist/linux-unpacked/resources/server
+de7e643e316a9593d63ce79f8eb0483f21460fded1fea61946f8d917927e4132  autobyteus-web/electron-dist/AutoByteus_personal_linux-x64-1.5.13.AppImage
++ echo API-02-CURRENT-PACKAGE-COMPLETE
+API-02-CURRENT-PACKAGE-COMPLETE
