@@ -154,3 +154,26 @@ None open (F-4 resolved in round 4).
   - the founder's own data;
   - LM Studio and Ollama emulated;
   - FU-500-09 … 13.
+
+### API-REV-006: round 6, the seventh merged state (CRR-015): AC-005 5/5 on Linux; Pass
+
+- Triggering role, report path, and round: `/code_reviewer`, `code-review-report.md` (round 8, CRR-015 Pass on IR-008; head `94376f166d`, merge `bb42531c7d` of `75048cbaf4`), API/E2E round 6.
+- Triggering finding or case IDs: the watcher test after 517 (the one conflict); 517's shared limits and AGY background monitor.
+- Why this revision was recorded: AC-005's gate on the merged commit.
+- Coverage decisions or durable test paths changed: none by me. `follow-ups.md`: FU-500-14.
+
+#### Prior Failure Resolution
+
+None open.
+
+- Canonical artifacts and sections updated: the execution report (Round, Routing, Result); the progress log; `evidence/api-e2e/API-r6-runs.txt`.
+- Prior result and confidence: `Pass` / 95% (round 5)
+- Current result and confidence: `Pass` / 95%
+- New or remaining failure IDs: none
+- Recommended owner: the Code Reviewer (no test change of mine this round), then delivery.
+- Remaining risks, blocked evidence, or untested scope:
+  - quiet macOS (load 45–63 today);
+  - M-6 cold cache;
+  - the founder's own data;
+  - LM Studio and Ollama emulated;
+  - FU-500-09 … 14.

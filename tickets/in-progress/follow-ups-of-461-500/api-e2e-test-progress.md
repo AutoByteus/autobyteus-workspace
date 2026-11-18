@@ -52,3 +52,5 @@ My progress log while tests run. Read it first when picking the run back up. Row
 | 2026-11-18 12:56 | FOCUS, TS, PROBES (r5) | Started | | chain /tmp/api500/r5/chain.log |
 | 2026-11-18 13:36 | FOCUS, TS, PROBES (r5) | Completed | Pass after one test fix | 87 passed; USR load (8/8 alone); TS-008/009, G5, DLP-005, DCP-004 Pass; SIR-002 leaves restart-resume/ out, Pass |
 | 2026-11-18 13:36 | ROUND 5 | Completed | Pass | 95% |
+| 2026-11-18 15:16 | ROUND 6 | Started | | CRR-015 merge of 75048cbaf4 (head 94376f166d, merge bb42531c7d); Linux container: watcher x5, touched integ/units/e2e; macOS not quiet (load 63, fseventsd 159%) |
+| 2026-11-18 15:31 | ROUND 6 | Completed | Pass | Linux watcher 5/5 (14/14, 0 labels); touched E2E 22 passed; root-container artifacts pass on the Mac; base-side rename timeouts on loaded macOS (FU-500-14) |

@@ -1,0 +1,25 @@
+autobyteus-500 API/E2E round 6 (API-REV-006): the seventh merged state, on CRR-015. Head 94376f166d; merge bb42531c7d of
+origin/personal 75048cbaf4 (the v1.5.13 records; 517's FU-002 / FU-003). Raw logs: /tmp/api500/c7 (Linux), /tmp/api500/r6-*.log
+(Mac). Paths shortened to ~.
+
+What to look for: §1 AC-005's gate on the merged commit; §2 what the merge touched; §3 what is not this ticket's.
+
+§1 AC-005, Linux (Docker node:22-bookworm, kernel 6.12.54-linuxkit, node v22.23.5; a tarball of the tracked files of
+  94376f166d; frozen install; test:integration:prepare): file-system-watcher.integration.test.ts 5 of 5, each "Tests 14 passed
+  (14)", 0 ENVIRONMENT / INCONCLUSIVE lines, container load 7-10. (517's shared limits: the 30 s guard, 55 s per test.)
+  Quiet macOS: Not Tested (load 45-63, fseventsd ~160% CPU).
+
+§2 What the merge touched
+  - Linux: agent-package-definitions-live-refresh 10/10; background-task-status-count 4 passed, 2 skipped (live gates);
+    grok-build-runtime-replay 6/6; agy-background-task-transport 2/2 (517's AGY background monitor);
+    agy-background-task-monitor unit 10/10; skill-folder-watcher unit 9/9.
+  - Root-container artifacts, passing on the Mac as a normal user: agent-package-folder-watcher's UNAVAILABLE and catch-up
+    cases (a folder made unreadable by chmod, which root reads anyway), package-auto-refresh's EACCES case,
+    studio-server-http-contract (4/4 on the Mac; "expected 200 to be 403" only in the container).
+  - Phone probe: its start-up duplicate guard over 14 sources: 76 case IDs, 0 duplicates (517's background-task cases MSP-47,
+    48, 49, 59, 78 included).
+  - Server dist rebuilt on the Mac from the merged code.
+
+§3 Not this ticket: on the Mac (load ~50), agent-package-folder-watcher "moves a root to FOLDER_MISSING when it is renamed away
+  and resumes watching" and package-auto-refresh AC-012 (the same rename) time out at about 35 s; both pass in Linux. These
+  files, os-latency-under-load.ts and src/agent-package-definitions are identical to base 75048cbaf4 (517's own): FU-500-14.

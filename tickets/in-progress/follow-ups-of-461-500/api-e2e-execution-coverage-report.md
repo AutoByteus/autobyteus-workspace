@@ -5,8 +5,13 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-005`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-006`
 - Test progress log: `api-e2e-test-progress.md`
+- **Round 6, the seventh merged state (CRR-015; head `94376f166d`, merge `bb42531c7d` of `75048cbaf4`: the v1.5.13 records, 517's FU-002/FU-003):**
+  - AC-005's gate on the merged commit: the watcher file 5 of 5 on Linux (14/14, 0 labels). Quiet macOS: Not Tested.
+  - The merge's touched suites pass in Linux, or on the Mac where a root container can't run them.
+  - The base's own rename timeouts on a loaded macOS are FU-500-14.
+  - Evidence: `evidence/api-e2e/API-r6-runs.txt`. **Result: `Pass`, 95%.** No test change by me.
 - **Round 5, the fourth merged state (CRR-013; head `d141a2e783`, merge `eecb228bd6` of `24d438fa31`: beta.10, 517, 524 round 2, 526):** proportional to its two conflicts.
   - A built server's stop with 524's file-watch stop: 3 clean SIGTERM stops; compositions 17/17.
   - Restart resume with 526's notice: RR-01…06 and RR-10, plus new RR-12 (a Team member woken once with the update notice); DRO 3/3.
@@ -36,6 +41,7 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 ## Routing Classification
 
 - Task size: `Large`; Architectural risk: `High`; Input route: `Reviewed`.
+- Result route (round 6): `Pass` → Code Reviewer (no test change of mine), then delivery.
 - Result route (round 5): `Pass` → Code Reviewer, proportional test-code review of RR-12 and the SIR-002 change, then delivery.
 - Result route (round 4, final): `Pass` → Code Reviewer, proportional test-code review of round 4's test changes (TS-009, SIR-002, OT-2), then delivery. First result `Fail` (F-4) → failure-origin review CRR-011 (test-side). Round 3: `Pass` (E-007 reviewed with it).
 - Result route (round 3): `Pass` → Code Reviewer, proportional test-code review of round 3's test change (E-007), then delivery. Round 2: `Pass` (CRR-005, CR-500-006 fixed); round 1: `Fail` (CRR-003).
@@ -192,6 +198,7 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 
 ## Latest Authoritative Result
 
+- Result (round 6, the seventh merged state `bb42531c7d`): `Pass`, 95%. AC-005 5/5 on Linux on the merged commit; the merge's touched suites pass; FU-500-14 records the base's own macOS rename timeouts.
 - Result (round 5, the fourth merged state `eecb228bd6`): `Pass`, 95%. The merge's two paths (a built server's stop; restart resume with its notice, the Team member included) and this ticket's cases pass; no finding. Test changes: RR-12 (new), SIR-002 (`restart-resume/` left out).
 - Result (round 4, the third merged state `e93671cce0` + `4db98c6d1a`), final: `Pass`, 95%. F-4 resolved (CRR-011: test-side and on base too; OT-2 leaves the derived `memory/episodic/` out, OT-1 … OT-3 3/3; FU-500-13). First result: `Fail` on F-4, 90%:
   - **F-4:** `open-task-tree-upgrade-startup` OT-2 fails ("reading the trees wrote nothing"), and OT-3 with it.
@@ -214,5 +221,6 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
   - the founder's own data (only he can approve);
   - on-demand hosts emulated (LM Studio, Ollama);
   - FU-500-09 … 12 outside this ticket.
+- Next recipient from `get_handoff_rules` (round 6): the Code Reviewer (no test changes to review this round), then delivery.
 - Next recipient from `get_handoff_rules` (round 5): the Code Reviewer, for the proportional test-code review of round 5's test changes, then delivery.
 - Next recipient from `get_handoff_rules` (round 4, final): the Code Reviewer, for the proportional test-code review of `696acc408c` and the OT-2 change, then delivery.
