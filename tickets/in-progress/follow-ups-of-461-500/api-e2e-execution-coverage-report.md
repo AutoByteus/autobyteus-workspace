@@ -5,8 +5,14 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-006`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-007`
 - Test progress log: `api-e2e-test-progress.md`
+- **Round 7, the eighth merged state (CRR-017; head `2037a3be5a`, merge `5eb8246076` of `53b72018ad`: 491, 492; test fix `8e8c21c2c4`):**
+  - The migration order on one first start (new MO-1 in ALM-1's file): this ticket's two `20261117` migrations, then 491's `20261118`, each with its status; the retired copies gone, the compactor's run kept and listed; a second start unchanged.
+  - `list_running_agents` on the native tool and Agent Tools MCP (new LRN-1/LRN-2): local, `node`, switch off; the application host by the same-senders rule.
+  - 492's messaging through the two-server suite (49/49 after a test-helper fix for RC-19), prompt wording, the contract stories, the MCP routes.
+  - This ticket's merged cases and the browser probes 7/7 (SIR-001 now passes: FU-500-10 resolved by 492).
+  - Evidence: `evidence/api-e2e/API-r7-runs.txt`; raw logs `/tmp/api500/r7`. **Result: `Pass`, 95%.** FU-500-15 (two observations, both the same at base).
 - **Round 6, the seventh merged state (CRR-015; head `94376f166d`, merge `bb42531c7d` of `75048cbaf4`: the v1.5.13 records, 517's FU-002/FU-003):**
   - AC-005's gate on the merged commit: the watcher file 5 of 5 on Linux (14/14, 0 labels). Quiet macOS: Not Tested.
   - The merge's touched suites pass in Linux, or on the Mac where a root container can't run them.
@@ -41,6 +47,7 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 ## Routing Classification
 
 - Task size: `Large`; Architectural risk: `High`; Input route: `Reviewed`.
+- Result route (round 7): `Pass` → Code Reviewer, proportional test-code review of round 7's test changes (MO-1, LRN-1/2, the RC suite's `calls()`), then delivery.
 - Result route (round 6): `Pass` → Code Reviewer (no test change of mine), then delivery.
 - Result route (round 5): `Pass` → Code Reviewer, proportional test-code review of RR-12 and the SIR-002 change, then delivery.
 - Result route (round 4, final): `Pass` → Code Reviewer, proportional test-code review of round 4's test changes (TS-009, SIR-002, OT-2), then delivery. First result `Fail` (F-4) → failure-origin review CRR-011 (test-side). Round 3: `Pass` (E-007 reviewed with it).
@@ -57,6 +64,8 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | ENV-B | base `9695d310c5` | as ENV-1 | Its own worktree, install and build | For comparisons only |
 | ENV-M (r3) | merged `eb741a097e` (head `2f10dbe1bb`) | macOS as ENV-1, load 5–12 (fseventsd ~170%, an unrelated VM ~210%) | Server E2E, integration, probes; dist built by delivery | `env -i`, throwaway HOME, LANG |
 | ENV-MB (r3) | base `ff13782f36` | as ENV-M | Its own worktree `500-base-ff13782f`, install and build | Comparisons only |
+| ENV-M7 (r7) | merged `5eb8246076` + `8e8c21c2c4` (head `2037a3be5a`) and this round's test changes | macOS as ENV-1, load 35–73 | autobyteus-ts and server dist rebuilt from the head; built Studio nodes, the standalone application host, Nuxt dev + headless Chrome for the probes | `env -i`, throwaway HOME; scripted AGY; emulated LM Studio |
+| ENV-B7 (r7) | base `53b72018ad` | as ENV-M7 | Its own worktree `500-base-53b72018`, install and build; removed after | Comparisons only (LRN) |
 
 ## Cases
 
@@ -83,6 +92,13 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | ODM-1 (r2) | AC-012, SR-015 R1, CR-500-003/004 | on-demand AutoByteus models, real restarts | new `tests/e2e/llm-management/on-demand-stored-models-startup.e2e.test.ts` | ENV-1, 2, B | Pass (base: false note) | API-r2-runs.txt §2 | restart answers + options name the model; host down: "MODEL_IDENTIFIER_NOT_AVAILABLE", no G-5; read and missing: G-5 text, 0 chats; removed agent: "AgentDefinition with ID … not found." | |
 | F-1 … F-3 rerun (r2) | as above | as above | E-002, DLC (F-2 case), SCP-E2E-006; G-5-touched e2e; probes | ENV-1, 2, 3 | Pass | API-r2-runs.txt §1, §3 | E-002 4/4; SCP 6/6; DLC F-2 case ✓; DLP-005 Pass | DTL's batch failure was load (rerun 2/2) |
 | STREAM-CHECK exemption (r2) | — | static check | `team-stream-clients-wait-for-connected.test.ts` | ENV-1 | Pass | §5 | 3/3 | RSE-1 sends early on purpose |
+| MO-1 (r7) | AC-009, AC-008; 491 | the three new startup migrations on one first start; the removed agent's run | ALM-1's file, `RUN_AGY_FAILURE_E2E=1` | ENV-M7 | Pass | API-r7-runs.txt §1 | three records in order (12.669→.701, .703→.706, .707→.710); removal "Scanned 2; migrated 2"; `ACTIVATION_FAILED` "AGY_AGENT_DEFINITION_MISSING: autobyteus-memory-compactor"; second start unchanged | First attempt: my assertion took E-002's AutoByteus answer; AGY's own answer is base behavior (FU-500-15 b) |
+| MIG-ORDER (r7) | AC-009; 491 | registry order, both migrations' units; 491's startup E2E | units chain; RRB-1…3 alone | ENV-M7 | Pass | §1 | units 487/487; RRB 3/3 | RRB-3 in the chain: AGY discovery 15 s at load (alone Pass) |
+| LRN-1 (r7) | AC-002 (FU-011), 492 AC-001/AC-004 | native tool and MCP on two paired Studios | new `list-running-agents-native-and-mcp.e2e.test.ts` | ENV-M7, B7 | Pass | §2 | the same lists on both routes; `node: "beta-node"`; "Remote collaboration is turned off on this node, …" on both | Base the same |
+| LRN-2 (r7) | AC-002 (FU-011), 492 DS-001 | the standalone application host | the same file | ENV-M7, B7 | Pass | §2 | native "not found or configured", MCP "not enabled" for both tools: the same outcome | Base the same; FU-500-15 (a) |
+| MSG-492 (r7) | 492 DEC-001 with this ticket's names and owners | unrelated-run delivery, not running, Task-related, the peer receiver | `remote-delegation-two-server` (whole), CPW, contract stories, MCP routes integration, units | ENV-M7 | Pass (after a test fix) | §3 | 49/49 (RC-47/48/49/06/08/22/10/11/23/27/28/19 ✓); CPW 14/14; §5.1–5.3 ✓; 14/14; 487/487 | RC-19 timed out twice in the whole file: the `calls()` helper counted replies in a view capped at 100 events; fixed, 740 ms |
+| MERGED-CASES (r7) | AC-006, AC-008, AC-011, AC-012 | this ticket's cases | ALM-1, ODM-1, RSE-1, E-001…004; probe G5-001…003, DLP-005, DCP-004, SIR-001, SIR-002 | ENV-M7 | Pass | §1, §4 | focus 6/6; "Summary: 7 Pass, 0 Fail" | SIR-001 passes for the first time (492) |
+| GATES (r7) | — | typecheck, static check | `pnpm -C autobyteus-server-ts typecheck`; CONNECTED check | ENV-M7 | Pass | §5 | "1006 in 315 files (baseline 1006 in 315 files)"; 3/3 | |
 
 ### Findings
 
@@ -109,14 +125,14 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | AC | Critical | Proven By Case IDs | Result | Note |
 | --- | --- | --- | --- | --- |
 | AC-001 (names) | Yes | FULL-SERVER (renamed contracts in every suite), code review's greps | Proven | No failure traces to a rename |
-| AC-002 (composition) | Yes | FULL-SERVER (both hosts start); IMP-06 units | Proven | The stale harnesses (FU-011) show the getters now refuse before composition |
+| AC-002 (composition) | Yes | FULL-SERVER (both hosts start); IMP-06 units; r7: LRN-1, LRN-2 | Proven | The stale harnesses (FU-011) show the getters now refuse before composition; r7: `list_running_agents` reads the host's discovery on both routes |
 | AC-003 (token totals) | Yes | FULL-SERVER (token suites) | Proven | |
 | AC-004 (refusal texts) | Yes | TEXT-E2E, TEXT-PROBES, DLC-INHERITED, LE-F1 | Proven (r2) | F-2 resolved; live on Claude |
 | AC-005 (gates) | Yes | WATCH-LINUX (r1, and r3 on the merged state: 5/5), GATES | Proven (quiet macOS Not Tested) | D-13b: Linux is the gate. r3's macOS at load 5–7 with fseventsd busy: 1/5, every failure INCONCLUSIVE (evidence only) |
 | AC-006 (not ready) | Yes | NOTREADY-INT, NOTREADY-REAL | Proven | |
 | AC-007 (Grok) | — | — | Out of this package | IR-003 |
 | AC-008 (attachments) | Yes | MIG-ATTACH, MIG-UNITS, MIG-COST | Proven (the founder's own data: Only The User Can Check) | Needs his approval (D-8) |
-| AC-009 (order) | Yes | MIG-UNITS (order test), IMP-07, IMP-09 | Proven | The release-commit part is delivery's |
+| AC-009 (order) | Yes | MIG-UNITS (order test), IMP-07, IMP-09; r7: MO-1, MIG-ORDER | Proven | With 491's `20261118` after both on one first start; the release-commit part is delivery's |
 | AC-010 (late v2) | Yes | LTI-1, MIG-UNITS | Proven | |
 | AC-011 (SIR-002) | Yes | TEXT-PROBES (SIR-002) | Proven | |
 | AC-012 (stored model) | Yes | G5-001 … G5-003 (r1, r2), ODM-1 (r2), E-002 (r2) | Proven (r2) | Includes on-demand AutoByteus models after restarts and a removed agent on both paths; FU-500-11 is a Settings observation outside it |
@@ -168,6 +184,9 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 
 | `autobyteus-server-ts/tests/e2e/llm-management/on-demand-stored-models-startup.e2e.test.ts` (r2) | Added | ODM-1 | |
 | `autobyteus-server-ts/tests/unit/e2e-helpers/team-stream-clients-wait-for-connected.test.ts` (r2) | Updated | STREAM-CHECK | a named exemption for RSE-1, which sends early on purpose; a case keeps each exemption current |
+| `autobyteus-server-ts/tests/e2e/app-data-migrations/delegated-run-own-attachment-links-startup.e2e.test.ts` (r7) | Updated | MO-1 | 491's retired copies and a compactor run in the same data; the third ledger row; order, statuses, the run kept, its continuation's answer |
+| `autobyteus-server-ts/tests/e2e/remote-collaboration/list-running-agents-native-and-mcp.e2e.test.ts` (r7) | Added | LRN-1, LRN-2 | |
+| `autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts` `calls()` (r7) | Updated | MSG-492 | waits for the newest reply entry not in view before the call (the view holds the last 100 events); no assertion changed |
 
 - Not changed by me: E-002, DLC and SCP-E2E-006's assertions (they stated the behavior F-1 … F-3 broke; they pass in round 2). The DLP-005 e2e and probe assertions of the new text are the implementation's (IR-003).
 
@@ -189,6 +208,8 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | Temporary cost test, E-002 and SCP-006 debug lines | Yes | deleted / reverted | Removed (git diff clean for those) |
 | Synthesized 8.6 GB data, archives | Yes | `rm -rf` | Removed |
 | `/tmp/api500` logs, probe outputs | Yes | kept; extracts committed | Kept |
+| Base worktree `500-base-53b72018` (r7) | Yes | `git worktree remove --force` | Removed |
+| Temporary `diag-lrn-host` and `diag-gate` test copies (r7) | Yes | deleted | Removed |
 
 ## Preliminary Classification (On `Fail`, round 1)
 
@@ -198,6 +219,10 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 
 ## Latest Authoritative Result
 
+- Result (round 7, the eighth merged state `5eb8246076` + `8e8c21c2c4`): `Pass`, 95%.
+  - The migration order on one first start, `list_running_agents` on both routes (local, peer, off; the application host), 492's messaging (49/49), this ticket's cases and the probes (7/7) pass.
+  - Test changes: MO-1 (ALM-1's file), LRN-1/LRN-2 (new), the RC suite's `calls()` (a test-side defect RC-19 exposed).
+  - FU-500-15: an application's agent gets neither discovery tool (native or MCP), and runtimes word a deleted agent differently; both the same at base. FU-500-10 is resolved by 492.
 - Result (round 6, the seventh merged state `bb42531c7d`): `Pass`, 95%. AC-005 5/5 on Linux on the merged commit; the merge's touched suites pass; FU-500-14 records the base's own macOS rename timeouts.
 - Result (round 5, the fourth merged state `eecb228bd6`): `Pass`, 95%. The merge's two paths (a built server's stop; restart resume with its notice, the Team member included) and this ticket's cases pass; no finding. Test changes: RR-12 (new), SIR-002 (`restart-resume/` left out).
 - Result (round 4, the third merged state `e93671cce0` + `4db98c6d1a`), final: `Pass`, 95%. F-4 resolved (CRR-011: test-side and on base too; OT-2 leaves the derived `memory/episodic/` out, OT-1 … OT-3 3/3; FU-500-13). First result: `Fail` on F-4, 90%:
@@ -220,7 +245,9 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
   - M-6 cold-cache cost (warm only);
   - the founder's own data (only he can approve);
   - on-demand hosts emulated (LM Studio, Ollama);
-  - FU-500-09 … 12 outside this ticket.
+  - FU-500-09, FU-500-11 … 15 outside this ticket (FU-500-10 resolved by 492);
+  - the host's "turned off" discovery answer is reached by units only (FU-500-15 a).
+- Next recipient from `get_handoff_rules` (round 7): the Code Reviewer, for the proportional test-code review of round 7's test changes, then delivery.
 - Next recipient from `get_handoff_rules` (round 6): the Code Reviewer (no test changes to review this round), then delivery.
 - Next recipient from `get_handoff_rules` (round 5): the Code Reviewer, for the proportional test-code review of round 5's test changes, then delivery.
 - Next recipient from `get_handoff_rules` (round 4, final): the Code Reviewer, for the proportional test-code review of `696acc408c` and the OT-2 change, then delivery.

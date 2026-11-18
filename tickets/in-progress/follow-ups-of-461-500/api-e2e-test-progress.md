@@ -54,3 +54,24 @@ My progress log while tests run. Read it first when picking the run back up. Row
 | 2026-11-18 13:36 | ROUND 5 | Completed | Pass | 95% |
 | 2026-11-18 15:16 | ROUND 6 | Started | | CRR-015 merge of 75048cbaf4 (head 94376f166d, merge bb42531c7d); Linux container: watcher x5, touched integ/units/e2e; macOS not quiet (load 63, fseventsd 159%) |
 | 2026-11-18 15:31 | ROUND 6 | Completed | Pass | Linux watcher 5/5 (14/14, 0 labels); touched E2E 22 passed; root-container artifacts pass on the Mac; base-side rename timeouts on loaded macOS (FU-500-14) |
+| 2026-11-18 16:25 | ROUND 7 | Started | | CRR-017 merge of 53b72018ad (head 2037a3be5a, merge 5eb8246076 + 8e8c21c2c4); build, messaging, list_running_agents native+MCP, migration order |
+| 2026-11-18 16:25 | BUILD (r7) | Started | | /tmp/api500/r7/build.log |
+| 2026-11-18 16:29 | BUILD (r7) | Completed | Pass | autobyteus-ts + server build exit 0 |
+| 2026-11-18 16:29 | ALM-1 + MO-1 (r7) | Started | | /tmp/api500/r7/alm1.log |
+| 2026-11-18 16:30 | ALM-1 + MO-1 (r7) | Checkpoint | Fail (my assertion) | AGY run of the removed compactor answers ACTIVATION_FAILED "AGY_AGENT_DEFINITION_MISSING: …" (AGY backend, base since 2026-09-24), not E-002's AutoByteus RUN_NOT_FOUND; assertion corrected |
+| 2026-11-18 16:32 | ALM-1 + MO-1 (r7) | Completed | Pass | 1/1; order 669→701, 703→706, 707→710 ms; removal migrated 2 |
+| 2026-11-18 16:35 | LRN-1, LRN-2 (r7, new) | Started | | /tmp/api500/r7/lrn.log |
+| 2026-11-18 16:44 | LRN-1, LRN-2 (r7, new) | Checkpoint | LRN-1 Pass; LRN-2 MCP refused | app-bound AGY run: "Tool is not enabled for this session" for list_running_agents and list_available_agents; native answers; base probe next |
+| 2026-11-18 16:44 | BASE PROBE 53b72018ad | Started | | worktree ../500-base-53b72018 /tmp/api500/r7/base-build.log |
+| 2026-11-18 16:46 | LRN-1, LRN-2 (r7, new) | Completed | Pass | 2/2 branch; base 53b72018ad: LRN-1 Pass, app host gives neither discovery tool on either route (same as branch; FU-500-15) |
+| 2026-11-18 16:47 | CHAIN r7 (units, integ, e2e) | Started | | /tmp/api500/r7/chain.log |
+| 2026-11-18 17:31 | CHAIN r7 (units, integ, e2e) | Completed | Pass except RC-19 (late answer) and RRB-3 (AGY discovery 15 s) | units 487/487, integ 14/14, rc 48/49, cpw 14/14, stories 3/3, rrb 8/9, focus 6/6 |
+| 2026-11-18 17:31 | RC-19, RRB-3 reruns | Started | | /tmp/api500/r7/rc19.log, rrb3.log |
+| 2026-11-18 17:43 | RC-19, RRB-3 reruns | Checkpoint | RRB 3/3 alone; RC-19 fails again in the whole file (48/49, 90.7 s, the same step) | base run next |
+| 2026-11-18 17:43 | RC base 53b72018ad | Started | | /tmp/api500/r7/base-rc.log |
+| 2026-11-18 17:52 | RC base 53b72018ad | Completed | Not Tested | base vitest skipped all 49 although its gate checks true by hand; not pursued |
+| 2026-11-18 17:52 | RC (r7) after calls() fix | Started | | RC-19 cause: view capped at 100 events, the count-based wait never grows; /tmp/api500/r7/rc3.log |
+| 2026-11-18 17:55 | RC (r7) after calls() fix | Completed | Pass | 49/49; RC-19 740 ms |
+| 2026-11-18 17:56 | PROBES (r7) | Started | | G5-001..003, DLP-005, DCP-004, SIR-001, SIR-002; /tmp/api500/r7/probe.log |
+| 2026-11-18 18:01 | PROBES (r7) | Completed | Pass | 7/7; SIR-001 now Pass (492 DEC-001 resolves FU-500-10) |
+| 2026-11-18 18:10 | ROUND 7 | Completed | Pass | 95%; MO-1, LRN-1/2 added; RC calls() fixed (49/49); probes 7/7; FU-500-15 |

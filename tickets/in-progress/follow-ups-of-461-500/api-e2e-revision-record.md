@@ -177,3 +177,35 @@ None open.
   - the founder's own data;
   - LM Studio and Ollama emulated;
   - FU-500-09 … 14.
+
+### API-REV-007: round 7, the eighth merged state (CRR-017): migration order, list_running_agents on both routes, 492's messaging; Pass
+
+- Triggering role, report path, and round: `/code_reviewer`, `code-review-report.md` (round 9, CRR-017 Pass on IR-009; head `2037a3be5a`, merge `5eb8246076` of `53b72018ad`, plus `8e8c21c2c4`), API/E2E round 7.
+- Triggering finding or case IDs: the reviewer's list: 492's messaging (unrelated runs, not running, Task-related, the peer receiver); `list_running_agents` local, with `node` and with remote collaboration off, native and MCP; the three new migrations on one first start and the order test; this ticket's merged cases.
+- Why this revision was recorded: validation of the eighth merged state.
+- Coverage decisions or durable test paths changed:
+  - `delegated-run-own-attachment-links-startup.e2e.test.ts`: MO-1 (491's retired copies and a real compactor run in ALM-1's data; all three migrations in order on one start; the run kept, listed, its continuation refused by AGY's own missing-definition answer; a second start unchanged);
+  - new `list-running-agents-native-and-mcp.e2e.test.ts`: LRN-1 (two paired Studios: local, `node`, switch off, both routes the same), LRN-2 (the application host: the same outcome from both discovery tools on each route);
+  - `remote-delegation-two-server.e2e.test.ts` `calls()`: waits for the newest reply entry not in view before the call (the run view holds the last 100 events). No assertion changed.
+  - `follow-ups.md`: FU-500-15; FU-500-10 resolved by 492.
+
+#### Prior Failure Resolution
+
+None open from round 6. This round's own first results:
+- MO-1's first attempt asserted E-002's AutoByteus answer (`RUN_NOT_FOUND`); an AGY run answers `ACTIVATION_FAILED` "AGY_AGENT_DEFINITION_MISSING: …" (its backend's, unchanged since the AGY baseline). The test now asserts the AGY answer; the runtime difference is FU-500-15 (b).
+- RC-19 timed out twice in the whole file with its answer already in view: the helper's count-based wait. Fixed; 49/49.
+- LRN-2: an application's agent gets neither discovery tool on either route, the same at base `53b72018ad` (its own worktree). LRN-2 asserts 492's same-senders rule; FU-500-15 (a).
+- RRB-3 failed once in the chain on AGY's 15 s discovery bound at load; alone 3/3.
+
+- Canonical artifacts and sections updated: the coverage investigation (Round 7 Updates); the execution report (Round, Routing, Environments, Cases, AC proof, Durable Coverage, Cleanup, Result); the progress log; `evidence/api-e2e/API-r7-runs.txt`; `follow-ups.md`.
+- Prior result and confidence: `Pass` / 95% (round 6)
+- Current result and confidence: `Pass` / 95%
+- New or remaining failure IDs: none
+- Recommended owner: the Code Reviewer, for the proportional test-code review of MO-1, LRN-1/LRN-2 and the `calls()` change, then delivery.
+- Remaining risks, blocked evidence, or untested scope:
+  - the application host's "turned off" discovery answer is reached by units only (FU-500-15 a);
+  - quiet macOS (the merge touches no watcher file; round 6's Linux 5/5 stands);
+  - M-6 cold cache;
+  - the founder's own data;
+  - LM Studio and Ollama emulated;
+  - FU-500-09, FU-500-11 … 15.

@@ -175,3 +175,16 @@ None planned.
 | get-project-task-worker-scope SCP-E2E-006 | Still Valid (base passes) | F-3 | not changed |
 | available-agent-runtimes, configured-skill-on-demand-loading, project-task-boundaries (search_memory), terminal-websocket-lifecycle; SIR-001 | Out Of Scope (fail on the base) | base 9695d310c5 | FU-500-09, FU-500-10 |
 | G5-003 (planned "starts as today, at most 8 s later") | Planned case revised | AGY needs its list to launch (its own discovery error), so "as today" is AGY's own outcome | assert no G-5 refusal; record the times |
+
+## Round 7 Updates (the eighth merged state: 491, 492; CRR-017)
+
+What the merge brings to this ticket's surfaces, and how it is proven:
+
+| Path / Test | Decision | Evidence | Action |
+| --- | --- | --- | --- |
+| The three new startup migrations on one first start (this ticket's two `20261117`, then 491's `20261118`) | Add Durable Coverage: MO-1 in ALM-1's file (the same released-shape data, plus 491's retired copies and a real run of the Memory Compactor) | the registry order; 491's RRB-1 covers its removal alone | assert each status and summary, the start/complete order, the copies gone, the run kept and listed, its continuation refused by the runtime's own missing-definition answer, a second start unchanged |
+| `list_running_agents` with the host's `PeerDiscoveryAccess` (FU-011) on the native tool and Agent Tools MCP | Add Durable Coverage: new `list-running-agents-native-and-mcp.e2e.test.ts` (LRN-1 two paired Studios; LRN-2 the application host) | 492's RC-47/48/27/28 cover the MCP route only; the native route had units only | local, `node`, switch off on both routes; the application host by the same-senders rule (492 DS-001) |
+| `remote-delegation-two-server` `calls()` helper | Needs Update (test-side): the run view holds the last 100 events, so a long-lived actor's count of replies stops growing (RC-19 timed out twice with its answer in view) | API-r7-runs.txt §3 | wait for the newest reply entry not in view before the call |
+| RC-47/48/49, RC-06/08/22, CPW-R2, contract U9 (492's unrelated-run delivery), RRB-1…3, ALM-1, ODM-1, RSE-1, E-002, G5-001…003, DLP-005, DCP-004, SIR-002 | Still Valid | merged tests as they are | run on the merged build |
+| Probe SIR-001 | Still Valid; FU-500-10's refusal is gone (492 DEC-001 delivers unrelated runs' messages) | probe 7/7 | run; FU-500-10 resolved by 492 |
+| An application's agent in the application host and the discovery tools | Out Of Scope (the same at base `53b72018ad`) | LRN-2 on base | FU-500-15 (a); LRN-2 asserts the same-senders rule only |

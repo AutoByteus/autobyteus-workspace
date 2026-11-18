@@ -1,0 +1,86 @@
+API/E2E round 7: the eighth merged state (CRR-017; head 2037a3be5a, merge 5eb8246076 of 53b72018ad = 491 + 492, test fix 8e8c21c2c4)
+Environment: macOS 26 (Darwin 25.5.0) arm64, load average 35-73 (other worktrees). autobyteus-ts and server dist rebuilt from
+2037a3be5a (build exit 0). E2E: env -i PATH HOME=<fresh temp> TMPDIR, RUN_AGY_FAILURE_E2E=1,
+ANTIGRAVITY_CLI_COMMAND=<server>/tests/fixtures/agy-failure-cli.mjs. Raw logs: /tmp/api500/r7/. No user data; test-owned roots only.
+
+§1 Migration order on one first start (MO-1, added to ALM-1; delegated-run-own-attachment-links-startup.e2e.test.ts)
+  Setup: fresh install (every migration recorded), then the retired built-in copies agents/autobyteus-skill-evolver and
+  agents/autobyteus-memory-compactor written as earlier builds left them, a real AGY run of the Memory Compactor, the ALM-1
+  uploads; with the server down the released host-scoped links, and the three ledger rows deleted.
+  First start (alm1b.log):
+    20261117_delegated_run_own_attachment_links                         SUCCEEDED_WITH_WARNINGS  15:32:12.669 -> 12.701  "Scanned 4; migrated 2; skipped 2; failed 0."
+    20261117_delegated_run_own_attachment_links_after_task_agent_own_run SUCCEEDED_WITH_WARNINGS 15:32:12.703 -> 12.706  "Scanned 4; migrated 0; skipped 4; failed 0."
+    20261118_remove_retired_built_in_agents                              SUCCEEDED              15:32:12.707 -> 12.710  "Scanned 2; migrated 2; skipped 0; failed 0."
+  Both copies gone; the compactor not in agentDefinitions; its run folder kept and listed in listWorkspaceRunHistory.
+  Continuing it: AGENT_COMMAND_ACK accepted:false, code ACTIVATION_FAILED, message "AGY_AGENT_DEFINITION_MISSING: autobyteus-memory-compactor"
+  (the AGY backend's own missing-definition error, agy-agent-run-backend-factory.ts, since 2026-09-24; unchanged vs 53b72018ad;
+  AutoByteus answers RUN_NOT_FOUND "AgentDefinition with ID … not found." as in E-002). No ASSISTANT_COMPLETE. FU-500-15 (b).
+  First attempt (alm1.log) failed on my assertion of E-002's AutoByteus code; corrected to the AGY answer.
+  Second start: attempts and completedAt of all three unchanged; trace files and backups unchanged; the run still listed.
+  Result: "Tests 1 passed (1)".
+  Order and removal tests: units.log (tests/unit/app-data-migrations incl. app-data-migration-registry-order, tests/app-data-migrations/
+  remove-retired-built-in-agents, delegated-run-own-attachment-links, collaborators-to-delegated-runs-v1,
+  delegated-copy-own-file-complete-v1, remove-skill-improvement-data): part of "Test Files 58 passed (58) / Tests 487 passed (487)".
+  491's startup E2E alone (rrb3.log): RRB-1, RRB-2, RRB-3 "Tests 3 passed (3)". In the chain (rrb.log) RRB-3 had failed on
+  "AgyDiscoveryError: Antigravity model discovery timed out" (the 15 s AGY discovery bound at load ~45); alone it passes.
+
+§2 list_running_agents on both routes (new list-running-agents-native-and-mcp.e2e.test.ts; lrn-final.log)
+  LRN-1, two built Studio nodes alpha/beta paired by invite, remote collaboration on; an AutoByteus run (emulated LM Studio
+  makes the real native tool call) and an AGY run (Agent Tools MCP) on alpha, each selecting list_running_agents:
+    local: native lists [LRN Bystander, the AGY lister]; MCP lists [LRN Bystander, the native lister]; the shared entry equal
+           on both routes: {kind:"agent", name:"LRN Bystander", address:"/lrn_bystander", agent_run_id, workspace, state:"idle", started_at}
+    node "beta-node": both [{… "LRN Beta Bystander" …, "node":"beta-node"}], equal on both routes
+    alpha's switch off, node "beta-node": native "Error: Error executing tool 'list_running_agents' (ID: …): Error: Remote
+           collaboration is turned off on this node, so nothing was sent to another node."; MCP isError:true, text the same
+           sentence; without node both still list.
+  LRN-2, the standalone application host (dist/index.js startStandaloneApplicationHost), an application agent selecting
+  list_running_agents and list_available_agents, on autobyteus and on antigravity_cli:
+    native: "Error: Tool 'list_running_agents' not found or configured for agent '…'." (and the same for list_available_agents)
+    MCP:    run ERROR "Tool is not enabled for this session" for both tools, with and without node
+    -> the same outcome from both tools on each route (492 DS-001, the same senders), never a peer's list. "Tests 2 passed (2)".
+  Base 53b72018ad in its own worktree (base-lrn.log): LRN-1 passes the same; LRN-2 outcomes identical (native "not found or
+  configured", MCP "not enabled"). Not this ticket: FU-500-15 (a). The host's REMOTE_COLLABORATION_OFF_DISCOVERY answer is
+  reached by no application agent; it is covered by the units (peer-discovery-tools, list-running-agents-tool).
+  An earlier LRN-2 draft read AGY replies from raw traces and timed out (lrn.log); the final reads the application's event stream.
+
+§3 Messaging (492 DEC-001) and the two-server suite
+  remote-delegation-two-server.e2e.test.ts, whole file:
+    rc.log (chain) and rc2.log: "Tests 1 failed | 48 passed (49)", both RC-19 at 90.7 s: "Timed out waiting for alpha standalone
+      delegator result of delegate_task …" while the conversation tail already holds the expected CALLED reply ("No peer node
+      named \"beta-node\" is registered on this node, …").
+    Cause (test-side): getRunProjection's conversation is the most recent 100 events (RECENT_RUN_PROJECTION_EVENT_LIMIT,
+      recent-run-projection-policy.ts, since 2026-07-18). The suite's calls() waited for the count of CALLED entries to grow;
+      for the long-lived delegator the window slides and the count stays. Fixed: calls() takes the newest CALLED entry not in
+      the view before the call, and reports the view's size on timeout.
+    rc3.log after the fix: "Tests 49 passed (49)", "✓ RC-19 … 740ms".
+    In every run: RC-47 (two user-started roots on no shared Task message each other by run ID, both delivered; a stopped root and
+      a never-started member refused with the not-running text and not woken), RC-48 (alpha → beta with node through the remote
+      message receiver, answered; beta's stopped root refused), RC-49 (closed Task fences), RC-06/RC-22 (DS-006 unlinked delivery
+      to a remote run), RC-08 (not-running refusals on both nodes), RC-10/RC-11/RC-23 (Task-related, closed Task), RC-27/RC-28
+      (list_running_agents' refusals = list_available_agents'; alpha's switch off "turned off") all ✓.
+  Base 53b72018ad: the same file skipped all 49 cases in base's vitest although its gate checked true by hand; not pursued (the
+    cause above is in the suite's helper, shared by base).
+  collaboration-prompt-wording (cpw.log): "Tests 14 passed (14)"; "✓ CPW-R2 Agent root: a task agent messaging a running agent of
+    a different Task is delivered (492 AC-008)".
+  collaboration-contract-stories (stories.log): "✓ §5.1 S0 … S27", "✓ §5.2 U0 … U11", "✓ §5.3 O0 … O9", "Tests 3 passed (3)".
+  agent-tools-mcp-routes.integration (integ.log): "Tests 14 passed (14)".
+  Units (units.log): agent-discovery, running, remote-collaboration, cross-run-message-delivery, global-agent-run-message-router,
+    standalone-application-host, standalone-agent-run-root, runtime-agent-tool-exposure, send-message-to, result-catalogue:
+    within "Tests 487 passed (487)".
+
+§4 This ticket's merged cases
+  focus.log: "✓ ODM-1 …", "✓ RSE-1 …", "✓ E-001 … ✓ E-002 … ✓ E-003 … ✓ E-004 …", "Tests 6 passed (6)".
+  ALM-1: §1.
+  Browser probes (probe.log; delegated-launch-defaults-probe --cases G5-001,G5-002,G5-003,DLP-005,DCP-004,SIR-001,SIR-002):
+    "Summary: 7 Pass, 0 Fail". SIR-001 "Pass BEH-003: send_message_to by run id through real tool calls: standalone → standalone
+    delivered, …": it failed on every earlier base (FU-500-10); 492's DEC-001 delivers it now. SIR-002 Pass with the merged
+    released-shape sessions and the derived-files exclusion.
+
+§5 Gates
+  Server typecheck (typecheck.log): "production errors: 0; test-file errors: 1006 in 315 files (baseline 1006 in 315 files)",
+    "[typecheck] PASS"; none in the three changed test files.
+  team-stream-clients-wait-for-connected: "Tests 3 passed (3)".
+  AC-005 (watcher): the merge touches no watcher file; round 6's Linux 5/5 stands.
+
+Cleanup: base worktree ../500-base-53b72018 created for this round and removed (git worktree remove); temporary
+diag-lrn-host and diag-gate test copies deleted; every suite removed its own roots and servers.
