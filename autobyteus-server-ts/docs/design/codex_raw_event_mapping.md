@@ -430,7 +430,7 @@ Allowed downstream effect:
 
 Forbidden downstream effect:
 
-- semantic/episodic memory creation for Codex;
+- AutoByteus compaction output created for Codex;
 - local trace content rewrite or trace history loss;
 - runtime memory retrieval or injection;
 - archive compression, total-retention policy, or snapshot-windowing policy hidden inside the converter/recorder path.
