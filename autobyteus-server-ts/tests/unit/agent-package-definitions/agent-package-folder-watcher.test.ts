@@ -8,6 +8,7 @@ import {
   type PackageFolderWatch,
 } from "../../../src/agent-package-definitions/monitor/agent-package-folder-watcher.js";
 import type { RegisteredPackageRoot } from "../../../src/agent-package-definitions/domain/agent-package-definition-types.js";
+import { FILE_EVENT_TEST_TIMEOUT_MS, IN_PROCESS_SERVER_HOOK_TIMEOUT_MS, OS_FILE_EVENT_WAIT_MS } from "../../helpers/os-latency-under-load.js";
 
 let base: string;
 let monitor: AgentPackageFolderWatcher | null = null;
@@ -38,7 +39,8 @@ const recordingSink = () => {
   };
 };
 
-const waitFor = async (predicate: () => boolean, timeoutMs = 5000): Promise<void> => {
+/** Waits for the monitor to see an OS file event (or arm its watch); the latency is the OS's (os-latency-under-load.ts). */
+const waitFor = async (predicate: () => boolean, timeoutMs = OS_FILE_EVENT_WAIT_MS): Promise<void> => {
   const started = Date.now();
   while (!predicate()) {
     if (Date.now() - started > timeoutMs) throw new Error("Timed out waiting for the monitor.");
@@ -51,14 +53,15 @@ beforeEach(async () => {
   base = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "apar-monitor-")));
 });
 
+// Closing the monitor closes its OS folder watches on the main thread: seconds under an FSEvents backlog.
 afterEach(async () => {
   vi.useRealTimers();
   await monitor?.close();
   monitor = null;
   await fs.rm(base, { recursive: true, force: true });
-});
+}, IN_PROCESS_SERVER_HOOK_TIMEOUT_MS);
 
-describe("AgentPackageFolderWatcher", () => {
+describe("AgentPackageFolderWatcher", { timeout: FILE_EVENT_TEST_TIMEOUT_MS }, () => {
   it("reports definition changes per folder and ignores skills and other files", async () => {
     const rootPath = path.join(base, "pkg");
     await fs.mkdir(path.join(rootPath, "agents", "a", "skills", "s"), { recursive: true });
@@ -144,8 +147,7 @@ describe("AgentPackageFolderWatcher", () => {
     await fs.mkdir(path.join(rootPath, "agents"), { recursive: true });
     await waitFor(() => monitor!.getPackageFolderWatchStatus(rootPath)?.state === "WATCHING");
     expect(recorded.roots).toContain(rootPath);
-    // waitFor alone may take 5 s, the default test timeout: under load the watcher arms late.
-  }, 15_000);
+  });
 
   it("reports UNAVAILABLE when watching cannot be set up, and re-arms on the next sync", async () => {
     const rootPath = path.join(base, "pkg");
@@ -338,6 +340,48 @@ describe("AgentPackageFolderWatcher catch-up request", () => {
     await monitor!.close();
     await advance(5_000);
     expect(recorded.reconciles).toEqual([]);
+  });
+
+  // autobyteus-524 FU-007: at process exit the watches end without their OS close; any other close releases them.
+  const armWithPresence = async (rootPath: string) => {
+    const recorded = recordingSink();
+    const watches: FakeWatch[] = [];
+    const presence: Array<{ close: ReturnType<typeof vi.fn> }> = [];
+    monitor = new AgentPackageFolderWatcher({
+      sink: recorded.sink,
+      createWatcher: () => { const watch = new FakeWatch(); watches.push(watch); return watch; },
+      createParentFolderWatch: () => { const watch = { close: vi.fn() }; presence.push(watch); return watch; },
+      logger: { warn: () => undefined },
+    });
+    await monitor.syncPackageFolders([rootAt(rootPath)]);
+    return { recorded, watches, presence };
+  };
+
+  it("stops for a process exit without closing its OS watches, handles no event after it, and a later close() does nothing", async () => {
+    const rootPath = path.join(base, "pkg");
+    await fs.mkdir(path.join(rootPath, "agents", "a"), { recursive: true });
+    const { recorded, watches, presence } = await armWithPresence(rootPath);
+    expect(watches).toHaveLength(1); expect(presence).toHaveLength(1);
+    watches[0]!.emit("ready");
+
+    monitor!.stopForProcessExit();
+    watches[0]!.emit("all", "change", path.join(rootPath, "agents", "a", "agent.md"));
+    await advance(5_000);
+    await monitor!.close();
+
+    expect(watches[0]!.close).not.toHaveBeenCalled();
+    expect(presence[0]!.close).not.toHaveBeenCalled();
+    expect([recorded.folders, recorded.reconciles, recorded.roots]).toEqual([[], [], []]);
+    expect(monitor!.getPackageFolderWatchStatus(rootPath)).toBeNull();
+  });
+
+  it("closes its OS watches on close() without a process-exit stop", async () => {
+    const rootPath = path.join(base, "pkg");
+    await fs.mkdir(path.join(rootPath, "agents"), { recursive: true });
+    const { watches, presence } = await armWithPresence(rootPath);
+    await monitor!.close();
+    expect(watches[0]!.close).toHaveBeenCalledOnce();
+    expect(presence[0]!.close).toHaveBeenCalledOnce();
   });
 
   it("asks for nothing once the package folder is missing", async () => {

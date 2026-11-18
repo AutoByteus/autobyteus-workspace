@@ -1,0 +1,26 @@
+{
+  "runId": "pni_claude_1aa72814_6b0ddc4a2b6845fea7aea34c9981af80",
+  "running": {
+    "task_id": "bxmr726c0",
+    "kind": "shell",
+    "description": "Run delayed echo in background",
+    "command": null,
+    "status": "running",
+    "summary": null,
+    "end_reason": null,
+    "exit_code": null,
+    "started_at": "2026-11-18T08:40:45.016Z"
+  },
+  "liveNotices": [
+    {
+      "messageId": "20880f1f-f6f3-49c6-a917-ebcba7673ae9",
+      "content": "Background task completed: Run delayed echo in background (completed)"
+    }
+  ],
+  "stored": [
+    {
+      "messageId": "20880f1f-f6f3-49c6-a917-ebcba7673ae9",
+      "content": "Background task completed: Run delayed echo in background (completed)"
+    }
+  ]
+}

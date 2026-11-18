@@ -1,0 +1,12 @@
+# V-01 RR-10 (built server dist; scripted LM Studio model; two graceful restarts with a background build running each time)
+## head 238be7dbc0 (RESTART_REMINDER_BASE_SERVER_DIR=<base> for RR-11 in the same run)
+ ✓ tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts (11 tests | 9 skipped) 126212ms
+     ✓ RR-10: a native run restarted twice keeps one id per turn; each reminder and each reply has its own turn in the conversation (autobyteus-526)  47609ms
+     ✓ RR-11: a run restored twice before the fix keeps its stored ids; its next turn continues after the highest (autobyteus-526 DEC-003)  78488ms
+      Tests  2 passed | 9 skipped (11)
+## base 2e9ac1e65b (RESTART_REMINDER_SERVER_DIR=<base worktree>/autobyteus-server-ts) = before
+     × RR-10: a native run restarted twice keeps one id per turn; each reminder and each reply has its own turn in the conversation (autobyteus-526) 79861ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected [ 'turn_0001', 'turn_0001', …(1) ] to deeply equal [ 'turn_0001', 'turn_0002', …(1) ]
+      Tests  1 failed | 10 skipped (11)
+## frame order of the turn after each restart (head; a temporary recording, removed): one SYSTEM_TASK_NOTIFICATION, before TURN_STARTED

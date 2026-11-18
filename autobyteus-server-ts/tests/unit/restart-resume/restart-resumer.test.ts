@@ -280,9 +280,9 @@ describe("RestartResumer: restore, re-check, post a first-input-only notice", ()
     const noticeOf = (id: string) => h.posts.find((post) => post.agentRunId === id)!.message.content;
     expect(h.published).toEqual(expect.arrayContaining([
       { eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION, runId: "host-1", statusHint: null,
-        payload: { sender_id: RESTART_RESUME_NOTICE_SENDER_ID, content: noticeOf("host-1"), turn_id: "turn-host-1" } },
+        payload: { sender_id: RESTART_RESUME_NOTICE_SENDER_ID, content: noticeOf("host-1"), message_id: expect.stringMatching(/^restart-resume:.*:host-1$/), turn_id: "turn-host-1" } },
       { eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION, runId: "worker-1", statusHint: null,
-        payload: { sender_id: RESTART_RESUME_NOTICE_SENDER_ID, content: noticeOf("worker-1"), turn_id: "turn-worker-1" } },
+        payload: { sender_id: RESTART_RESUME_NOTICE_SENDER_ID, content: noticeOf("worker-1"), message_id: expect.stringMatching(/^restart-resume:.*:worker-1$/), turn_id: "turn-worker-1" } },
     ]));
     expect(h.published).toHaveLength(2);
   });

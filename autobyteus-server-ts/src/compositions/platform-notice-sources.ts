@@ -15,6 +15,8 @@ export type PlatformNoticeSources = Readonly<{
    * notices (watcher, then service) and background task notices, so none go out while runs stop.
    */
   close(): Promise<void>;
+  /** Process shutdown only, before the close: the skill folder watcher ends without closing its OS watches. */
+  stopFileWatchesForProcessExit(): void;
 }>;
 
 export const createPlatformNoticeSources = (input: Readonly<{
@@ -40,5 +42,6 @@ export const createPlatformNoticeSources = (input: Readonly<{
       try { await skillUpdateNotices.close(); } catch (error) { console.warn("SKILL_UPDATE_NOTICES_CLOSE_FAILED", error); }
       backgroundTaskNotices.close();
     },
+    stopFileWatchesForProcessExit: () => skillUpdateNotices.watcher.stopForProcessExit(),
   });
 };

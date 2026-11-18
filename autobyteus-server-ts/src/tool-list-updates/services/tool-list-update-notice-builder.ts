@@ -26,21 +26,23 @@ export const buildToolListUpdateNoticeText = (diff: ToolListDiff): string => {
  * notice and memory records it as one system notice. The service publishes the run's system
  * notice once it is forwarded.
  */
-export const buildToolListUpdateNoticeMessage = (text: string): AgentInputUserMessage =>
+export const buildToolListUpdateNoticeMessage = (text: string, noticeId: string): AgentInputUserMessage =>
   new AgentInputUserMessage(text, SenderType.SYSTEM, null, {
     [TOOL_LIST_UPDATE_NOTICE_METADATA_KEY]: true,
     sender_id: TOOL_LIST_UPDATE_NOTICE_SENDER_ID,
     [SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY]: true,
-    ...platformInputPrefaceMetadata({ content: text, senderId: TOOL_LIST_UPDATE_NOTICE_SENDER_ID, originalContent: null }),
+    ...platformInputPrefaceMetadata({ content: text, senderId: TOOL_LIST_UPDATE_NOTICE_SENDER_ID, originalContent: null, noticeId }),
   });
 
 /** The run's system notice event (web presentation and external-runtime history). */
-export const buildToolListUpdateNoticeEvent = (runId: string, text: string, turnId: string | null): AgentRunEvent => ({
+/** `noticeId`: the notice's one id, the same as on its message (autobyteus-526). */
+export const buildToolListUpdateNoticeEvent = (runId: string, text: string, turnId: string | null, noticeId: string): AgentRunEvent => ({
   eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION,
   runId,
   payload: {
     sender_id: TOOL_LIST_UPDATE_NOTICE_SENDER_ID,
     content: text,
+    message_id: noticeId,
     ...(turnId ? { turn_id: turnId } : {}),
   },
   statusHint: null,

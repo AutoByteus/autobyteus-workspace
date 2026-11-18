@@ -86,6 +86,13 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 /** semantic-memory-prompt-contract.md §2, the paragraph, with the folder (copied from the contract, not the source). */
 const paragraph = (folder: string) => `Your semantic memory is the folder \`${folder}\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.`;
 const section = (folder: string) => `## Semantic Memory\n\n${paragraph(folder)}`;
+/** Instructions up to the runtime's Long-Running Commands section, which ends every composed prompt (autobyteus-483). */
+const beforeLongRunningCommands = (instructions: string): string => {
+  const at = instructions.lastIndexOf("\n\n## Long-Running Commands\n");
+  expect(at, "Long-Running Commands section").toBeGreaterThan(0);
+  expect(instructions.indexOf("\n## ", at + 2), "nothing after the Long-Running Commands section").toBe(-1);
+  return instructions.slice(0, at);
+};
 
 /** A recorder that runs the real CLI unchanged and appends its argv, stdin and stdout to one file per process. */
 const recorderSource = (realCommand: string, logPrefix: string) => `#!${process.execPath}
@@ -467,7 +474,7 @@ describeLive("agent semantic memory with real runtimes", () => {
       expect(reply.errors, turnErrors(reply.errors)).toEqual([]);
       expect(reply.text).toContain(codeword);
       expect(wire.length).toBeGreaterThan(0);
-      expect(String(wire.at(-1)!.params.baseInstructions).endsWith(`\n\n${section(folder)}`)).toBe(true);
+      expect(beforeLongRunningCommands(String(wire.at(-1)!.params.baseInstructions)).endsWith(`\n\n${section(folder)}`)).toBe(true);
       expect(wire.at(-1)!.params.config.sandbox_workspace_write).toEqual({ writable_roots: [folder] });
       stream.socket.close();
     }, 900_000);
@@ -517,7 +524,7 @@ describeLive("agent semantic memory with real runtimes", () => {
       expect(start!.params).toMatchObject({ sandbox: "workspace-write", approvalPolicy: "on-request" });
       expect(Object.keys(start!.params.config)).toEqual(["mcp_servers"]);
       expect(String(start!.params.baseInstructions)).not.toContain("Semantic Memory");
-      expect(String(start!.params.baseInstructions).endsWith(`(Project ID ${projects.A}). Use this Project ID with the Project tools; ask the user before working on another Project.`)).toBe(true);
+      expect(beforeLongRunningCommands(String(start!.params.baseInstructions)).endsWith(`(Project ID ${projects.A}). Use this Project ID with the Project tools; ask the user before working on another Project.`)).toBe(true);
       expect(existsSync(folderOf(plain.id))).toBe(false);
       stream.socket.close();
     }, 900_000);

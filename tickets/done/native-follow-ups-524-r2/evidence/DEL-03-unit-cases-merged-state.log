@@ -1,0 +1,20 @@
+# DEL-03 (autobyteus-524 r2 delivery): the changed unit files on the merged state
+# Command: env -i PATH HOME=<temp> TMPDIR=<temp> pnpm -C autobyteus-server-ts exec vitest run tests/unit/compositions/studio-file-watch-exit.test.ts tests/unit/server-runtime-app-data-migration-gate.test.ts tests/unit/skill-update-notices/skill-folder-watcher.test.ts tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts --no-watch --reporter=verbose
+# Commit: be94117935; load average 92 / 71 / 62 at the start; fseventsd 153 % CPU; 2026-11-18
+Test Files  1 failed | 3 passed (4)
+     Tests  4 failed | 50 passed (54)
+The new FU-007 cases all pass:
+ ✓ studio-file-watch-exit.test.ts > stops both watchers for the exit before the close; the close then finds them stopped
+ ✓ studio-file-watch-exit.test.ts > closes both watchers normally (OS watches released) when the studio is closed without the exit stop
+ ✓ agent-package-folder-watcher.test.ts > ... > stops for a process exit without closing its OS watches, handles no event after it, and a later close() ...
+ ✓ agent-package-folder-watcher.test.ts > ... > closes its OS watches on close() without a process-exit stop
+ ✓ skill-folder-watcher.test.ts > SkillFolderWatcher > stops for a process exit without closing its OS watches, reports no change after it, and a later close() does nothing
+ ✓ skill-folder-watcher.test.ts > SkillFolderWatcher > closes every OS watch on close() without a process-exit stop
+ ✓ server-runtime-app-data-migration-gate.test.ts: all 21 cases (the order record -> stop -> close is asserted there)
+The four failures are the cases that wait on real OS file events (the family K-1 of the implementation handoff records as failing on the old source too):
+ × agent-package-folder-watcher.test.ts > reports definition changes per folder and ignores skills and other files (16217 ms)
+ × agent-package-folder-watcher.test.ts > moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns (13398 ms)
+ × agent-package-folder-watcher.test.ts > re-arms a root whose folder was replaced in place (GitHub update rename swap) (12220 ms)
+ × agent-package-folder-watcher.test.ts > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears (6954 ms)
+Cause (TESTING.md "File watching on a busy Mac"): node evidence/API-03-fswatch-latency-probe.mjs, run right after, at load 84 / 76 / 65 with fseventsd at 153.3 % CPU:
+{"latenciesMs":[null,1041,4971,4478,null]}   (ms from a write in a freshly watched folder to its event; null = none within 15 s)

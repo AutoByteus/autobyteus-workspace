@@ -84,21 +84,23 @@ export const buildSkillUpdateNoticeText = (changes: readonly SkillChange[]): str
  * system notice. The native runtime does not emit its own notification for it; the service
  * publishes the run's system notice once it is forwarded.
  */
-export const buildSkillUpdateNoticeMessage = (text: string): AgentInputUserMessage =>
+export const buildSkillUpdateNoticeMessage = (text: string, noticeId: string): AgentInputUserMessage =>
   new AgentInputUserMessage(text, SenderType.SYSTEM, null, {
     [SKILL_UPDATE_NOTICE_METADATA_KEY]: true,
     sender_id: SKILL_UPDATE_NOTICE_SENDER_ID,
     [SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY]: true,
-    ...platformInputPrefaceMetadata({ content: text, senderId: SKILL_UPDATE_NOTICE_SENDER_ID, originalContent: null }),
+    ...platformInputPrefaceMetadata({ content: text, senderId: SKILL_UPDATE_NOTICE_SENDER_ID, originalContent: null, noticeId }),
   });
 
 /** The run's system notice event (web presentation and external-runtime history). */
-export const buildSkillUpdateNoticeEvent = (runId: string, text: string, turnId: string | null): AgentRunEvent => ({
+/** `noticeId`: the notice's one id, the same as on its message (autobyteus-526). */
+export const buildSkillUpdateNoticeEvent = (runId: string, text: string, turnId: string | null, noticeId: string): AgentRunEvent => ({
   eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION,
   runId,
   payload: {
     sender_id: SKILL_UPDATE_NOTICE_SENDER_ID,
     content: text,
+    message_id: noticeId,
     ...(turnId ? { turn_id: turnId } : {}),
   },
   statusHint: null,

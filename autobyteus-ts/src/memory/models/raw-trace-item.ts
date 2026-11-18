@@ -75,6 +75,9 @@ export class RawTraceItem {
     if (this.traceType === 'user') {
       this.messageId = normalizeInputKey(options.messageId);
       this.dedupeKey = normalizeInputKey(options.dedupeKey);
+    } else if (this.traceType === 'system_task_notification') {
+      // A notice's one id (autobyteus-526), the same as on its published notice.
+      this.messageId = normalizeInputKey(options.messageId);
     }
   }
 
@@ -102,6 +105,8 @@ export class RawTraceItem {
     if (this.traceType === 'user') {
       if (this.messageId) data.message_id = this.messageId;
       if (this.dedupeKey) data.dedupe_key = this.dedupeKey;
+    } else if (this.traceType === 'system_task_notification' && this.messageId) {
+      data.message_id = this.messageId;
     }
 
     return data;

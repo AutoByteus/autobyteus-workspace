@@ -208,7 +208,7 @@ export const runEveryRunSettingsCases = async (probe) => {
     const continued = await teamRun(team);
     await terminate.team(team).catch(() => undefined);
     const details = { entries, stop, before, afterStop, saved, after: after.members, again, continued: { isActive: continued.isActive, reviewer: continued.members['/reviewer'] } };
-    assert(entries.includes('settings') && entries.indexOf('settings') === entries.indexOf('activity') + 1, 'REQ-001 ⋮ → Settings after Activity on a task team\'s member', details);
+    assert(entries.at(-1) === 'settings', 'REQ-001 ⋮ → Settings, the last entry (autobyteus-534), on a task team\'s member', details);
     assert(stop.live.stop && /^reviewer/.test(stop.live.subject ?? ''), 'REQ-003 the live member: the stop icon', details);
     assert(afterStop.team === false && afterStop.ptm.isActive === before.ptm.isActive, 'REQ-003 the stop stops the task team\'s run; the PTM run as it was', details);
     assert(stop.stopped.runtimeDisabled === false, 'REQ-003 then the rows open', details);

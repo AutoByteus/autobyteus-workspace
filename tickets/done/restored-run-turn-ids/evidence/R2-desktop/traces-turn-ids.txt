@@ -1,0 +1,10 @@
+turn_0001 user  "Use run_bash with run_in_background set to true to"
+turn_0001 assistant  "FIRST_REPLY_STARTED"
+turn_0002 system_task_notification e6eae115-1072-44b0-8967-eb2724876dfe restarted at 2026-11-18 09:51 UTC
+turn_0002 user  "Is it still running now? Reply exactly THIRD_REPLY"
+turn_0002 assistant  "THIRD_REPLY"
+turn_0003 user  "Start the nightly build again with run_bash and ru"
+turn_0003 assistant  "SECOND_REPLY"
+turn_0004 system_task_notification 801557f3-efb5-4440-8e3f-50b7fea1e690 restarted at 2026-11-18 09:53 UTC
+turn_0004 user  "Did the restart stop it? Reply exactly FOURTH_REPL"
+turn_0004 assistant  "FOURTH_REPLY"

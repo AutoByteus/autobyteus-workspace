@@ -82,6 +82,7 @@ closes the remaining confidence gap.
 | Launch profile, isolation or packaged-launch mechanics | Packaged Electron harness |
 | The node's request gate, node credentials, the MCP gateway token, or the shared server test harness (`autobyteus-server-ts/tests/setup/`, `tests/e2e/helpers/`, `test-support/`) | The whole server E2E suite (`pnpm test:e2e`): each suite reaches its node its own way, so a subset proves only the ways it uses |
 | The tools a run gets: the shared exposure rule (`autobyteus-server-ts/src/agent-execution/shared/runtime-agent-tool-exposure.ts`), the native default tools, the automatic collaboration tools, or the tool units a host registers at start | The whole server unit suite, the whole `test:integration` and the whole server E2E suite (`pnpm test:e2e`), plus a search of the gated suites for exact tool lists (`toolInstances`, `enabledTools`, `tools/list`, `requestedToolNames`): tests in every layer assert a run's exact tool list, so the unit suite and a chosen set of integration files miss the rest. On the native runtime the tools a run *has* and the tools a provider request *carries* differ (tool search, GLOSSARY "Listed tool"): a request holds the base tools plus `search_tools` and `call_tool`, so a test that asserts a native request's `tools` asserts that set, and a test that needs another tool reaches it through search and `call_tool`. A test that asserts a run's exact tool list and is not about the platform-given tools spreads `PLATFORM_GIVEN_TOOL_NAMES` instead of naming them, and registers the tool units a server start registers |
+| A runtime's system prompt: the composer or a section in `autobyteus-server-ts/src/agent-execution/prompt/`, or the section a backend passes to it | The prompt unit tests (`tests/unit/agent-execution/prompt`, the backends' bootstrapper and factory tests), plus every test in any layer, gated suites included, that reads a run's composed prompt (search `promptOf`, `processedSystemPrompt`, `carpenterSystemPrompt`, `systemPrompt`, `baseInstructions`, `_meta.rules`, `match(/^## `, prompt snapshots). Run each file found, not only those that list headings: a test that checks how a prompt ends, or cuts the prompt at a heading, goes stale too, and reading it does not show that |
 
 **Both typechecks, whatever the change touches.** A change to TypeScript in any workspace package runs `pnpm -C autobyteus-web typecheck` and `pnpm -C autobyteus-server-ts typecheck`, not only the typecheck of the package it changed. Each reads beyond its own package: the web typecheck, which the desktop build runs, compiles the server's source and server test fixtures through its cross-package tests, and the server typecheck builds and reads `autobyteus-ts` and the shared packages. A server-only change that a web test calls passes the server typecheck and still stops every desktop build.
 
@@ -182,7 +183,15 @@ or because Gradle's cache already holds a dependency the runner must download.
   watch events arrive seconds late or never, and closing a recursive `fs.watch` blocks Node's main
   thread for seconds, so those tests time out for a reason outside the code. Before diagnosing such
   a timeout, check `fseventsd` and measure: the time from writing a file in a watched temp folder to
-  its event, and how long `close()` of that watcher blocks.
+  its event, and how long `close()` of that watcher blocks. A built server's process shutdown no
+  longer pays that close: it ends the package and skill folder watchers and lets the exit release
+  their OS watches, so a slow built-server stop is not explained by this rule. An in-process server
+  that a test closes still closes them. A test that waits for such an event, or starts or closes
+  such a server, takes its wait limit and its vitest timeouts from
+  `autobyteus-server-ts/tests/helpers/os-latency-under-load.ts` (a wait ends as soon as its
+  condition holds, so a long limit does not slow a passing run) and never compares an event's
+  elapsed time with a fixed bound; a test that proves an event does *not* happen keeps its own
+  short quiet window.
 - **Green server suites.** Server `test:unit`, `test:integration` and `typecheck` are kept
   passing. Every failure there is a real failure: find its cause and fix or report it
   (Rule 9). Run `test:integration:prepare` once per worktree and after changing server or

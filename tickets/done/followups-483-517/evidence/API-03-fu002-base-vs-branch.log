@@ -1,0 +1,68 @@
+# IMP-03 AC-001: base vs branch under the same machine load
+# commit: branch 2a553b5473, base files from 24d438fa31; node v22.23.1; macOS 26.5.2, 10 cores
+## base (2026-11-18T12:12:19Z)
+load: 61.57 53.02 59.00
+fseventsd CPU %: 164.2
+ ❯ tests/integration/file-explorer/file-system-watcher.integration.test.ts (14 tests | 10 failed) 79948ms
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests | 2 failed | 2 skipped) 92210ms
+ ❯ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts (15 tests | 5 failed) 164196ms
+ ❯ tests/unit/skill-update-notices/skill-folder-watcher.test.ts (9 tests | 1 failed) 7826ms
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts:361:25
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and reports it; restore resumes; removal releases it
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts:406:18
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > autobyteus-324: a tool list edit on disk and an in-app save each signal an agent definition change
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-002/AC-015(b)/QR-004: edits reach every reader; other agents never disappear during the refresh
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-006: a 50-file burst is coalesced into a bounded number of publications
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > CR-001/REQ-015: an unreadable package folder at startup does not block startup or other packages
+Error: Hook timed out in 10000ms.
+ ❯ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts:133:1
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-012: a root renamed away keeps its definitions and reports FOLDER_MISSING; restoring it resumes watching
+ ❯ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts:328:5
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits file creation event with node metadata
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > captures rapid changes without dropping events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+AssertionError: expected [ 'move', 'rename' ] to include 'delete'
+ ❯ tests/integration/file-explorer/file-system-watcher.integration.test.ts:272:52
+ FAIL  tests/unit/skill-update-notices/skill-folder-watcher.test.ts > SkillFolderWatcher > reports changes in a real skill folder, and a deleted folder as that folder
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 1 times
+ ❯ tests/unit/skill-update-notices/skill-folder-watcher.test.ts:204:25
+ Test Files  4 failed | 3 passed (7)
+      Tests  18 failed | 60 passed | 2 skipped (80)
+   Duration  431.47s (transform 15.45s, setup 239ms, import 28.46s, tests 401.28s, environment 0ms)
+load: 53.28 62.18 61.77
+fseventsd CPU %: 153.5
+## branch (2026-11-18T12:19:31Z)
+load: 53.28 62.18 61.77
+fseventsd CPU %: 158.9
+ ❯ tests/integration/file-explorer/file-system-watcher.integration.test.ts (14 tests | 3 failed) 106207ms
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts (22 tests | 4 failed) 251547ms
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+AssertionError: expected [ 'move', 'rename' ] to include 'delete'
+ ❯ tests/integration/file-explorer/file-system-watcher.integration.test.ts:275:52
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:105:5
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > re-arms a root whose folder was replaced in place (GitHub update rename swap)
+Error: Test timed out in 45000ms.
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:114:3
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > checks that the package folder is still there first: a folder renamed away is reported missing, with no coverage repair
+Error: Test timed out in 5000ms.
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:488:3
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > drops the request of a watch that was re-armed and asks again for the new watch
+Error: Test timed out in 5000ms.
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:503:3
+ Test Files  2 failed | 5 passed (7)
+      Tests  7 failed | 71 passed | 2 skipped (80)
+   Duration  710.14s (transform 11.19s, setup 556ms, import 38.21s, tests 669.27s, environment 0ms)
+load: 146.27 116.72 87.32
+fseventsd CPU %: 153.9
+ M autobyteus-server-ts/tests/e2e/runtime/background-task-status-count.e2e.test.ts

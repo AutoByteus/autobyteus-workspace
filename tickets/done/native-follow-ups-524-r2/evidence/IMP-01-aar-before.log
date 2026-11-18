@@ -1,0 +1,32 @@
+# IMP-01-before AAR E2E suite before the FU-006 change, with ~/.local/bin/dsh on PATH
+# Command: PATH=~/.local/bin:$PATH env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts --no-watch
+# Commit: 0570c47fd9
+# Environment: macOS, Node v22.23.1, dsh at /Users/normy/.local/bin/dsh
+# Date: 2026-11-18
+
+     × AAR-01 lists the four runtimes and AutoByteus' keyed providers, each with models and live limits, read with 0 tokens (AC-001, AC-003…AC-007, AC-009) 6934ms
+     × AAR-02 leaves out signed-out and missing runtimes and providers without a key; marks a sign-in it could not check (REQ-002, REQ-007) 3700ms
+     × AAR-03 slow steps end at their own deadlines: the answer arrives within 20 s, the hung processes are stopped and the next read works (AC-008, AC-011) 14062ms
+     × AAR-04 over Agent Tools MCP: a Codex run whose definition lists the tool gets the same report; one whose definition does not, does not; several readers at once share one read and all get Codex (AC-002, AC-012, AC-013) 42399ms
+     ✓ AAR-06 discovered providers are asked on every read: LM Studio answering is listed, not answering is left out; a keyed custom endpoint not answering is listed with its models unknown (AC-007, REQ-002, REQ-007)  56322ms
+     ✓ AAR-05 no provider key or account value in any response, the server's log file, its output or its data files (REQ-008, QR-002) 15ms
+ Test Files  1 failed (1)
+      Tests  4 failed | 2 passed (6)
+
+deepseek_harness occurrences in the log: 9
+290:AssertionError: expected [ 'codex_app_server', …(5) ] to deeply equal [ 'codex_app_server', …(4) ]
+291-
+292-- Expected
+293-+ Received
+294-
+295-  [
+296-    "codex_app_server",
+297-    "claude_agent_sdk",
+298-    "antigravity_cli",
+299-    "grok_build",
+300-+   "deepseek_harness",
+301-    "autobyteus",
+302-  ]
+--
+315:AssertionError: Claude signed out and Grok not installed are left out: expected [ 'codex_app_server', …(3) ] to deeply equal [ 'codex_app_server', …(2) ]
+316-

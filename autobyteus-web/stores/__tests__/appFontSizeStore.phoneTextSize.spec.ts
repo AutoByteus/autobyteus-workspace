@@ -43,14 +43,27 @@ describe('appFontSizeStore: the phone Text size source', () => {
   it('a chosen step applies at once and is kept on the phone; the desktop preset stays untouched', () => {
     const store = useAppFontSizeStore();
     store.initializePhoneTextSize();
-    store.setPhoneTextSize('small');
-    expect(store.phoneTextSizeStep).toBe('small');
-    expect(parseFloat(root().style.fontSize)).toBeCloseTo(88.235, 3);
-    expect(store.resolvedMetrics.editorFontPx).toBe(12);
-    expect(root().getAttribute('data-phone-text-size')).toBe('small');
-    expect(window.localStorage.getItem(PHONE_KEY)).toBe('small');
+    store.setPhoneTextSize('large');
+    expect(store.phoneTextSizeStep).toBe('large');
+    expect(parseFloat(root().style.fontSize)).toBeCloseTo(111.765, 3);
+    expect(store.resolvedMetrics.editorFontPx).toBe(16);
+    expect(root().getAttribute('data-phone-text-size')).toBe('large');
+    expect(window.localStorage.getItem(PHONE_KEY)).toBe('large');
     expect(window.localStorage.getItem(DESKTOP_KEY)).toBeNull();
     expect(store.currentPresetId).toBe('default');
+  });
+
+  it('a phone that saved Small (autobyteus-534 REQ-003) starts at Standard; nothing stored changes', () => {
+    window.localStorage.setItem(PHONE_KEY, 'small');
+    window.localStorage.setItem(DESKTOP_KEY, 'large');
+    const store = useAppFontSizeStore();
+    expect(() => store.initializePhoneTextSize()).not.toThrow();
+    expect(store.phoneTextSizeStep).toBe('standard');
+    expect(root().style.fontSize).toBe('100%');
+    expect(root().getAttribute('data-phone-text-size')).toBe('standard');
+    expect(store.resolvedMetrics.editorFontPx).toBe(14);
+    expect(window.localStorage.getItem(PHONE_KEY)).toBe('small');
+    expect(window.localStorage.getItem(DESKTOP_KEY)).toBe('large');
   });
 
   it('refuses a phone step on a page whose source is the desktop preset (loud, never a silent default)', () => {
