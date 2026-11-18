@@ -1,6 +1,9 @@
 # Ubuntu AppImage Sandbox Startup — Requirements Document
 
-## Document Status
+## Current authority — SR-008 (2026-11-18), Draft
+User selected the **AppImage-first investigation**, not native distribution or automatic loss of isolation. Target UC-001/002/004: open the AppImage normally with real Chromium renderer protection on affected Ubuntu; after opt-in, update without recurring clicks or elevation. UC-005/SCN-005 is now a candidate one-time scoped AppImage setup rather than a required DEB installation. Refusal must not silently downgrade. AC-001–004 and AC-006/008 must cover this AppImage path if it is adopted. Only a temporary exact-path configuration experiment is authorized. Permanent exception, path trust and updater lifecycle remain unapproved/unproven. No architecture handoff. The earlier A/B branches below are historical alternatives, **not the current selection or an approval request**.
+
+## Prior SR-007 baseline (archived rationale within this document)
 - **Status: Draft — SR-007 captures required unattended updates; packaging/update feasibility and security direction remain unresolved. Not implementation-ready.**
 - Package: `ubuntu-appimage-sandbox-startup`; current solution revision **SR-007**, 2026-11-17; SR-006 investigation baseline dated 2026-10-24.
 - Requested by: `/project_task_manager`, run `project_task_manager_cc9f793c7e8c4d0ab0f38c5097b48805`; Project Task `project_task_1cc6e385-5adf-43b1-b800-d7793933018a`.

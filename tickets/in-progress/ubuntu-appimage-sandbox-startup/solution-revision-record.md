@@ -118,3 +118,6 @@
 - Classification/routing: N/A before completed design; normal requirements conversation, no downstream handoff.
 - Remaining gaps: unattended mechanism feasibility and authorization scope, distribution selection, all actual implementation/validation/finalization. No production changes or security bypass performed.
 - Next action: explain that DEB can participate in an unattended system with preauthorized update infrastructure, but ordinary electron-updater elevation alone does not meet the user's goal; refine before approving/designing.
+
+## SR-008 — 2026-11-18: AppImage-first scoped permission experiment
+SR-007 Draft → Draft. User asked for AppImage unattended opt-in upgrades and a reversible configuration trial before changing format. Current authority added to requirements; previous A/B options historical. SCN-001/002/004/005; BEH-001/002/004/005; REQ-001–003/005/007. Ubuntu 26/currently downloaded x64 baseline reproduced; exact-path profile parsed but not loaded. No approval of permanent privilege, fallback, DEB or architecture. Next: user's interactive execution, inspect renderer, replacement and removal controls; then separately verify real updates and resolve path trust. No implementation/release handoff.
