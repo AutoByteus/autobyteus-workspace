@@ -35,3 +35,12 @@ Status: **in progress (checks before tagging).**
 | `agy-linked-skills-transport.e2e.test.ts` (scripted) | E05 FAIL `The model list of Antigravity CLI could not be read: Antigravity model discovery timed out` | E05 PASS; E06 FAIL `Timed out waiting for delegation result` |
 
 - Classification: timeouts under this machine's load; not identical between runs (each failing case passes in the other run, except Grok's discovery timeouts in run 2). Run 1's two Grok failures are solely a usage limit (covered by the standing word); run 2's discovery timeouts and the scripted Antigravity timeouts are not covered: **back to the Solution Designer for the founder's words.**
+
+## The Founder's Grok Decision And The Third Run
+
+- The founder, to delivery directly (2026-11-18): "Waive for grok". Then, as a standing rule to remember: "whenever it has been so many times if for example if grok is out of usage limit, [waive] it" (voice input: "wait for it"; read as "waive it" and told to him). Stored in delivery's reflections lessons.
+- Run 3 (load 49–56): Claude 3, Codex 3, Antigravity (live) 2, AutoByteus 2 PASS; Grok 3/3 `429 … free-usage-exhausted` (waived); **E06 FAIL again, `Timed out waiting for delegation result`, identical to run 2** (45 s).
+- E06 in isolation, the smoke script's environment (`RUN_AGY_FAILURE_E2E=1`, `ANTIGRAVITY_CLI_COMMAND=tests/fixtures/agy-failure-cli.mjs`, a clean HOME): `vitest run tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts -t E06` → **PASS twice** (2.3 s, 1.9 s), even at load 137 (`evidence/delivery/DR1-e06-alone-{1,2}.log`).
+- The whole file in sequence, the same environment → **E06 FAIL**, the other nine PASS (`DR1-agy-file-in-sequence.log`). E06's frames: the coordinator's turn starts and sends `DELEGATE:`; `DELEGATED:` never returns.
+- In v1.5.13's two smoke runs and beta.10's run, E06 passed in sequence. Since v1.5.13: autobyteus-492 changed `send_message_to` routing and when a stopped agent is woken; 517 round 2 changed the Antigravity background-task view.
+- **Classification: ours** (a second identical failure; reproducible in sequence on this release). Release-request rule: a new change for the Solution Designer; API/E2E reproduces it locally and turns it into a durable local check. No tag.

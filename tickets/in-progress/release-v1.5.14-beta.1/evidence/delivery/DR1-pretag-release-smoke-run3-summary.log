@@ -1,0 +1,23 @@
+Release smoke check
+runtime     scenario                                                      result  reason
+claude      new run + restore, linked workspace                           PASS
+claude      brand-new team member                                         PASS
+claude      different same-named skill                                    PASS
+codex       new run + restore, linked workspace                           PASS
+codex       brand-new team member                                         PASS
+codex       different same-named skill                                    PASS
+grok        new run + restore, linked workspace                           FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 60636
+grok        brand-new team member                                         FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 60636
+grok        different same-named skill                                    FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 60636
+antigravity brand-new run, linked workspace                               PASS
+antigravity brand-new team member, linked workspace                       PASS
+autobyteus  brand-new run, linked workspace                               PASS
+autobyteus  brand-new team member, linked workspace                       PASS
+other       E06: a child started by an AGY agent's delegate_task call, c  FAIL    failed: Error: Timed out waiting for delegation result: "coordinator_00414abb_532047d1c62e4656a40d87e3c7fc8cca"}},{"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"adae4611-f68c-4593-ac4d-8ffeb7aad0d3","revision":2,"entries":[{"sequence":1,"message_id":"e2e-5a0f9c16-348e-4bd2-95d7-0aed118c203d","ded
+
+commit    3809cdb03535cf2a2ec963ab5c3a5b7cc0d0a8a2
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}
+duration  live 201s, antigravity 192s, autobyteus 27s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-dtj_0tp9
+smoke exit 1

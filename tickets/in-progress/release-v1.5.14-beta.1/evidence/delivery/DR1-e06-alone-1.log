@@ -1,0 +1,3 @@
+ ✓ tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts (10 tests | 9 skipped) 16613ms
+     ✓ E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)  2270ms
+      Tests  1 passed | 9 skipped (10)
