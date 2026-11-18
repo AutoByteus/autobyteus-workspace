@@ -484,13 +484,14 @@ keep the user presentation (see the server `run_history.md`).
 A **platform input preface** combines a platform notice with the next input in
 one dispatch. The server uses it for skill update notices. Such an input carries
 the generic metadata tag
-`platform_input_preface { content, sender_id, original_content }`
+`platform_input_preface { content, sender_id, original_content, notice_id }`
 (`agent/message/platform-input-preface-metadata.ts`; `readPlatformInputPreface`
-validates it). The core holds no feature knowledge about it.
+validates it; a message stored before `notice_id` reads `noticeId: null`). The core holds no feature knowledge about it.
 
 - **Traces.** `MemoryIngestInputProcessor` writes two traces through
   `MemoryManager.appendRawTrace`: a `system_task_notification` raw trace with
-  the preface `content` and `sender_id`, then the `user` trace with
+  the preface `content`, `sender_id` and `notice_id` as its `message_id` (the
+  notice's one id, the same as on its published notice; autobyteus-526), then the `user` trace with
   `original_content` (attachments unchanged). A notice-only input
   (`original_content: null`) writes only the system trace.
 - **Turn linkage.** Both trace IDs are recorded on the `AgentTurn`
