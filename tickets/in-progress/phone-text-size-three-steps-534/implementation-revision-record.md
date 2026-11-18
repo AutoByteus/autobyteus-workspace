@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Solution Designer, `handoff.md` (Architecture Design Complete), round 1 | N/A | `Initial Baseline` | `SR-001` | Three steps and the "Text size" header implemented; unit, guards, typecheck and probe MSP-60/MSP-74 pass |
+| IR-002 | Solution Designer, `handoff.md` SR-002 (the founder's added requirement), round 2 | N/A | New approved requirement (SR-002) | `SR-002` | Settings last in the run's ⋮; unit, typecheck and probe MSP-08/60/67 pass |
 
 ## Revision Entries
 
@@ -34,3 +35,20 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: IMP-01…IMP-04 in `implementation-handoff.md`, all Pass. One unrelated test file (`applicationHostStore.spec.ts`) failed to load in the batch and passes alone (IMP-01b).
 - Next recipient or routing: from `get_handoff_rules` (direct route, Small/Low).
 - Remaining limitations or risks: none in code; phone docs (`autobyteus-web/docs/remote_access.md` l.22, 26; `docs/content_rendering.md` l.212) are delivery's docs sync.
+
+### IR-002 — Settings is the last entry of the run's ⋮ menu
+
+- Triggering role, report path, and round: Solution Designer, `handoff.md` "SR-002" (REQ-005, AC-005, `design-spec.md` "Run Menu Order (SR-002)"), round 2
+- Triggering finding IDs: N/A (a requirement the founder added)
+- Classification: new approved requirement (SR-002), implemented on top of IR-001
+- Prior authoritative result: `d4a14666a4`: Settings inserted right after Activity, VNC Viewer after it
+- Current authoritative result: `a8f2680e2a`
+- Related solution revision IDs: `SR-002`
+- Related architecture-review / code-review / API/E2E / delivery revision IDs: `N/A`
+- Why recorded: implementation of REQ-005.
+- Approved behavior or requirement IDs affected: REQ-005, AC-005 (BEH-004).
+- Implementation delta: `MobileRunMenu.vue` `views` is now `[...VIEWS.filter(show rules), settings]` (the "after Activity" branch is removed); the template comment and JSDoc say Settings is last. Tests: `MobileRunMenu.spec.ts` four prop cases (adds VNC without Messages), `MobileRunScreen.spec.ts` VNC case and a comment; probe MSP-67 (`mobile-every-run-settings-cases.mjs`) asserts Settings last instead of right after Activity; a comment of MSP-08.
+- Changed files or areas: `autobyteus-web/components/mobile/runScreen/MobileRunMenu.vue`, `runScreen/__tests__/MobileRunMenu.spec.ts`, `runScreen/__tests__/MobileRunScreen.spec.ts`, `tests/e2e/mobile-every-run-settings-cases.mjs`, `tests/e2e/mobile-shell-probe.mjs` (comment)
+- Local validation and result: IMP-05 (211 tests), IMP-06 (typecheck PASS), IMP-07 (probe MSP-08, MSP-60, MSP-67 Pass).
+- Next recipient or routing: `get_handoff_rules` → direct route (Small/Low) → API/E2E, covering SR-001 and SR-002 together.
+- Remaining limitations or risks: no node desktop in the probe; the VNC-then-Settings order is proven by unit tests.

@@ -1,0 +1,11 @@
+# API-02 full web unit suite; commit 7aef58aac3 (code d4a14666a4); 2026-11-18T10:28:49Z; macOS, Node v22.23.1; load 140.06 131.45 110.81; command: pnpm -C autobyteus-web test:nuxt --run
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 766 passed (767)
+      Tests  2 failed | 5770 passed | 2 skipped (5774)
+   Duration  1013.45s (transform 143.26s, setup 6880.74s, collect 867.63s, tests 212.67s, environment 427.24s, prepare 303.16s)
+stderr | components/projects/__tests__/TaskKeysAndDependencies.spec.ts > TaskDependencyPicker (UXJ-003, VIS-007–009, QR-004) > removes a chosen Task with its labelled ×, returning focus to the search
+stderr | components/projects/__tests__/TaskParts.spec.ts > TaskPartOfPicker (UXJ-004; VIS-011a–e, QR-004) > removes the parent with its labelled ×, returning focus to the search (TR-007)
+   × the run menu's entries > {"showMessages":false,"showDesktop":true}: Settings always, and last (autobyteus-522, autobyteus-534) 34ms
+   × the run menu's entries > {"showMessages":true,"showDesktop":true}: Settings always, and last (autobyteus-522, autobyteus-534) 21ms
+ FAIL  components/mobile/runScreen/__tests__/MobileRunMenu.spec.ts > the run menu's entries > {"showMessages":false,"showDesktop":true}: Settings always, and last (autobyteus-522, autobyteus-534)
+ FAIL  components/mobile/runScreen/__tests__/MobileRunMenu.spec.ts > the run menu's entries > {"showMessages":true,"showDesktop":true}: Settings always, and last (autobyteus-522, autobyteus-534)

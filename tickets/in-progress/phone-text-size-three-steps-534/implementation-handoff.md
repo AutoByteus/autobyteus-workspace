@@ -9,25 +9,27 @@
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-text-size-three-steps-534/tickets/in-progress/phone-text-size-three-steps-534/design-spec.md`
 - Supplemental task artifacts: None
 - Design review report / architecture review revision record: `N/A — not applicable`
-- Triggering rework report: `N/A` (initial)
+- Triggering rework report: SR-002 (`handoff.md` "SR-002", `design-spec.md` "Run Menu Order (SR-002)", REQ-005, AC-005), the founder's added requirement; built on IR-001
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (SR-002 on top of IR-001; API/E2E can cover SR-001 and SR-002 together)
 - Implementation revision record: `implementation-revision-record.md` (same folder)
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-001`
+- Current implementation revision ID: `IR-002`
+- Related solution revision IDs: `SR-001`, `SR-002`
 - Related architecture-review / code-review / API/E2E / delivery revision IDs: `N/A`
 - Triggering finding IDs: `N/A`
-- Branch `codex/phone-text-size-three-steps-534`; implementation commit `d4a14666a4` on base `origin/personal` @ `bd2053ee51`; this handoff and the evidence are in the commit after it.
+- Branch `codex/phone-text-size-three-steps-534`; implementation commits `d4a14666a4` (IR-001) and `a8f2680e2a` (IR-002) on base `origin/personal` @ `bd2053ee51`; this handoff and the evidence are in the commit after `a8f2680e2a`.
 
 The phone Text size now has three steps: Standard (17 px, the default and the smallest), Large (19 px) and Largest (21 px). The step list in `phoneTextSizeSteps.ts` is the only place in production code that names the steps, so removing `small` there removes it from the control. The `PhoneTextSizeStep` type narrows as well. A saved `small` fails `isPhoneTextSizeStep`, so the existing reader returns Standard. There is no explicit mapping, and storage is left as it is.
 
 The run list's ⋮ menu now shows only the header "Text size" and three "A" previews (16/19/22 px, three columns). "On this phone" survives only as the menu's `aria-label`. The store, the DOM writer, plugin 06, the CSS, every phone screen and the desktop are unchanged.
 
+IR-002 (SR-002, REQ-005): in the run's ⋮ menu Settings is the last entry: `MobileRunMenu.vue` builds the entries as `VIEWS` filtered by their unchanged show rules (Artifacts, Files, [Messages], Activity, [VNC Viewer]) and then appends Settings, instead of inserting it after Activity. Opening a view is by id, so nothing else changes.
+
 ## Routing Classification (Mandatory)
 
-- Task size: `Small`; Architecture risk: `Low`
+- Task size: `Small`; Architecture risk: `Low` (confirmed again for SR-002: one computed list in one component)
 - Design classification section: `design-spec.md` "Task Size And Architectural Risk"
 - Classification confirmed or changed: `Confirmed` — one data list, one component, two catalogs, tests and one probe case. No owner, contract, persistence-format or screen change. The escalation trigger (any screen change, or the store or CSS) did not fire.
 - Selected route: `Direct API/E2E`
@@ -40,12 +42,14 @@ The run list's ⋮ menu now shows only the header "Text size" and three "A" prev
 | --- | --- | --- | --- |
 | BEH-001 | Header "Text size", three steps; no visible "On this phone" | `phoneTextSizeSteps.ts` (list) → `MobileOnThisPhoneMenu.vue` (renders the list; header `<p data-testid="mobile-text-size-header">`; menu `aria-label`) | Unit: header "Text size", menu text is only "Text size" plus the letters, three buttons Standard/Large/Largest at 16/19/22 px, `grid-cols-3`. MSP-60: `menu.visibleText` "Text size", `label` "On this phone", no title element, three step ids. |
 | BEH-002 | A saved Small starts at Standard; nothing stored changes | plugin 06 → `initializePhoneTextSize` → `readStoredPhoneTextSizeStep` (unchanged): not a step → `standard` | Unit: reader, store and menu cases. MSP-60 `savedSmall`: step standard, root 16 px, first screen already Standard, `stored` still `small`, Standard marked. |
+| BEH-004 (SR-002) | Settings last in the run's ⋮: Artifacts, Files, [Messages], Activity, [VNC Viewer], Settings | `MobileRunMenu.vue` `views` = filtered `VIEWS` + Settings | `MobileRunMenu.spec.ts`: four prop cases incl. `['Artifacts','Files','Activity','VNC Viewer','Settings']` and with Messages; `MobileRunScreen.spec.ts` VNC case `[…,'Activity','VNC Viewer','Settings']` and the five kinds; MSP-08, MSP-60 and MSP-67 (no node desktop on alpha) end with Settings |
 | BEH-003 | Every screen as in 525; desktop unchanged | store, CSS and screens unchanged | MSP-74: 40 screens at Largest clean, Monaco 17 px. Desktop font-size specs green (IMP-01). |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
 
 ## Key Files Or Areas
 
+- Modified (IR-002): `components/mobile/runScreen/MobileRunMenu.vue`; tests `runScreen/__tests__/MobileRunMenu.spec.ts`, `MobileRunScreen.spec.ts`; probe `tests/e2e/mobile-every-run-settings-cases.mjs` (MSP-67: Settings last instead of right after Activity) and a comment in `mobile-shell-probe.mjs` (MSP-08).
 - Modified: `autobyteus-web/display/fontSize/phoneTextSizeSteps.ts`; `components/mobile/runList/MobileOnThisPhoneMenu.vue`; `localization/messages/{en,zh-CN}/mobileOnThisPhone.ts`.
 - Tests:
   - `display/fontSize/__tests__/phoneTextSizeSteps.spec.ts`
@@ -101,7 +105,16 @@ Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-text-si
 | IMP-03 | `pnpm -C autobyteus-web typecheck` | `d4a14666a4` | macOS | app and tests (`PhoneTextSizeStep` narrowed) | AC-004 | Pass | `IMP-03-typecheck.log` | `production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)`, `PASS` |
 | IMP-04 | `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh> --cases=MSP-60,MSP-74` (server build and `build:mobile-web` on the commit) | `d4a14666a4` | macOS, headless Chrome, production phone bundle, probe-owned nodes | the whole phone page | AC-001…003, QR-001 | Pass | `IMP-04-probe/IMP-04-probe-run.log`, `IMP-04-probe-cases.json`, `MSP-60-{menu,list}-{standard,large,largest}.png`, `MSP-60-list-saved-small.png`, `MSP-74-*.png` | `mobile-shell probe: Pass`. MSP-60: `menu` `{"label":"On this phone","title":false,"visibleText":"Text size",…}` with three step ids; `savedSmall` `{"step":"standard","root":16,…,"firstScreen":{"root":"16px","step":"standard"},"stored":"small"}`. MSP-74: 40 screens clean, `monacoPx` 17. Cleanup `serversLeft: 0`. |
 
+IR-002, on `a8f2680e2a` (IMP-01…04 from IR-001 stay valid for the rest; IR-002 changes one computed list):
+
+| Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| IMP-05 | `pnpm -C autobyteus-web test:nuxt --run components/mobile localization` | `a8f2680e2a` | macOS, Node v22.23.1 | the run menu and run screen, every phone component, catalogs | AC-005 (and AC-001, 002, 004 again) | Pass | `IMP-05-unit-mobile.log` | `Test Files  33 passed (33)`, `Tests  211 passed (211)` |
+| IMP-06 | `pnpm -C autobyteus-web typecheck` | `a8f2680e2a` | macOS | app and tests | — | Pass | `IMP-06-typecheck.log` | `production errors: 0; …(baseline 87 in 37 files)`, `PASS` |
+| IMP-07 | `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh> --cases=MSP-08,MSP-60,MSP-67` (`build:mobile-web` on the commit) | `a8f2680e2a` | macOS, headless Chrome, production phone bundle | the run's ⋮ on a Team member, a standalone agent and a task team's member; MSP-60 again on the new bundle | AC-005, AC-001…003 | Pass | `IMP-07-probe/IMP-07-probe-run.log`, `IMP-07-probe-cases.json`, screenshots | `mobile-shell probe: Pass`; MSP-60 `runMenu.entries` `["Artifacts","Files","Messages","Activity","Settings"]`; MSP-67 `entries` `["artifacts","files","messages","activity","settings"]` |
+
 - Not run, and why:
+  - Settings after VNC Viewer on a live node desktop: the probe's alpha has no node desktop; the order with VNC Viewer is proven by the unit cases (menu and run screen).
   - Android emulator: not asked for this ticket (the handoff's verification is unit plus the phone probe); left to API/E2E if they judge it needed.
   - Full web unit suite: only the related areas were run.
   - Desktop app window: the desktop code is unchanged and its font-size specs pass.
@@ -134,4 +147,4 @@ Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-text-si
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
 - API/E2E's own judgment of coverage (device check optional per the handoff).
-- Delivery's docs sync: `autobyteus-web/docs/remote_access.md` l.22, 26; `docs/content_rendering.md` l.212.
+- Delivery's docs sync: `autobyteus-web/docs/remote_access.md` l.22, 26 and l.24–25 ("right after Activity" → the last entry); `docs/content_rendering.md` l.212.
