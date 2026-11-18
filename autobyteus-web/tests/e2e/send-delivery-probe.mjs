@@ -1,0 +1,588 @@
+#!/usr/bin/env node
+// A message the user sends is never lost silently, in the real desktop renderer against a real node (autobyteus-540
+// REQ-001…REQ-004, AC-002…AC-004, QR-001).
+//
+// Stack (probe-owned, removed in `finally`): a built node (`autobyteus-server-ts/dist/app.js`) on a temp data root and HOME,
+// with the scripted Antigravity CLI (`tests/fixtures/agy-failure-cli.mjs`: `HOLD_TURN` keeps a turn running until it is
+// stopped, any other text is answered at once; a Stop takes the AGY run offline and the next message restores it),
+// `nuxt dev` (the desktop renderer) and fresh headless Chrome. Every `/ws/` socket of the page passes through the probe's
+// wire (`fixtures/stop-generation-wire.mjs`): it logs each message and Stop with the node's answers and each snapshot's
+// `input_state`, and can drop the page's whole path, lose a message on the way, or drop the path right after a message
+// reached the node. No model, no keys. Messages are the user's own: typed in the composer and sent with its button.
+//
+// Cases (a standalone agent run, `agent`, and a Team member, `team`: the Team's coordinator, which the Team view focuses):
+//   SDD-01 (agent), SDD-02 (team)  AC-002, REQ-001  `--rounds` times: the page's path drops and comes back, and the user
+//          sends at once: the message leaves only after the node bound the new stream (after its `CONNECTED`; a Team
+//          after its tree snapshot), the turn starts, no `SESSION_NOT_READY`, no notice. Each round ends with a Stop, so
+//          the next message also goes to a run the Stop took offline.
+//   SDD-03 (agent)  AC-003  The message reached a live run's node and the path dropped before its answer: after the
+//          rebind (its snapshot carries the run's input state) the message shows once, no notice, the box is empty.
+//   SDD-04 (agent)  AC-003 (queued)  Another window starts a turn while this page, on a slower downlink, still shows the run
+//          idle; the user sends; the node queues the message (its turn runs) and the path drops before the answer: the
+//          rebind's snapshot carries the run's queued input, the message shows once, no notice.
+//   SDD-05 (agent)  AC-003, AC-004 (a)  The message is lost on the way to a live run (active, idle): text (a), the message
+//          gone from the conversation, its text back in the box, the run's status unchanged.
+//   SDD-06 (agent)  AC-003, AC-004 (b)  The message is lost on the way to a run a Stop took offline (the node cannot say
+//          its queued input): text (b), the text back in the box.
+//   SDD-07 (agent)  AC-004 (a)  The path is down when the user sends: after the 10 s wait, text (a), the message gone, the
+//          text back, the status unchanged.
+//   SDD-08 (team)   AC-004 (b)  A Team member's message lost on the way: text (b), the text back, the member's status
+//          unchanged.
+//   SDD-09 (team)   AC-004 (a)  The path is down when the user sends to a Team member: the Team's 10 s wait ends with
+//          text (a), the message gone, the text back, the status as the loss left it (SDD-12).
+//   SDD-12 (team)   control for SDD-09: the path down for 15 s and no send: the member's shown status on its own.
+//   SDD-10 (agent)  REQ-003, UC-001  A new run's first message with the path down: text (a), the text back; with the path
+//          back, sending again starts the turn on the same new run.
+//   SDD-11 (agent)  AC-003 (b), design residual  The message reached the node for a run a Stop took offline and the path
+//          dropped before the answer: the rebind's snapshot comes before the run is active (no input state), so text (b)
+//          and the text back; the node then runs the message and it shows once.
+// Every notice is checked for run ids and internal words (`SESSION_NOT_READY`, stream, session, socket).
+//
+// Prerequisites: `pnpm -C autobyteus-server-ts build`; Chrome.
+// Run: `pnpm -C autobyteus-web test:e2e:send-delivery --output-dir <fresh dir>` [--rounds 20] [--cases SDD-01,…]
+//      [--browser-executable <path>]. About 10 minutes.
+import fs from 'node:fs';
+import fsp from 'node:fs/promises';
+import net from 'node:net';
+import os from 'node:os';
+import path from 'node:path';
+import { randomUUID } from 'node:crypto';
+import { spawn } from 'node:child_process';
+import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
+import { attachToBrowserContext, attachToProbeProcess, ownerHeaders, ownerSocketUrl, redactCredentials, withNodeCredential } from './fixtures/probe-node-access.mjs';
+import { probeOutputDir, prepareOutputDir } from './fixtures/probe-output-dir.mjs';
+import { waitRunSocketReady } from './fixtures/run-socket-ready.mjs';
+import { createStopWire } from './fixtures/stop-generation-wire.mjs';
+
+attachToProbeProcess();
+const require = createRequire(import.meta.url);
+const { chromium } = require('playwright-core');
+const NodeWebSocket = require('ws');
+const webDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const serverDir = path.join(path.dirname(webDir), 'autobyteus-server-ts');
+const arg = (name, fallback) => { const i = process.argv.indexOf(`--${name}`); return i >= 0 ? process.argv[i + 1] : fallback; };
+const outputDir = prepareOutputDir(probeOutputDir(webDir, 'send-delivery', arg('output-dir')));
+const rounds = Number(arg('rounds', '20'));
+const selected = arg('cases') ? new Set(arg('cases').split(',')) : null;
+const executablePath = arg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
+  || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find((p) => fs.existsSync(p));
+const TEXT_A = 'Your message was not sent: not connected to the node. It is back in the message box; send it again.';
+const TEXT_B = 'The connection to the node was lost while sending. Your message is back in the message box; if it does not appear in the conversation, send it again.';
+const STOP = 'Stop generation';
+const STOPPING = 'Stopping…';
+const SEND = 'Send message';
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const until = async (label, predicate, ms = 30_000) => {
+  const end = Date.now() + ms; let last;
+  while (Date.now() < end) { try { const v = await predicate(); if (v) return v; } catch (e) { last = e; } await sleep(50); }
+  throw new Error(`Timed out: ${label}${last ? ` (${last.message})` : ''}`);
+};
+const assert = (condition, message, details) => { if (!condition) throw Object.assign(new Error(message), { details }); };
+const freePort = () => new Promise((resolve, reject) => { const s = net.createServer(); s.once('error', reject); s.listen(0, '127.0.0.1', () => { const { port } = s.address(); s.close(() => resolve(port)); }); });
+const exited = (c) => !c || c.exitCode !== null || c.signalCode !== null;
+const stopGroup = async (child) => { if (exited(child)) return 'not running'; process.kill(-child.pid, 'SIGTERM'); try { await until('exit', () => exited(child), 15_000); return 'stopped'; } catch { process.kill(-child.pid, 'SIGKILL'); return 'killed'; } };
+const segment = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+const slug = (name) => segment(name).replace(/_/g, '-');
+/** Words a notice must not contain (REQ-004, QR-001): a run id or an internal word. */
+const internalWords = (text, runIds) => [/SESSION_NOT_READY/, /\bstream\b/i, /\bsession\b/i, /\bsocket\b/i, /AgentRun/]
+  .filter((word) => word.test(text)).map(String).concat(runIds.filter((id) => id && text.includes(id)).map((id) => `run id ${id}`));
+
+const stack = { dataRoot: '', backendUrl: '', frontendUrl: '', backend: null, frontend: null };
+const evidence = { startedAt: new Date().toISOString(), node: process.version, rounds, result: 'Fail', cases: {}, browserErrors: [], cleanup: {} };
+const wire = createStopWire();
+const spawnLogged = (cmd, args, cwd, env, name) => {
+  const log = fs.createWriteStream(path.join(outputDir, `${name}.log`), { flags: 'a' });
+  const child = spawn(cmd, args, { cwd, env, detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
+  child.output = '';
+  const take = (d) => { child.output += d; log.write(redactCredentials(String(d))); };
+  child.stdout.on('data', take); child.stderr.on('data', take);
+  return child;
+};
+const gql = async (query, variables = {}) => {
+  const response = await fetch(`${stack.backendUrl}/graphql`, { method: 'POST', headers: ownerHeaders({ 'content-type': 'application/json' }), body: JSON.stringify({ query, variables }) });
+  const body = await response.json(); if (!response.ok || body.errors?.length) throw new Error(JSON.stringify(body.errors ?? body)); return body.data;
+};
+const saveEvidence = () => fsp.writeFile(path.join(outputDir, 'evidence.json'), `${redactCredentials(JSON.stringify(evidence, null, 2))}\n`);
+
+/** Another window's message on the run's own stream, as a second client sends it; resolves with the node's answer. */
+const otherWindowSend = async (runId, content) => {
+  const route = `agent/${runId}`;
+  const socket = new NodeWebSocket(ownerSocketUrl(`${stack.backendUrl.replace(/^http/, 'ws')}/ws/${route}`));
+  const frames = [];
+  socket.on('message', (raw) => { try { frames.push(JSON.parse(String(raw))); } catch { /* not JSON */ } });
+  await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  try {
+    await waitRunSocketReady(frames, route);
+    const id = randomUUID();
+    socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { content, message_id: id, dedupe_key: id, context_file_paths: [], image_urls: [] } }));
+    const ack = await until('the other window\'s message answered', () => frames.find((f) => f.type === 'AGENT_COMMAND_ACK' && f.payload?.message_id === id), 30_000);
+    await until('its turn running', () => frames.some((f) => JSON.stringify(f).includes('sleep 600 # HOLD_TURN')), 30_000);
+    return { state: ack.payload.state ?? (ack.payload.accepted ? 'accepted' : 'rejected') };
+  } finally { socket.close(); }
+};
+
+let browser; let page;
+const runCase = async (id, fn) => {
+  if (selected && !selected.has(id)) return;
+  const started = Date.now();
+  console.log(`[send-delivery] ${id} …`);
+  try {
+    evidence.cases[id] = { result: 'Pass', ...(await fn()), seconds: Math.round((Date.now() - started) / 1000) };
+  } catch (error) {
+    evidence.cases[id] = { result: 'Fail', error: error.message, details: error.details ?? null, seconds: Math.round((Date.now() - started) / 1000) };
+    await page?.screenshot({ path: path.join(outputDir, `${id}-failure.png`) }).catch(() => undefined);
+  } finally {
+    if (wire.down) wire.up();
+    wire.reset();
+  }
+  console.log(`[send-delivery] ${id} ${evidence.cases[id].result}${evidence.cases[id].error ? `: ${evidence.cases[id].error}` : ''}`);
+  await saveEvidence();
+};
+
+try {
+  stack.dataRoot = fs.realpathSync(await fsp.mkdtemp(path.join(os.tmpdir(), 'send-delivery-')));
+  for (const dir of ['db', 'logs', 'memory', 'temp_workspace', 'workspace', 'home']) await fsp.mkdir(path.join(stack.dataRoot, dir));
+  const backendPort = await freePort(); const frontendPort = await freePort();
+  stack.backendUrl = `http://127.0.0.1:${backendPort}`; stack.frontendUrl = `http://127.0.0.1:${frontendPort}`;
+  const backendEnv = { APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: `file:${path.join(stack.dataRoot, 'db', 'development.db')}`,
+    AUTOBYTEUS_SERVER_HOST: stack.backendUrl, AUTOBYTEUS_ALLOWED_ORIGINS: stack.frontendUrl, AUTOBYTEUS_LOG_DIR: path.join(stack.dataRoot, 'logs'),
+    AUTOBYTEUS_MEMORY_DIR: path.join(stack.dataRoot, 'memory'), AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(stack.dataRoot, 'temp_workspace') };
+  await fsp.writeFile(path.join(stack.dataRoot, '.env'), `${Object.entries(backendEnv).map(([k, v]) => `${k}=${v}`).join('\n')}\n`, { mode: 0o600 });
+  stack.backend = spawnLogged(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', stack.dataRoot], serverDir,
+    withNodeCredential({ PATH: process.env.PATH, TMPDIR: process.env.TMPDIR ?? os.tmpdir(), HOME: path.join(stack.dataRoot, 'home'), ...backendEnv,
+      ANTIGRAVITY_CLI_COMMAND: path.join(serverDir, 'tests/fixtures/agy-failure-cli.mjs'), AGY_FAKE_CASE: 'linked_skills' }), 'backend');
+  await until('backend health', async () => { if (exited(stack.backend)) throw new Error('backend exited'); return fetch(`${stack.backendUrl}/rest/health`).then((r) => r.ok).catch(() => false); }, 180_000);
+  const ws = `ws://127.0.0.1:${backendPort}`;
+  stack.frontend = spawnLogged('pnpm', ['exec', 'nuxi', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir,
+    { ...Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith('AUTOBYTEUS_'))), NODE_ENV: 'development', NUXT_TELEMETRY_DISABLED: '1',
+      BACKEND_NODE_BASE_URL: stack.backendUrl, BACKEND_AGENT_WS_ENDPOINT: `${ws}/ws/agent`, BACKEND_TEAM_WS_ENDPOINT: `${ws}/ws/agent-team`,
+      BACKEND_GRAPHQL_WS_ENDPOINT: `${ws}/graphql`, BACKEND_TERMINAL_WS_ENDPOINT: `${ws}/ws/terminal`, BACKEND_FILE_EXPLORER_WS_ENDPOINT: `${ws}/ws/file-explorer` }, 'frontend');
+  await until('frontend', async () => { if (exited(stack.frontend)) throw new Error('Nuxt exited'); return (await fetch(stack.frontendUrl)).ok; }, 240_000);
+
+  // Data, through the public API.
+  const workspace = path.join(stack.dataRoot, 'workspace');
+  await gql('mutation($input:CreateWorkspaceInput!){createWorkspace(input:$input){workspaceId}}', { input: { rootPath: workspace } }).catch(() => undefined);
+  const tag = randomUUID().slice(0, 4);
+  const names = { agent: `Sender ${tag}`, lead: `Send Lead ${tag}`, mate: `Send Mate ${tag}`, team: `Send Team ${tag}` };
+  // Each agent's own default launch is the scripted AGY, so a run the user starts from the tree (SDD-10) runs on it too.
+  const agy = { runtimeKind: 'antigravity_cli', llmModelIdentifier: 'gemini-3.8-flash-low', llmConfig: null };
+  const def = async (name) => (await gql('mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}',
+    { input: { name, role: 'assistant', description: name, instructions: 'Follow the request.', toolNames: [], defaultLaunchConfig: agy } })).createAgentDefinition.id;
+  const ids = { agent: await def(names.agent), lead: await def(names.lead), mate: await def(names.mate) };
+  ids.team = (await gql('mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}', { input: { name: names.team, description: names.team,
+    instructions: 'Work together.', coordinatorMemberName: 'lead', nodes: [{ memberName: 'lead', ref: ids.lead, refScope: 'SHARED' }, { memberName: 'mate', ref: ids.mate, refScope: 'SHARED' }] } })).createAgentTeamDefinition.id;
+  const config = { workspaceRootPath: workspace, llmModelIdentifier: 'gemini-3.8-flash-low', llmConfig: null, autoExecuteTools: true, runtimeKind: 'antigravity_cli' };
+  const run = (await gql('mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}', { input: { agentDefinitionId: ids.agent, ...config } })).createAgentRun;
+  assert(run.success, run.message);
+  const team = (await gql('mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}', { input: { teamDefinitionId: ids.team,
+    teamConfigs: [{ teamAddress: '/', ...config }], memberConfigs: [{ memberAddress: '/lead', agentDefinitionId: ids.lead, ...config }, { memberAddress: '/mate', agentDefinitionId: ids.mate, ...config }] } })).createAgentTeamRun;
+  assert(team.success, team.message);
+  const tree = (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: team.teamRunId })).getTeamRunResumeConfig.executionTree;
+  const leadRunId = tree.root_team.members.find((m) => m.address === '/lead').agent_run_id;
+  const targets = {
+    agent: { kind: 'agent', runId: run.runId, path: `/ws/agent/${run.runId}`, runIds: [run.runId] },
+    team: { kind: 'team', teamRunId: team.teamRunId, agentRunId: leadRunId, path: `/ws/agent-team/${team.teamRunId}`, runIds: [team.teamRunId, leadRunId] },
+  };
+  evidence.runs = { agent: run.runId, team: team.teamRunId, lead: leadRunId };
+
+  // The browser: the desktop window, every socket to its node through the wire.
+  browser = await chromium.launch({ executablePath, headless: true });
+  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US' });
+  await attachToBrowserContext(context);
+  await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
+  await context.routeWebSocket((url) => url.port === String(backendPort) && url.pathname.startsWith('/ws/'), (route) => {
+    const queued = [];
+    let upstream = null;
+    const link = wire.link({ url: route.url(), sendToPage: (m) => route.send(m), sendToNode: (m) => { if (upstream?.readyState === 1) upstream.send(m); else queued.push(m); },
+      closePage: (code, reason) => route.close({ code, reason }), closeNode: () => upstream?.terminate() });
+    if (!link) { route.close({ code: 1011, reason: 'path down' }); return; }
+    upstream = new NodeWebSocket(route.url(), { headers: ownerHeaders({ origin: stack.frontendUrl }) });
+    upstream.on('open', () => { for (const m of queued.splice(0)) upstream.send(m); });
+    upstream.on('message', (data, isBinary) => { if (isBinary) { try { route.send(data); } catch { /* closed */ } } else link.fromNode(String(data)); });
+    upstream.on('close', (code, reason) => {
+      if (link.closed) return;
+      link.closedByEnd('node');
+      const sendable = code >= 1000 && code < 5000 && ![1005, 1006, 1015].includes(code);
+      try { route.close(sendable ? { code, reason: String(reason) } : { code: 1011, reason: 'node closed' }); } catch { /* closed */ }
+    });
+    upstream.on('error', () => { if (!link.closed) { link.closedByEnd('node (error)'); try { route.close({ code: 1011, reason: 'node error' }); } catch { /* closed */ } } });
+    route.onMessage((m) => link.fromPage(m));
+    route.onClose(() => { link.closedByEnd('page'); upstream?.close(); });
+  });
+  page = await context.newPage();
+  page.on('pageerror', (e) => evidence.browserErrors.push(`pageerror: ${e.message}`));
+  const consoleLog = fs.createWriteStream(path.join(outputDir, 'console.log'));
+  page.on('console', (m) => consoleLog.write(`${new Date().toISOString()} ${m.type()} ${redactCredentials(m.text()).slice(0, 600)}\n`));
+  // A cold Nuxt dev server may reload once for dependency optimization; a not-delivered send logs its detail on purpose.
+  page.on('console', (m) => { if (m.type() === 'error' && !/Outdated Optimize Dep|dynamically imported module|error caught during app initialization|Failed to load resource|Error sending user input/.test(m.text())) evidence.browserErrors.push(redactCredentials(m.text())); });
+  await page.goto(`${stack.frontendUrl}/workspace`, { waitUntil: 'networkidle', timeout: 240_000 });
+  await sleep(3000);
+  await page.goto(`${stack.frontendUrl}/workspace`, { waitUntil: 'networkidle', timeout: 240_000 });
+  await until('workspace row', async () => (await page.locator('[data-test="workspace-row"]', { hasText: /^\s*workspace\s*$/ }).count()) >= 1, 60_000);
+  await page.locator('[data-test="workspace-row"]', { hasText: /^\s*workspace\s*$/ }).first().click();
+
+  const SCOPE = '[data-test="workspace-center-pane"]';
+  const textarea = () => page.locator(`${SCOPE} textarea`).last();
+  const primary = () => page.locator(`${SCOPE} button[aria-label="${SEND}"], ${SCOPE} button[aria-label="${STOP}"], ${SCOPE} button[aria-label="${STOPPING}"]`).last();
+  const label = () => primary().getAttribute('aria-label').catch(() => null);
+  const open = async (target) => {
+    if (target.kind === 'agent') {
+      const runRow = page.locator(`[data-test="workspace-agent-run-row"][data-run-id="${target.runId}"]`).first();
+      if (!(await runRow.isVisible().catch(() => false))) await page.locator('[data-test="workspace-agent-row"]', { hasText: names.agent }).first().click();
+      await runRow.click();
+    } else {
+      const teamRow = page.locator(`[data-test="workspace-team-row-${target.teamRunId}"]`).first();
+      if (!(await teamRow.isVisible().catch(() => false))) await page.locator(`[data-test="workspace-team-definition-row-${slug(names.team)}"]`).first().click();
+      await teamRow.click();
+    }
+    await until('composer', async () => (await textarea().count()) >= 1, 30_000);
+    await sleep(1500);
+  };
+  /** The view: its header (name and status), the notice, the box's text, and how often `marker` shows in the conversation. */
+  const view = (marker) => page.evaluate(({ scope, marker }) => {
+    const root = document.querySelector(scope);
+    const lines = (root?.innerText ?? '').split('\n').map((l) => l.trim()).filter(Boolean);
+    const notice = document.querySelector('[data-test="message-not-delivered"]');
+    const areas = [...(root?.querySelectorAll('textarea') ?? [])];
+    let count = 0;
+    if (root && marker) {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+        if (node.parentElement?.closest('textarea')) continue;
+        if (node.textContent.includes(marker)) count += 1;
+      }
+    }
+    return { head: lines.slice(0, 3), status: lines[2] ?? null, notice: notice ? { certainty: notice.querySelector('[data-certainty]')?.getAttribute('data-certainty') ?? null,
+      text: notice.querySelector('[data-test="message-not-delivered-text"]')?.textContent?.trim() ?? null } : null,
+    draft: areas.at(-1)?.value ?? null, count };
+  }, { scope: SCOPE, marker });
+  const typeAndSend = async (text) => {
+    await until('Send enabled', async () => { await textarea().fill(text); await sleep(150); return (await label()) === SEND && primary().isEnabled(); }, 60_000);
+    await primary().click();
+  };
+  /** A held turn started (the scripted AGY's held step reached the page) and Stop is offered. */
+  const held = (since) => until('the held turn', async () => wire.holds.some((h) => h.at >= since) && (await label()) === STOP && primary().isEnabled(), 60_000);
+  /** One Stop, and the status leaves Running. */
+  const stopRun = async () => {
+    for (let i = 0; i < 3 && (await label()) === STOP; i += 1) { await primary().click().catch(() => undefined); await sleep(1500); }
+    await until('Stop gone', async () => ![STOP, STOPPING].includes(await label()), 30_000).catch(() => undefined);
+    await sleep(800);
+  };
+  /** A message answered at once: the AGY run a Stop took offline is live (active and idle) again. */
+  const wake = async (marker) => {
+    await typeAndSend(`PLAIN wake ${marker}`);
+    await until('the run idle and live', async () => (await view()).status === 'Idle', 30_000);
+    await sleep(1500);
+  };
+  const waitNotice = (ms = 20_000) => until('the notice', async () => (await view()).notice, ms);
+  const dismiss = async () => { const b = page.locator('[data-test="message-not-delivered-dismiss"]'); if (await b.count()) await b.click(); };
+  const frames = (from, since) => wire.since(from).map((f) => `${f.at - since} L${f.link} ${f.dir} ${f.url.split('/').slice(0, 3).join('/')} ${f.type}${f.state ? ` ${f.state}` : ''}${f.code ? ` ${f.code}` : ''}${f.status ? ` ${f.status}` : ''}${f.inputState !== undefined ? ` input_state=${JSON.stringify(f.inputState)}` : ''}${f.note ? ` (${f.note})` : ''}`);
+  const notReady = (from) => wire.since(from).filter((f) => f.type === 'ERROR' && f.code === 'SESSION_NOT_READY').length;
+  /** Did the message leave on a bound stream: after that link's CONNECTED (agent) or its tree snapshot (Team)? */
+  const sentBound = (from, target) => wire.since(from).filter((f) => f.dir === 'up' && f.type === 'SEND_MESSAGE' && f.url === target.path).map((s) => ({
+    link: s.link, bound: wire.log.some((f) => f.link === s.link && f.dir === 'down' && (target.kind === 'agent' ? f.type === 'CONNECTED' : f.type === 'RUN_TREE_SNAPSHOT') && f.at <= s.at) }));
+
+  for (const kind of ['agent', 'team']) {
+    const target = targets[kind];
+    const ids = kind === 'agent' ? ['SDD-01', 'SDD-03', 'SDD-04', 'SDD-05', 'SDD-06', 'SDD-07', 'SDD-10', 'SDD-11'] : ['SDD-02', 'SDD-08', 'SDD-12', 'SDD-09'];
+    if (selected && !ids.some((id) => selected.has(id))) continue;
+    await open(target);
+    // The first message starts the run's runtime.
+    await typeAndSend(`hello ${kind}`);
+    await sleep(4000);
+
+    await runCase(kind === 'agent' ? 'SDD-01' : 'SDD-02', async () => {
+      const results = [];
+      for (let round = 1; round <= rounds; round += 1) {
+        const marker = `${kind}-reconnect-${round}`;
+        const from = wire.log.length; const since = Date.now();
+        wire.blip('a forced reconnect');
+        // The user sends at once, while the page reconnects.
+        await textarea().fill(`HOLD_TURN ${marker}`);
+        await until('Send enabled', async () => (await label()) === SEND && primary().isEnabled(), 30_000);
+        await primary().click();
+        let started = true;
+        await held(since).catch(() => { started = false; });
+        const v = await view(marker);
+        results.push({ round, started, notReady: notReady(from), sends: sentBound(from, target), notice: v.notice, count: v.count, frames: started ? undefined : frames(from, since) });
+        if (!started) break;
+        await stopRun();
+      }
+      const bad = results.filter((r) => !r.started || r.notReady || r.notice || !r.sends.length || r.sends.some((s) => !s.bound));
+      assert(!bad.length, 'every send after a reconnect left on a bound stream, started its turn; no SESSION_NOT_READY, no notice', { bad, results });
+      return { rounds: results.length, sends: results.reduce((n, r) => n + r.sends.length, 0), results };
+    });
+
+    if (kind === 'agent') {
+      await runCase('SDD-03', async () => {
+        await wake('SDD-03');
+        const marker = `delivered-${tag}`;
+        const from = wire.log.length; const since = Date.now();
+        wire.dropAfterNextSend = true;
+        await typeAndSend(`PLAIN ${marker}`);
+        await until('dropped and back', async () => wire.since(from).some((f) => f.type === 'DROPPED') && wire.since(from).some((f) => f.type === 'AGENT_STREAM_SNAPSHOT' && f.url === target.path && f.dir === 'down'), 30_000);
+        await sleep(3000);
+        const v = await view(marker);
+        const snapshot = wire.since(from).find((f) => f.type === 'AGENT_STREAM_SNAPSHOT' && f.url === target.path && f.dir === 'down');
+        const details = { view: v, snapshotInputState: snapshot?.inputState, frames: frames(from, since) };
+        assert(snapshot?.inputState && snapshot.inputState !== 'absent', 'the live run\'s rebind snapshot carries its input state', details);
+        assert(v.count === 1 && !v.notice && !v.draft, 'the message the node had shows once; no notice; the box empty', details);
+        return details;
+      });
+
+      await runCase('SDD-04', async () => {
+        const marker = `queued-${tag}`;
+        const before = await view();
+        wire.extraToPageMs = 3000;
+        const other = await otherWindowSend(target.runId, `HOLD_TURN other-window-${tag}`);
+        const from = wire.log.length; const since = Date.now();
+        const labelWhenSent = await label();
+        wire.dropAfterNextSend = true;
+        await typeAndSend(`PLAIN ${marker}`);
+        await until('the drop', async () => wire.since(from).some((f) => f.type === 'DROPPED'), 30_000);
+        wire.extraToPageMs = 0;
+        await until('the rebind snapshot', async () => wire.since(from).some((f) => f.type === 'AGENT_STREAM_SNAPSHOT' && f.url === target.path && f.dir === 'down'), 30_000);
+        await sleep(3000);
+        const v = await view(marker);
+        const snapshot = wire.since(from).find((f) => f.type === 'AGENT_STREAM_SNAPSHOT' && f.url === target.path && f.dir === 'down');
+        await shot('SDD-04-queued-shown');
+        await stopRun();
+        await sleep(3000);
+        const details = { before: before.status, other, labelWhenSent, view: v, snapshotInputState: snapshot?.inputState ?? null, frames: frames(from, since) };
+        assert(other.state === 'accepted' && labelWhenSent === SEND, 'another window started a turn while this page still showed the run idle', details);
+        assert(snapshot?.inputState && snapshot.inputState.entries.some((e) => e.startsWith('queued:')), 'the rebind snapshot carries the run\'s queued input with the message', details);
+        assert(v.count === 1 && !v.notice, 'the queued message shows once; no notice', details);
+        return details;
+      });
+
+      await runCase('SDD-05', async () => {
+        await dismiss();
+        await wake('SDD-05');
+        const marker = `lost-live-${tag}`;
+        const before = await view();
+        const from = wire.log.length; const since = Date.now();
+        wire.loseNextSend = true;
+        await typeAndSend(`PLAIN ${marker}`);
+        await waitNotice();
+        await sleep(1500);
+        const v = await view(marker);
+        await shot('SDD-05-text-a');
+        const details = { before: before.status, view: v, frames: frames(from, since) };
+        assert(v.notice?.certainty === 'not_sent' && v.notice.text === TEXT_A, 'text (a)', details);
+        assert(v.count === 0 && v.draft === `PLAIN ${marker}` && v.status === before.status, 'the message gone; its text back in the box; the status unchanged', details);
+        assert(!internalWords(v.notice.text, target.runIds).length, 'no run id or internal word', details);
+        return details;
+      });
+
+      await runCase('SDD-06', async () => {
+        await dismiss();
+        await textarea().fill('');
+        const since0 = Date.now();
+        await typeAndSend(`HOLD_TURN stopped-${tag}`);
+        await held(since0);
+        await stopRun();
+        const marker = `lost-stopped-${tag}`;
+        const before = await view();
+        const from = wire.log.length; const since = Date.now();
+        wire.loseNextSend = true;
+        await typeAndSend(`PLAIN ${marker}`);
+        await waitNotice();
+        await sleep(1500);
+        const v = await view(marker);
+        await shot('SDD-06-text-b');
+        const snapshot = wire.since(from).find((f) => f.type === 'AGENT_STREAM_SNAPSHOT' && f.url === target.path && f.dir === 'down');
+        const details = { before: before.status, view: v, snapshotInputState: snapshot?.inputState, frames: frames(from, since) };
+        assert(v.notice?.certainty === 'unknown' && v.notice.text === TEXT_B, 'text (b): the node could not say its queued input', details);
+        assert(snapshot && snapshot.inputState === null, 'the rebind snapshot of the stopped run carries no input state', details);
+        assert(v.draft === `PLAIN ${marker}` && v.status === before.status, 'its text back in the box; the status unchanged', details);
+        return details;
+      });
+
+      await runCase('SDD-07', async () => {
+        await dismiss();
+        await textarea().fill('');
+        const marker = `not-bound-${tag}`;
+        const from = wire.log.length; const since = Date.now();
+        wire.cut('the page\'s path is down');
+        await sleep(500);
+        // The status the send must leave as it is: the one shown when the user sends.
+        const before = await view();
+        await typeAndSend(`PLAIN ${marker}`);
+        const sentAt = Date.now();
+        await waitNotice(30_000);
+        const noticeAfterMs = Date.now() - sentAt;
+        await sleep(500);
+        const v = await view(marker);
+        await shot('SDD-07-not-bound');
+        const upAt = Date.now();
+        wire.up();
+        await until('this run\'s stream rebound', async () => wire.log.some((f) => f.at >= upAt && f.dir === 'down' && f.url === target.path && f.type === 'AGENT_STREAM_SNAPSHOT'), 90_000).catch(() => undefined);
+        const details = { before: before.status, view: v, noticeAfterMs, sent: wire.since(from).filter((f) => f.dir === 'up' && f.type === 'SEND_MESSAGE').length, frames: frames(from, since).slice(0, 40) };
+        assert(v.notice?.certainty === 'not_sent' && v.notice.text === TEXT_A && noticeAfterMs >= 9_000, 'after the 10 s wait: text (a)', details);
+        assert(details.sent === 0 && v.count === 0 && v.draft === `PLAIN ${marker}` && v.status === before.status, 'nothing sent; the message gone; the text back; the status unchanged', details);
+        return details;
+      });
+
+      await runCase('SDD-10', async () => {
+        await dismiss();
+        await textarea().fill('');
+        // A new run of the same agent, from its row in the Workspaces tree.
+        const agentRow = page.locator('[data-test="workspace-agent-row"]', { hasText: names.agent }).first();
+        await agentRow.hover();
+        await agentRow.locator('xpath=..').locator('button[title="New run with this agent"]').first().click({ force: true });
+        await until('a new draft composer', async () => (await textarea().inputValue()) === '' && (await view()).count === 0, 30_000);
+        await sleep(1500);
+        const marker = `first-${tag}`;
+        const from = wire.log.length; const since = Date.now();
+        wire.cut('the page\'s path is down');
+        await sleep(300);
+        await typeAndSend(`HOLD_TURN ${marker}`);
+        await waitNotice(40_000);
+        const first = await view(marker);
+        await shot('SDD-10-first-not-delivered');
+        const refused = wire.since(from).filter((f) => f.type === 'REFUSED (path down)' && f.url.startsWith('/ws/agent/') && !f.url.endsWith(target.runId)).map((f) => f.url);
+        const upAt = Date.now();
+        wire.up();
+        await until('the new run\'s stream bound', async () => wire.log.some((f) => f.at >= upAt && f.dir === 'down' && f.type === 'CONNECTED' && refused.includes(f.url)), 90_000).catch(() => undefined);
+        await sleep(1500);
+        const again = Date.now();
+        await until('Send enabled', async () => (await label()) === SEND && primary().isEnabled(), 30_000);
+        await primary().click();
+        // The node takes the message on the same run and starts its turn (the run's runtime is whatever the new-run
+        // draft chose; the turn's own outcome is not this case's subject).
+        const onRun = (f) => f.at >= again && refused.includes(f.url);
+        await until('the resend answered and its turn started', async () => wire.log.some((f) => onRun(f) && f.dir === 'node' && f.type === 'AGENT_COMMAND_ACK')
+          && wire.log.some((f) => onRun(f) && f.type === 'TURN_STARTED'), 60_000).catch(() => undefined);
+        const answers = wire.log.filter((f) => onRun(f) && f.dir === 'node' && f.type === 'AGENT_COMMAND_ACK').map((f) => f.state);
+        const started = wire.log.some((f) => onRun(f) && f.type === 'TURN_STARTED');
+        const second = await view(marker);
+        const sentOn = wire.log.filter((f) => f.at >= again && f.dir === 'up' && f.type === 'SEND_MESSAGE').map((f) => f.url);
+        await shot('SDD-10-resend-started');
+        await stopRun();
+        const details = { first, refused: [...new Set(refused)], second, answers, started, sentOn, frames: frames(from, since).slice(0, 60) };
+        assert(first.notice?.certainty === 'not_sent' && first.notice.text === TEXT_A && first.draft === `HOLD_TURN ${marker}`, 'the first message not delivered: text (a), its text back', details);
+        assert(details.refused.length >= 1 && new Set(details.refused).size === 1, 'the new run\'s stream (one run) was tried while the path was down', details);
+        assert(started && answers[0] === 'accepted' && sentOn.length === 1 && sentOn[0] === details.refused[0] && !second.notice, 'sending again: the node takes it on the same new run and starts its turn; the notice cleared', details);
+        return details;
+      });
+
+      await runCase('SDD-11', async () => {
+        // A message to a run a Stop took offline reaches the node, which starts restoring the run; the path drops before
+        // the answer. The rebind's snapshot comes while the run is not active yet, so it carries no input state: the
+        // page cannot tell, and says so (text (b)) with the text back; the node then runs the message, which shows once.
+        await dismiss();
+        await open(target);
+        const since0 = Date.now();
+        await typeAndSend(`HOLD_TURN offline-${tag}`);
+        await held(since0);
+        await stopRun();
+        const marker = `delivered-offline-${tag}`;
+        const from = wire.log.length; const since = Date.now();
+        wire.dropAfterNextSend = true;
+        await typeAndSend(`PLAIN ${marker}`);
+        await until('the drop and the rebind snapshot', async () => wire.since(from).some((f) => f.type === 'DROPPED')
+          && wire.since(from).some((f) => f.type === 'AGENT_STREAM_SNAPSHOT' && f.url === target.path && f.dir === 'down'), 30_000);
+        await sleep(5000);
+        const v = await view(marker);
+        await shot('SDD-11-offline-after-rebind');
+        const snapshots = wire.since(from).filter((f) => f.type === 'AGENT_STREAM_SNAPSHOT' && f.url === target.path && f.dir === 'down').map((f) => f.inputState);
+        // Which way the page decided depends on whether the rebind's first snapshot came before the run was active again.
+        const branch = snapshots[0] === null ? 'no input state at the rebind' : 'input state at the rebind';
+        const details = { branch, view: v, snapshots, frames: frames(from, since) };
+        if (snapshots[0] === null) {
+          assert(v.notice?.certainty === 'unknown' && v.notice.text === TEXT_B && v.draft === `PLAIN ${marker}`, 'the node could not say: text (b), the text back', details);
+        } else {
+          assert(!v.notice && !v.draft, 'the node said it has the message: no notice, the box empty', details);
+        }
+        assert(v.count === 1, 'the node had the message: it shows once (with (b), after its draft came back: design risk)', details);
+        return details;
+      });
+    } else {
+      await runCase('SDD-08', async () => {
+        const marker = `team-lost-${tag}`;
+        const before = await view();
+        const from = wire.log.length; const since = Date.now();
+        wire.loseNextSend = true;
+        await typeAndSend(`PLAIN ${marker}`);
+        await waitNotice();
+        await sleep(3000);
+        const v = await view(marker);
+        await shot('SDD-08-team-text-b');
+        const details = { before: before.status, view: v, frames: frames(from, since) };
+        assert(v.notice?.certainty === 'unknown' && v.notice.text === TEXT_B, 'text (b)', details);
+        assert(v.draft === `PLAIN ${marker}` && v.status === before.status, 'the text back; the member\'s status unchanged (no Error)', details);
+        assert(!internalWords(v.notice.text, target.runIds).length, 'no run id or internal word', details);
+        return details;
+      });
+
+      await runCase('SDD-12', async () => {
+        // Control for SDD-09: the page's path down, no send: what the member's shown status does on its own.
+        await dismiss();
+        const beforeCut = await view();
+        wire.cut('the page\'s path is down');
+        const at = Date.now();
+        const timeline = [[0, beforeCut.status]];
+        while (Date.now() - at < 15_000) { const v = await view(); if (timeline.at(-1)[1] !== v.status) timeline.push([Date.now() - at, v.status]); await sleep(200); }
+        const upAt = Date.now();
+        wire.up();
+        await until('the Team stream back', async () => wire.log.some((f) => f.at >= upAt && f.dir === 'down' && f.url === target.path && f.type === 'RUN_TREE_SNAPSHOT'), 90_000).catch(() => undefined);
+        await sleep(2000);
+        return { timeline, afterUp: (await view()).status };
+      });
+
+      await runCase('SDD-09', async () => {
+        await dismiss();
+        await textarea().fill('');
+        const marker = `team-timeout-${tag}`;
+        const beforeCut = await view();
+        const from = wire.log.length; const since = Date.now();
+        wire.cut('the page\'s path is down');
+        // The user sends right after the loss: within ~1 s the loss alone turns an active Team's member to Initializing,
+        // whose Send is disabled (SDD-12; FU-003).
+        await sleep(500);
+        const before = await view();
+        const sendable = { label: await label(), enabled: await primary().isEnabled().catch(() => null) };
+        await typeAndSend(`PLAIN ${marker}`);
+        const sentAt = Date.now();
+        const timeline = [];
+        const watch = setInterval(() => { view().then((v) => { const last = timeline.at(-1); if (!last || last[1] !== v.status) timeline.push([Date.now() - sentAt, v.status]); }).catch(() => undefined); }, 200);
+        await waitNotice(30_000).finally(() => clearInterval(watch));
+        const noticeAfterMs = Date.now() - sentAt;
+        const v = await view(marker);
+        const sendAfterNotice = { label: await label(), enabled: await primary().isEnabled().catch(() => null) };
+        await shot('SDD-09-team-text-a');
+        const upAt = Date.now();
+        wire.up();
+        await until('the Team stream back', async () => wire.log.some((f) => f.at >= upAt && f.dir === 'down' && f.url === target.path && f.type === 'RUN_TREE_SNAPSHOT'), 90_000).catch(() => undefined);
+        await sleep(2000);
+        const afterUp = { status: (await view()).status, label: await label(), enabled: await primary().isEnabled().catch(() => null) };
+        const details = { beforeCut: beforeCut.status, before: before.status, timeline, sendable, view: v, sendAfterNotice, afterUp, noticeAfterMs, sent: wire.since(from).filter((f) => f.dir === 'up' && f.type === 'SEND_MESSAGE').length };
+        assert(v.notice?.certainty === 'not_sent' && v.notice.text === TEXT_A && noticeAfterMs >= 9_000, 'the Team\'s 10 s wait ends with text (a)', details);
+        // The send leaves the status alone: it is the one before the send, or the one the loss alone gives (SDD-12).
+        const lossAlone = evidence.cases['SDD-12']?.timeline?.at(-1)?.[1] ?? null;
+        details.lossAlone = lossAlone;
+        assert(details.sent === 0 && v.count === 0 && v.draft === `PLAIN ${marker}`, 'nothing sent; the message gone; the text back', details);
+        assert(v.status !== 'Error' && (v.status === before.status || v.status === lossAlone), 'the status as the send found it or as the loss alone leaves it (never Error)', details);
+        return details;
+      });
+    }
+  }
+  evidence.notReadyErrors = wire.log.filter((f) => f.type === 'ERROR' && f.code === 'SESSION_NOT_READY').length;
+  evidence.result = Object.values(evidence.cases).length && Object.values(evidence.cases).every((c) => c.result === 'Pass') && !evidence.browserErrors.length && !evidence.notReadyErrors ? 'Pass' : 'Fail';
+} catch (error) {
+  evidence.failure = String(error?.stack ?? error);
+  console.error(error);
+} finally {
+  await browser?.close().catch(() => undefined);
+  evidence.cleanup.frontend = await stopGroup(stack.frontend).catch((e) => `error ${e.message}`);
+  evidence.cleanup.backend = await stopGroup(stack.backend).catch((e) => `error ${e.message}`);
+  if (stack.dataRoot) { await fsp.rm(stack.dataRoot, { recursive: true, force: true }).catch(() => undefined); evidence.cleanup.dataRootRemoved = !fs.existsSync(stack.dataRoot); }
+  evidence.wireLog = wire.log.map((f) => ({ ...f, at: new Date(f.at).toISOString() }));
+  await saveEvidence();
+  console.log(`[send-delivery] result ${evidence.result}; evidence ${outputDir}`);
+  process.exitCode = evidence.result === 'Pass' ? 0 : 1;
+}
+
+function shot(name) { return page?.screenshot({ path: path.join(outputDir, `${name}.png`) }).catch(() => undefined); }

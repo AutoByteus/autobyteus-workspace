@@ -1,5 +1,6 @@
 // The page's network path to its node, for the Stop generation probes (autobyteus-533): `stop-generation-probe.mjs`
-// (desktop) and `mobile-stop-generation-cases.mjs` (phone). Test code only.
+// (desktop) and `mobile-stop-generation-cases.mjs` (phone), and the send delivery probes (autobyteus-540):
+// `send-delivery-probe.mjs` (desktop) and `mobile-send-delivery-cases.mjs` (phone). Test code only.
 //
 // A probe routes the page's run sockets through `createStopWire().link(...)` (Playwright `routeWebSocket` on the page side,
 // a `ws` client on the node side). By default every frame passes at once, in order, so a probe that never changes the
@@ -17,8 +18,9 @@
 //   "AgentRun", "canonical turn"). The run keeps working, as after a real refusal. No scripted runtime refuses an
 //   interrupt (AGY always stops), so this stands in for a runtime that could not stop; the page's presentation is what
 //   it proves.
-// Every Stop-related frame is logged with its time (`log`), so a case counts the Stops the page sent and reads the
-// node's answers.
+// - `loseNextSend` / `dropAfterNextSend`: the same for the page's next `SEND_MESSAGE` (autobyteus-540 SCN-002).
+// Every Stop- and send-related frame is logged with its time (`log`), so a case counts the Stops and messages the page
+// sent and reads the node's answers; an `AGENT_STREAM_SNAPSHOT`'s `input_state` (the run's queued input) is logged too.
 
 const KEEP = /INTERRUPT_GENERATION|SEND_MESSAGE|AGENT_COMMAND_ACK|STATUS|^CONNECTED$|SNAPSHOT|^TURN_|^ERROR$/;
 
@@ -34,6 +36,11 @@ const summarize = (frame) => {
     message: typeof p.message === 'string' ? p.message.slice(0, 200) : null,
     status: p.status ?? p.new_status ?? p.payload?.status ?? null,
     agentRunId: p.agent_run_id ?? p.target_agent_run_id ?? p.target?.agent_run_id ?? p.target?.run_id ?? p.run_id ?? null,
+    messageId: p.message_id ?? null,
+    // An agent stream snapshot's `input_state`: 'absent' (no field), null, or its queued entries' message ids.
+    inputState: frame?.type !== 'AGENT_STREAM_SNAPSHOT' ? undefined
+      : !('input_state' in p) ? 'absent' : p.input_state === null ? null
+        : { revision: p.input_state.revision, entries: (p.input_state.entries ?? []).map((e) => `${e.state}:${e.message_id}`) },
     // A frame's place in its stream (an agent stream's `sequence`, a Team view's change sequence).
     seq: frame?.sequence ?? p.sequence ?? p.change_sequence ?? p.changeSequence ?? p.base_change_sequence ?? null,
   };
@@ -68,6 +75,8 @@ export const createStopWire = () => {
     loseNextStop: false,
     dropAfterNextStop: false,
     refuseStops: false,
+    loseNextSend: false,
+    dropAfterNextSend: false,
     /**
      * `{ at, link, dir, url, ...summary, note? }`: `up` page → node (when the page sent it), `down` node → page (when the page
      * received it), `node` a command answer as the node sent it (when it reached the wire, before any delay: the node's
@@ -135,19 +144,22 @@ export const createStopWire = () => {
         }, wire.extraToPageMs);
         return;
       }
-      if (frame?.type === 'INTERRUPT_GENERATION' && wire.loseNextStop) {
-        wire.loseNextStop = false;
+      const kind = frame?.type === 'INTERRUPT_GENERATION' ? 'Stop' : frame?.type === 'SEND_MESSAGE' ? 'message' : null;
+      const loseKey = kind === 'Stop' ? 'loseNextStop' : kind === 'message' ? 'loseNextSend' : null;
+      if (loseKey && wire[loseKey]) {
+        wire[loseKey] = false;
         record(link, 'up', frame, 'lost on the way');
-        setTimeout(() => wire.blip('the path dropped with the Stop on it'), 30);
+        setTimeout(() => wire.blip(`the path dropped with the ${kind} on it`), 30);
         return;
       }
       record(link, 'up', frame);
-      const dropAfter = frame?.type === 'INTERRUPT_GENERATION' && wire.dropAfterNextStop;
-      if (dropAfter) wire.dropAfterNextStop = false;
+      const dropKey = kind === 'Stop' ? 'dropAfterNextStop' : kind === 'message' ? 'dropAfterNextSend' : null;
+      const dropAfter = Boolean(dropKey && wire[dropKey]);
+      if (dropAfter) wire[dropKey] = false;
       schedule('up', () => {
         if (link.closed) return;
         sendToNode(text);
-        if (dropAfter) wire.blip('the path dropped after the Stop reached the node');
+        if (dropAfter) wire.blip(`the path dropped after the ${kind} reached the node`);
       }, 0);
     };
     link.fromNode = (text) => {
@@ -176,7 +188,8 @@ export const createStopWire = () => {
   wire.up = () => { wire.down = false; };
   /** Back to a plain path (between cases). */
   wire.reset = () => {
-    Object.assign(wire, { latencyMs: 0, extraToPageMs: 0, down: false, loseNextStop: false, dropAfterNextStop: false, refuseStops: false });
+    Object.assign(wire, { latencyMs: 0, extraToPageMs: 0, down: false, loseNextStop: false, dropAfterNextStop: false, refuseStops: false,
+      loseNextSend: false, dropAfterNextSend: false });
   };
   /** The log since `from` (an index into `log`). */
   wire.since = (from) => wire.log.slice(from);

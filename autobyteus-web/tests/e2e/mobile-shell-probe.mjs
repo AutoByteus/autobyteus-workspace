@@ -179,6 +179,10 @@
 //                  tap sends one Stop and shows "Stopping…" with no toast; Stop after the turn ended is quiet; a refusal
 //                  and "not connected" show one plain message naming the agent; beta stopping under an open run:
 //                  `mobile-stop-generation-cases.mjs` (after 522's cases, before MSP-13; about 6 minutes).
+//   MSP-85…88 autobyteus-540  A message sent from the phone is never lost silently: messages right after Stops and after
+//                  reconnects start their turns (a standalone run); a lost message shows text (a) or (b) with its text back
+//                  (a standalone run, an Org member, a run on beta, whose not-bound send waits 10 s):
+//                  `mobile-send-delivery-cases.mjs` (after 533's cases, before MSP-13; about 5 minutes).
 //   MSP-67…72 autobyteus-522  Settings for every run the phone opens, decided by the run that holds the opened agent: a
 //                  PTM's task team member (the founder's case) and task agent, a Team lead's task agent (its own settings, not
 //                  the lead's), an Org's task agent and task team member (each stop stops that delegated run, not the Org),
@@ -221,6 +225,7 @@ import { runCodeWrapCases } from './mobile-code-wrap-cases.mjs';
 import { runRunSettingsCases } from './mobile-run-settings-cases.mjs';
 import { runEveryRunSettingsCases } from './mobile-every-run-settings-cases.mjs';
 import { runStopGenerationCases } from './mobile-stop-generation-cases.mjs';
+import { runSendDeliveryCases } from './mobile-send-delivery-cases.mjs';
 import { createStopWire } from './fixtures/stop-generation-wire.mjs';
 
 const require = createRequire(import.meta.url);
@@ -562,6 +567,9 @@ const phoneRefused = [];
  * `localhost:8000` any more.
  */
 const EXPECTED_BY_CASE = {
+  // autobyteus-540: a standalone run's not-delivered send still logs its detail with the agent store's existing
+  // `console.error` before the notice (implementation handoff, Known Risks); the case loses a message on purpose.
+  'MSP-86': /Error sending user input: MessageNotDeliveredError/,
   // The three refused folder paths (autobyteus-426 D-08): the workspace store logs each refused registration.
   'MSP-07': /Error creating workspace metadata: ApolloError: (No folder exists at the workspace path|The workspace path is a file, not a folder|Workspace path must be an absolute path)\./,
   // autobyteus-436 AC-004: the missing node file (404 NODE_FILE_NOT_FOUND) and the folder (400 NODE_FILE_IS_FOLDER).
@@ -2563,6 +2571,8 @@ const runCases = async () => {
   await runEveryRunSettingsCases({ runCase, page, stack, alpha, sel, toList, openRow, ensureUnfolded, rowsOf, menuOpen, runScreen, shot, sendOver, waitFor, sleep, assert, selected });
   // autobyteus-533: Stop generation on the phone for every run kind (`mobile-stop-generation-cases.mjs`), before MSP-13.
   await runStopGenerationCases({ runCase, page, stack, alpha, beta, peer: PEER, sel, toList, openRow, ensureUnfolded, rowsOf, runScreen, shot, waitFor, sleep, assert, selected, phoneWire });
+  // autobyteus-540: messages are never lost silently on the phone (`mobile-send-delivery-cases.mjs`), before MSP-13.
+  await runSendDeliveryCases({ runCase, page, stack, alpha, peer: PEER, sel, toList, openRow, ensureUnfolded, rowsOf, runScreen, shot, waitFor, sleep, assert, selected, phoneWire });
 
   await runCase('MSP-13', async () => {
     // A credential the node does not know (401, REMOTE_ACCESS_AUTH_INVALID: the node's pairing data was reset): the next
