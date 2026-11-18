@@ -43,3 +43,12 @@ Deliver `codex/follow-ups-of-461-500` (Project Task `autobyteus-500`, follow-ups
   - autobyteus-493: `agent-memory-layout.ts`, `build-studio-server.ts`, `e2e-run-history-services.ts`, `agent-org-run-service-model-selection.test.ts`.
   - also `run-agent-access.ts`, `team-run-agent-access.ts`.
 - **Blocked**, routed to the implementation engineer (Local Fix), then the code reviewer's merge review and an API/E2E round on the merged state, as in the second pass.
+
+## Fourth integration refresh (2026-11-18)
+
+- The third merged state passed: IR-006 merge `e93671cce0` (+ `4db98c6d1a`), CRR-010 Pass, API/E2E round 4 (API-REV-004) Pass at 95% after F-4 (test-side, `8d14de45e3`), CRR-012 Pass.
+- `origin/personal` moved again, `0570c47fd9` → `24d438fa31`: release `v1.5.13-beta.10` and tickets 517, 524 round 2, 526. Beta.10 shipped no app-data migration (registry identical at beta.9, beta.10, `origin/personal`; no change under `src/app-data-migrations/`), so `released-migration-order.json` still holds the released order.
+- Merge attempt: 2 conflicts, aborted; branch clean.
+  - `src/restart-resume/restart-resumer.ts` (1 line): 526 (`6517199e36`) passes the whole `message` to `restartNoticeLifecycleObserver` (one notice id); this ticket renamed `host` → `readyAgent`.
+  - `src/compositions/build-studio-server.ts` (1 large hunk, `closeStudioProcessResources`): 524 round 2 (`2e5b0198e2`) ends the file watches without their OS close at shutdown; this ticket's restructure of the same function; the 500-line limit applies.
+- Routed to the implementation engineer (Local Fix) with a targeted route: merge review, then API/E2E on the shutdown and restart-resume paths only.
