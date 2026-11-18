@@ -6,7 +6,8 @@
 - Trigger: the code reviewer's CRR-003 Pass (test-code review after API/E2E), which delivers the package.
 - Bootstrap base reference: `origin/personal` @ `bd2053ee51`.
 - Integrated base reference used for docs sync: `origin/personal` @ `75048cbaf4`, merged into the ticket branch as `df6992e0c1` (49 base commits; no conflicts). Delivery docs edits started only after this merge.
-- Post-integration verification reference: the merged state `df6992e0c1`; commands and results in `release-deployment-report.md` § Initial Delivery Integration Refresh.
+- Second refresh: `origin/personal` moved to `be11a62449` (autobyteus-491, the retired memory item model and two retired built-in agents; no messaging, collaboration or tool code) while delivery ran. It was merged as `736526af88` without conflicts after the docs edits below. Its changed docs (`GLOSSARY.md`, the docker README, `ARCHITECTURE.md`, `agent_definition.md`, `agent_memory.md`, `codex_raw_event_mapping.md`, web `settings.md`, `agent_memory_design.md`) do not describe messaging or discovery, so the edits here still hold.
+- Post-integration verification reference: the merged states `df6992e0c1` and `736526af88`; commands and results in `release-deployment-report.md` § Initial Delivery Integration Refresh.
 
 ## Why Docs Were Updated
 

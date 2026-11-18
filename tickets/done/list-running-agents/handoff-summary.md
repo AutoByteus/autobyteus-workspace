@@ -7,7 +7,7 @@
 - Classification: `task_size: Large`, `architectural_risk: High`.
 - Route: architecture review (ARCH-REV-001 … 004, Pass at SR-008/009) → implementation (IR-001, IR-002) → source review (CRR-001 Fail, CRR-002 Pass) → API/E2E (API-REV-001 Pass, 95.3%) → test-code review (CRR-003 Pass) → delivery (DR-001).
 - Current Status: `Verified from evidence / finalized on personal; no release` (see `release-deployment-report.md` for the commits).
-- Branch: `codex/list-running-agents`, base `origin/personal` @ `bd2053ee51`; delivery refresh merged `origin/personal` @ `75048cbaf4` as `df6992e0c1` (no conflicts). Code commits `deacacf948` (IR-001) and `5f89ecbdf5` (IR-002); tests `9fc0df5db3`, `ec66ee7d01`.
+- Branch: `codex/list-running-agents`, base `origin/personal` @ `bd2053ee51`; delivery refreshes merged `origin/personal` @ `75048cbaf4` as `df6992e0c1` and @ `be11a62449` as `736526af88` (no conflicts). Code commits `deacacf948` (IR-001) and `5f89ecbdf5` (IR-002); tests `9fc0df5db3`, `ec66ee7d01`.
 
 ## Delivery Summary
 
@@ -28,7 +28,9 @@
   - `API-07-cpw-e2e.log`: collaboration-prompt-wording 14/14 (CPW-R2: a task agent messaging another Task's running agent is delivered).
   - `API-08-run1/` and `API-08-reruns/`: contract stories §5.1, §5.2 (U9 delivered) and §5.3 (O9) on built servers, every file compared after every step.
   - `API-03`, `API-04`, `API-05`, `API-09`, `API-10`, `API-12`: typecheck, whole `test:integration` and `pnpm test:e2e`, the search of gated suites for exact tool lists, tracked imports, fresh-start build.
-- Integrated state: both typechecks pass on `df6992e0c1`; see `evidence/DEL-post-integration/` and the release/deployment report for the unit suite and the built-server rerun.
+- Integrated state (`evidence/DEL-post-integration/`): the base moved twice during delivery, so the branch was merged twice (`df6992e0c1`, `736526af88`).
+  - After the first merge (49 base commits): both typechecks PASS; the whole server unit suite `Tests 1 failed | 8394 passed` (the one failure is a real-file-event timeout in `skill-folder-watcher.test.ts`, a file identical to `personal`, which passes alone 9/9); the server rebuilt and the two-server suite's RC-01…RC-11 plus RC-47/48/49 `14 passed`.
+  - After the second merge (autobyteus-491): both typechecks PASS (baselines `1008 in 315` and `87 in 37`); 213 files / 1554 tests of the touched areas, the migration registry and `tests/architecture` pass; the server rebuilt and the same 14 two-server cases pass again.
 - Final confidence 95.3%, no category below 95%.
 
 ## Residual Risks For The User
@@ -36,7 +38,7 @@
 - **BEH-007** (a message waits for a busy receiver's turn) is proven in process only; the scripted runtime on built servers answers at once.
 - **`workspace` carries a local folder path** to the asking node (DEC-013, your request). A paired node's agents show their paths to the node that asks.
 - **Both nodes need this release** (DESIGN.md rule 9, no version handling): an older peer answers 404 and reads as unreachable for these two requests.
-- **Environment-bound tests outside the change** fail by time on a loaded machine (FSEvents, in-process `close()`): FU-001, FU-005; the same kind failed again on the integrated unit run (`evidence/DEL-post-integration/`). None reaches code this ticket changed.
+- **Environment-bound tests outside the change** fail by time on a loaded machine (FSEvents, in-process `close()`): FU-001, FU-005; the same kind failed once more on the integrated unit run and passed alone (`evidence/DEL-post-integration/`). None reaches code this ticket changed.
 - The contract model's executable files live in a done ticket's evidence folder, and this ticket edited them (FU-004).
 
 ## Follow-ups
