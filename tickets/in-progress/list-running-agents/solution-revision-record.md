@@ -9,6 +9,7 @@
 | SR-003 | Mixed | The founder's third and fourth messages, 2026-11-18 (clarifications 5, 6); design draft | DEC-012 | Approved (SR-002) → Ready for Approval (clarification 5) | Approved; design Ready | BEH-006, REQ-002, REQ-011, REQ-013, AC-002, AC-010, DEC-004, DEC-006, DEC-012 | Team run ID reaches its coordinator; list only user-started; design complete |
 | SR-004 | Mixed | The founder's question, 2026-11-18: team run ID or coordinator's run ID? | DEC-012 | Approved (SR-003) | Approved; design Ready | BEH-006, REQ-002, REQ-011, REQ-012, REQ-013 (withdrawn), AC-002, AC-010 (withdrawn), DEC-004, DEC-006, DEC-012 | Today's rule kept: message a team through its coordinator's run ID; the list gives it |
 | SR-005 | Mixed | The founder, 2026-11-18: no Org runs in the list for now | DEC-004 | Approved (SR-004) | Approved; design Ready | REQ-002, REQ-003, AC-002, DEC-004 | Org entries removed from the list; messaging unchanged |
+| SR-006 | Mixed | ARCH-REV-001 (Fail: AR-001, AR-003 … AR-006) and the founder's entry fields (DEC-013) | AR-001, AR-003, AR-004, AR-005, AR-006 | Approved (SR-005); design Ready, review Fail | Approved; design Ready for ARCH-REV-002 | REQ-002, REQ-011, AC-002, AC-008, DEC-011, DEC-013; DS-004; entry-form rows 13, 14; removal plan | Closed-Task admission on the `node` path; senders that cannot know a closure; team guidance from this node's own team; dead `ownershipChain` removed; `agent_run_id` / `team_run_id` / `team_coordinator_agent_run_id` / `workspace` |
 
 ## Revision Entries
 
@@ -77,3 +78,19 @@
 - Approval: the founder (`User`), his words above.
 - Design: Org entry and units removed from the entry union, the listing rule and the run-file facts. Classification unchanged (`Large` / `High`).
 - Review impact: the architecture review in progress reviews SR-005 (the reviewer was told).
+
+### SR-006 — Review fixes (ARCH-REV-001) and the founder's entry fields
+
+- Phase and classification: Mixed (`Design Impact` fixes; `Requirement Gap` clarifications within the direction; user change to entry fields).
+- Trigger: ARCH-REV-001 (`design-review-report.md`), Fail: AR-001 (High), AR-003, AR-004, AR-005, AR-006. The founder, 2026-11-18 (voice): an Agent entry gives the agent run ID and its workspace, a Team entry the team run ID and the coordinator agent run ID, "similar to delegate task", and the team's workspace too.
+- Responses:
+  - AR-001: `CrossRunMessageDelivery.closedPeerRunRefusal` on the router's `node` path, before the sender's root (DS-004, entry-form row 13, tests).
+  - AR-005: decided within DEC-011's direction: the node that holds the Task refuses for all its senders; senders on the run's own node or a third node, which cannot know the closure, are delivered while it runs and never wake it (REQ-011, AC-008, row 14). Recorded as the Solution Designer's decision, the founder informed.
+  - AR-006: `RunningAgents.teamCoordinatorOf` from the team's own live root on this node; placed in DS-004 after `rootOf` returns null.
+  - AR-004: `ownershipChain` removed (removal plan), the engine comment corrected; the unlinked endpoint has none.
+  - AR-003: texts corrected (requirements baseline and readiness, REQ-002, interface check, investigation meta, RSK-001).
+  - Residual suggestion: one sentence on why `RunStatusService` is not reused (Ownership Map).
+- Founder's fields (DEC-013): Agent `agent_run_id`, `workspace`; Team `team_run_id`, `team_coordinator_agent_run_id`, `workspace` (its coordinator's). Approval: the founder (`User`), his words in DEC-013.
+- Intended behavior changed: `Yes` (entry fields; the fenced-run outcome is stated, matching today's fence).
+- Classification unchanged: `Large` / `High`.
+- Next action: ARCH-REV-002.

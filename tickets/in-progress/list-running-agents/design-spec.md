@@ -2,8 +2,8 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-005`
-- Approved requirements baseline: `requirements-doc.md` at SR-005, approved by the founder (DEC-001, DEC-002, DEC-004, DEC-012; his answers of 2026-11-18 in the Solution Designer's conversation) and by the Solution Designer within his direction (DEC-003 … DEC-011, founder informed).
+- Current solution revision ID: `SR-006` (revised for ARCH-REV-001: AR-001, AR-003 … AR-006; and the founder's field names, DEC-013)
+- Approved requirements baseline: `requirements-doc.md` at SR-006, approved by the founder (DEC-001, DEC-002, DEC-004, DEC-012, DEC-013; his answers of 2026-11-18 in the Solution Designer's conversation) and by the Solution Designer within his direction (DEC-003 … DEC-011, founder informed).
 - Behavior-defining supplements: None.
 - User approval of the design: `Not required` (the Task asks for investigation and design, then build; it does not ask for design approval).
 - Design status: `Ready`
@@ -43,7 +43,7 @@ Constraints the target keeps: CM-9 (each run logs its own side), the closed-Task
 | PRB-003 (unit tests) | router, remote messaging owners, receiver | 28 tests pass on base | Tests to rewrite: R-9 test, receiver `not_linked` test | — |
 | Code | `cross-run-message-delivery.ts:86-164` | Admission throws CONFLICT last | `admit` returns `unrelated` instead | — |
 | Code | `remote-endpoint.ts:10-31, 72-88` | Endpoint = reference + pair rule + transmission | A transient `unlinked_run` endpoint fits the same send/accept steps | — |
-| Code | `root-communication-engine.ts:154-228` | `prepareRemoteSend` / `acceptFromRemote` take any endpoint; Task check via `assertDeliveryAllowed` (only the closed-Task fence of linked endpoints: `standalone-agent-run-root.ts:294-301`) | Engine unchanged | — |
+| Code | `root-communication-engine.ts:154-228` | `prepareRemoteSend` / `acceptFromRemote` take any endpoint; Task check via `assertDeliveryAllowed`, which reads the root's own links (`remoteLinks.endpointFor`), not the endpoint passed in: only the closed-Task fence of this root's linked endpoints (`standalone-agent-run-root.ts:294-301`, `root-team-run.ts:424-431`, `agent-org-run.ts:107`); `RemoteEndpointCore.ownershipChain` has no reader (only a comment at `:152`) | Engine unchanged | — |
 | Code | `paired-agent-access.ts:35`, `collaboration-composition.ts:201-203` | One live-status source per root kind exists | `RunningAgents` combines it with the root directory | — |
 | Code | `delegated-run-idle-shutdown.ts:66-74` | Host terminated, root kept | "Running" = live agent status, not root registration | — |
 | Code | `peer-gateway.ts:55-80, 200-296` | One handler method per request kind, admission first | Two new kinds follow it | — |
@@ -79,7 +79,7 @@ Make "the run ID is the address" true: any agent messages any running agent by i
 | BEH-003 | Contract | REQ-008, REQ-010; AC-005, AC-007, AC-008 | `send_message_to(run ID)` | CONFLICT refusal | Delivered to a running agent; never wakes | DS-003 |
 | BEH-004 | Contract | REQ-009; AC-006 | `send_message_to(node, run ID)` | Unknown | Delivered to a running agent of the peer | DS-004, DS-005, DS-006 |
 | BEH-005 | Contract | REQ-010, REQ-011; AC-007, AC-008 | Message to a Task-related or closed run | Wake / reopen / CLOSED | Preserved | Existing CrossRun path (unchanged branch) |
-| BEH-006 | Contract | REQ-011; AC-002 | `send_message_to(team run ID)` | Refused with coordinator (R-12) | Preserved; across nodes the peer gives the same refusal (`TARGET_IS_TEAM_RUN` with the coordinator's run ID) when the team runs there; the list gives `coordinator_agent_run_id` | Router l. 92-102 (local); `RemoteMessageReceiver.acceptRunMessage` via `RunningAgents.teamCoordinatorOf` (peer) |
+| BEH-006 | Contract | REQ-011; AC-002 | `send_message_to(team run ID)` | Refused with coordinator (R-12) | Preserved; across nodes the peer gives the same refusal (`TARGET_IS_TEAM_RUN` with the coordinator's run ID) when the team runs there; the list gives `team_coordinator_agent_run_id` | Router l. 92-102 (local); `RemoteMessageReceiver.acceptRunMessage` via `RunningAgents.teamCoordinatorOf` (peer) |
 | BEH-007 | Contract | REQ-010 | Message to a working agent | Queued | Preserved (same reservation path) | DS-003, DS-004 |
 | BEH-008 | Contract | REQ-011 | `delegate_task` | New copy | Preserved | — |
 
@@ -118,7 +118,7 @@ None.
 
 ## Legacy Removal Policy (Mandatory)
 
-- Obsolete paths: the CONFLICT refusal for unrelated runs (local); R-9 in the router; the outbound pair-rule refusal in `RemoteMessageSend`; the inbound `not_linked` refusal for a message that can go the unlinked way (linked kind stays for linked requests).
+- Obsolete paths: the CONFLICT refusal for unrelated runs (local); R-9 in the router; the outbound pair-rule refusal in `RemoteMessageSend`; the dead `ownershipChain`. The inbound `not_linked` refusal stays for linked requests; only its test for a message that now goes the unlinked way is rewritten (linked kind stays for linked requests).
 - Compatibility wrappers kept: `None`.
 
 ## Persisted Data / State Transition Decision (Mandatory When Persisted Data May Be Affected)
@@ -141,7 +141,7 @@ None.
 - DS-001: `Agent → list_running_agents tool (local / MCP adapter) → RunningAgentsListing.list(caller root, filters) → ActiveCollaborationRootDirectory.liveRoots → RunOwnAgentsReader.listingFactsOf(root) + RunningAgents.statusesOf(root) + catalog name/address + Project name → entries`
 - DS-002: `Agent (A) → tool(node) → PeerDiscoveryChannel.listRunningAgents(node) → PeerNodeDiscovery (findPeer) → PeerClient.runningAgents(nodeId) → [signed] → PeerGateway /rest/remote/running-agents (B) → RunningAgentsListing.list(no caller) → answer → PeerClient strict reader (A) → entries + node`
 - DS-003: `Agent → SendMessageToDispatcher → GlobalAgentRunMessageRouter (own root miss) → CrossRunMessageDelivery.route → admit = unrelated → RunningAgents.rootOf(target) → sender root.prepareSendToRun → receiver root (live, resolved, never restored).acceptFromRun → sender root.commitSentToRun → result`
-- DS-004: `Agent (A) → Dispatcher → Router.deliver(node) → RemoteRunChannel.findPeer(node) → sender root.deliverToPeerRun → RemoteMessageSend.sendToPeerRun (linked & paired endpoint on that node, else unlinkedRunEndpoint) → engine.prepareRemoteSend → RemoteRunLinks.deliver → PeerClient.deliverMessage → [signed] → PeerGateway /rest/remote/run-messages (B) → RemoteMessageReceiver.acceptRunMessage → RunningAgents.rootOf(target) → root.acceptPeerRunMessage (in its gate: target still running) → engine.acceptFromRemote (B's log; header names A's node) → answer → engine.commitSentToRemote (A's log)`
+- DS-004: `Agent (A) → Dispatcher → Router.deliver(node) → RemoteRunChannel.findPeer(node) → CrossRunMessageDelivery.closedPeerRunRefusal(peer.nodeId, T) (AR-001: CLOSED when this node's tree holds T on that node and all its entries are closed) → sender root.deliverToPeerRun → RemoteMessageSend.sendToPeerRun (linked & paired endpoint on that node, else unlinkedRunEndpoint) → engine.prepareRemoteSend → RemoteRunLinks.deliver → PeerClient.deliverMessage → [signed] → PeerGateway /rest/remote/run-messages (B) → RemoteMessageReceiver.acceptRunMessage → RunningAgents.rootOf(target) (null → RunningAgents.teamCoordinatorOf(target): `TARGET_IS_TEAM_RUN` with the coordinator's run ID, else not running) → root.acceptPeerRunMessage (in its gate: target still running) → engine.acceptFromRemote (B's log; header names A's node) → answer → engine.commitSentToRemote (A's log)`
 - DS-006: `root.deliverExact → RemoteMessageSend.send(endpoint) → not paired → unlinkedRunEndpoint(endpoint.reference) → DS-004 from prepareRemoteSend on`
 
 ## Spine Narratives (Mandatory)
@@ -161,10 +161,10 @@ None.
 
 ## Ownership Map
 
-- `RunningAgents` (new): the one answer to "is this agent running on this node, and in which root" (`rootOf(agentRunId)`), and the coordinator of a running team by its run ID (`teamCoordinatorOf`, from `ActiveCollaborationRootDirectory.findTeamCoordinator`) for the peer's refusal guidance and "which agents of this live root run, with their status" (`statusesOf(root)`). Combines `ActiveCollaborationRootDirectory` (`placeOf`, `liveRoots`) with the per-kind `PairedAgentAccess.pairedAgentStatuses`. Reads only; never restores.
+- `RunningAgents` (new): the one answer to "is this agent running on this node, and in which root" (`rootOf(agentRunId)`, decided from the root's own live statuses, not from `placeOf` alone, which also names a root that only links a remote run ID: `standalone-agent-run-root.ts:153-156`), and the coordinator of a team that runs on this node, from the team's own live root (`teamCoordinatorOf(teamRunId)` = `roots.resolve({rootSubjectKind: "agent_team", rootRunId})?.teamCoordinatorOf(teamRunId)`, AR-006; not `findTeamCoordinator`, which also answers for a team a root of this node delegated to another node, `active-collaboration-root-directory.ts:106-117`), for the peer's refusal guidance. `RunStatusService` also combines the directory and statuses, but as pushed view subscriptions held per client; a synchronous read-only question is a different need, so it is not reused and "which agents of this live root run, with their status" (`statusesOf(root)`). Combines `ActiveCollaborationRootDirectory` (`placeOf`, `liveRoots`) with the per-kind `PairedAgentAccess.pairedAgentStatuses`. Reads only; never restores.
 - `RunningAgentsListing` (new): the listing rule (which roots, which fields, filters) and entry building. Owns the entry shape for both the tool and the peer answer.
-- `CrossRunMessageDelivery`: owns the order of a message between two local runs, now for related and unrelated pairs; owns the admission result (`related` / `reopened` / `unrelated`; CLOSED throws as today).
-- `GlobalAgentRunMessageRouter`: owns the order of target resolution for a run-ID message, now including `node` (peer resolution, then the sender's root).
+- `CrossRunMessageDelivery`: owns the order of a message between two local runs, now for related and unrelated pairs; owns the admission result (`related` / `reopened` / `unrelated`; CLOSED throws as today); and the Task admission of a message to a peer run this node's tree holds (`closedPeerRunRefusal({nodeId, agentRunId})`: `runOfAgent`, then `tasksOf` entries with that `nodeId`; all closed → `TASK_AGENT_RESOURCE_CLOSED` with `ASSIGNER_ONLY_REACTIVATION_MESSAGE`, AR-001). The router calls it on the `node` path before the sender's root.
+- `GlobalAgentRunMessageRouter`: owns the order of target resolution for a run-ID message, now including `node`: peer resolution, then `crossRun.closedPeerRunRefusal`, then the sender's root.
 - `RemoteMessageSend`: owns the outbound remote order and the endpoint choice (linked & paired, else unlinked).
 - `RemoteMessageReceiver`: owns inbound resolution; for `run_message`, the running root via `RunningAgents`.
 - Each root's message delivery: its own sender lease and gate; `deliverToPeerRun` (outbound) and `acceptPeerRunMessage` (inbound, running agents only).
@@ -186,6 +186,7 @@ None.
 | `throw TASK_AGENT_RESOURCE_CONFLICT` in `CrossRunMessageDelivery.admit` (`:163`) | Unrelated runs are no longer refused | `unrelated` admission result + running-only delivery | `OTHER_TASK_REFUSAL` (`:44`) becomes unused → remove with its import in the router |
 | R-9 branch in the router (`global-agent-run-message-router.ts:129-130`) | A member-context target is delivered through its root (DS-003) or is not running | Not-running refusal for a member-context target no live root holds | The direct post stays only for targets without a member context (unchanged) |
 | Outbound pair refusal `if (!endpoint.allowsSender(...)) return endpoint.refusals.notPermitted` (`remote-message-send.ts:35`) | Any agent may message; an unpaired sender goes unlinked | DS-006 | `allowsSender` and `refusals` on endpoints: remove when no reader remains (implementation verifies; `REMOTE_ROOT_REFUSAL_TEXT.notPermitted` likewise) |
+| `RemoteEndpointCore.ownershipChain` (type member and the three builders in `remote-endpoint.ts`), and the comment at `root-communication-engine.ts:152` that names it | Dead: no reader in `src/` (a search finds only the declaration, the builders and the comment; ARCH-REV-001 AR-004) | — (the Task check is `assertDeliveryAllowed` on the root's own links; the comment is corrected to say so) | The new `unlinked_run` endpoint has none |
 | `TASK_AGENT_RESOURCE_CONFLICT` in the engine's `DELIVERY_REFUSAL_CODES` (`root-communication-engine.ts:27`) | No message path throws it after this change | — | Dead: verify no message path throws it (`assertDeliveryAllowed` throws only CLOSED: `standalone-agent-run-root.ts:298-300`, and Team/Org likewise) |
 | Tests asserting R-9 and the CONFLICT refusal for unrelated runs | Behavior replaced | Tests of DS-003 | `global-agent-run-message-router.test.ts:276`, `cross-run-message-delivery.test.ts` cases, contract fixture rows that encode R-7 for messages (`tests/fixtures/collaboration-contract/contract-states.json`) |
 
@@ -202,7 +203,7 @@ DS-005 (above). No events are added; delivered messages publish as today (the re
 
 | Concern | Spine | Serves | Responsibility | Why | Risk If On Main Line |
 | --- | --- | --- | --- | --- | --- |
-| Listing facts of a run's own file | DS-001 | `RunningAgentsListing` | `RunOwnAgentsReader.listingFactsOf(run)`: started by a person?, definition ref, start time, a Team's coordinator | One reader of run files | Listing parsing files itself |
+| Listing facts of a run's own file | DS-001 | `RunningAgentsListing` | `RunOwnAgentsReader.listingFactsOf(run)`: started by a person?, definition ref, start time, workspace (Agent `workspaceRootPath`; Team: the coordinator member's launch `workspaceRootPath`), a Team's coordinator | One reader of run files | Listing parsing files itself |
 | Definition name and catalog address | DS-001 | `RunningAgentsListing` | From the definition services and `CatalogAddressMap` of this node | Name/address as `list_available_agents` shows | A second address rule |
 | Project of a run | DS-001 | `RunningAgentsListing` | `ProjectRunService` (in-memory view of `project_runs.json`) + Project name | Tells PMs apart | — |
 | Peer answer reading | DS-002 | `PeerClient` | Strict: only the entry fields; anything else = malformed (QR-002) | Privacy | — |
@@ -236,7 +237,7 @@ DS-005 (above). No events are added; delivered messages publish as today (the re
 | Interface | Subject | Responsibility | Identity Shape | Notes |
 | --- | --- | --- | --- | --- |
 | `list_running_agents({node?, address?, state?})` | running runs started by a person | Discovery for messaging | peer name; catalog address; `running`/`idle` | Opt-in; same availability as `list_available_agents` |
-| Result `{ agents: Entry[] }` | entry | — | Agent `{run_id, kind:"agent", name, address?, state, started_at, project?, node?}`; Team `{run_id, kind:"agent_team", name, address?, coordinator_agent_run_id, state, started_at, project?, node?}` (`state` = its coordinator's) | `state`: `running` (running or initializing), `idle`, `error`; absent fields are left out (autobyteus-260 rule) |
+| Result `{ agents: Entry[] }` | entry | — | Agent `{kind:"agent", name, address?, agent_run_id, workspace?, state, started_at, project?, node?}`; Team `{kind:"agent_team", name, address?, team_run_id, team_coordinator_agent_run_id, workspace?, state, started_at, project?, node?}` (`state` and `workspace` = its coordinator's) | `state`: `running` (running or initializing), `idle`, `error`; absent fields are left out (autobyteus-260 rule) |
 | `send_message_to({..., node?})` | message | `node` only with `target_agent_run_id` | peer name + agent run ID | `node` with `recipient_address` → `INVALID_TOOL_ARGUMENTS` |
 | `RunningAgents.rootOf(agentRunId)` | running agent | `{root, status} \| null` | agent run ID | Read-only |
 | `RunningAgents.statusesOf(root)` | a live root's running agents | statuses | `RootExecutionIdentity` | Read-only |
@@ -244,7 +245,9 @@ DS-005 (above). No events are added; delivered messages publish as today (the re
 | `ActiveRootMessageBoundary.deliverToPeerRun({sender, nodeId, targetAgentRunId, content, messageType, referenceFiles})` | outbound message to a peer agent | authorize sender, call `RemoteMessageSend.sendToPeerRun` | node ID + agent run ID | All three roots |
 | `RemoteMessageRoot.acceptPeerRunMessage({fromNodeId, fromNodeName, message})` | inbound unlinked message | target running in this root → engine | sender agent run ID on node; receiver agent run ID | All three roots; never restores |
 | `RemoteMessageSend.sendToPeerRun` / `send` | outbound remote | endpoint choice + order | — | — |
-| `unlinkedRunEndpoint({nodeId, agentRunId, pairedAgentRunId})` | `RemoteEndpoint` kind `unlinked_run` | transmission kind `run_message`; `ownershipChain: []` | node ID + agent run ID | Not stored |
+| `unlinkedRunEndpoint({nodeId, agentRunId, pairedAgentRunId})` | `RemoteEndpoint` kind `unlinked_run` | transmission kind `run_message` | node ID + agent run ID | Not stored; no `ownershipChain` (removed from every kind, AR-004) |
+| `CrossRunMessageDelivery.closedPeerRunRefusal({nodeId, agentRunId})` | Task admission of a peer run | `TASK_AGENT_RESOURCE_CLOSED` refusal or `null` | node ID + agent run ID | AR-001; the same rule the linking root applies |
+| `RunningAgents.teamCoordinatorOf(teamRunId)` | a team running on this node | its coordinator's run ID or `null` | team run ID | AR-006 |
 | `POST /rest/remote/running-agents` | envelope only | → `{accepted:true, nodeId, agents: Entry[] without node}` | — | Peer route; signed |
 | `POST /rest/remote/run-messages` | envelope + `{messageId, sender:{agentRunId}, target:{agentRunId}, content, messageType, createdAt}` | → `{accepted:true, nodeId}` or refusal | — | No `targetRoot`; peer route; signed |
 | `PeerDiscoveryChannel.listRunningAgents(node)` | a peer's running runs | discovery | peer name | Same refusals as `listAvailableAgents(node)` |
@@ -254,7 +257,7 @@ DS-005 (above). No events are added; delivered messages publish as today (the re
 | Interface | Singular | Identity Explicit | Ambiguity Risk | Action |
 | --- | --- | --- | --- | --- |
 | `list_running_agents` | Yes | Yes | Low | — |
-| `send_message_to` + `node` | Yes | Yes (node + run ID) | Low | Team run ID still refused with coordinator (local) |
+| `send_message_to` + `node` | Yes | Yes (node + run ID) | Low | Team run ID still refused with the coordinator's run ID, locally and from a peer (when the team runs there) |
 | `/rest/remote/run-messages` vs `/rest/remote/messages` | Yes | Yes: linked (root named, may restore) vs unlinked (agent only, running only) | Low | Split by subject (P10) |
 | `RunningAgents` | Yes | Yes | Low | — |
 
@@ -264,7 +267,8 @@ DS-005 (above). No events are added; delivered messages publish as today (the re
 | --- | --- | --- | --- | --- | --- |
 | The tool | `list_running_agents` | Yes | Pair of `list_available_agents` (both list agents and teams) | Low | — |
 | Running | "running agent" | Yes | New in CM § 1 | Low | Add to § 1 |
-| Coordinator ID | `coordinator_agent_run_id` | Yes | As `target_team_coordinator_agent_run_id` of `delegate_task` | Low | — |
+| Entry IDs | `agent_run_id`, `team_run_id`, `team_coordinator_agent_run_id` | Yes | As `delegate_task`'s result names without `target_` (DEC-013) | Low | — |
+| Workspace | `workspace` | Yes | The run's `workspaceRootPath` (Agent: `run_metadata.json`; Team: its coordinator's launch) | Low | — |
 | Endpoint kind | `unlinked_run` | Yes | "link" = Task entry / `delegatedFrom` (CM-10) | Low | — |
 | Request kind | `run-messages` / `run_message` | Yes | Beside `messages` (linked) | Medium | Doc comment states the difference |
 
@@ -308,7 +312,7 @@ See Final File Responsibility Mapping (no extraction changed the draft).
 
 | Structure | One Meaning Per Field | Redundant Removed | Overlap Risk | Action |
 | --- | --- | --- | --- | --- |
-| `RunningAgentEntry` (kind union) | Yes | Yes: `run_id` names the run; `coordinator_agent_run_id` only on Team entries (the ID messages take) | Low | Union by `kind`, not optional-field soup |
+| `RunningAgentEntry` (kind union) | Yes | Yes: Agent `agent_run_id`; Team `team_run_id` + `team_coordinator_agent_run_id` (the ID messages take) | Low | Union by `kind`, not optional-field soup |
 
 ## Final File Responsibility Mapping
 
@@ -375,6 +379,8 @@ All other changes extend existing files (table above).
 | 10 | no collaboration root (application-owned) | any | — | As today (direct post); with `node`: refused, needs a collaboration root |
 | 11 | any | a team run ID | — or P | As today: refused `TARGET_IS_TEAM_RUN` with the coordinator's run ID (on P: the same, when the team runs there; else not running) |
 | 12 | any | a run whose Tasks are all closed | — | As today `TASK_AGENT_RESOURCE_CLOSED` (assigner may reopen) |
+| 13 | any agent of A, in any root (not only the delegating one) | a run on P that A's tree holds, all its Task entries closed (fenced) | P (or none: the root's link if it has one) | `TASK_AGENT_RESOURCE_CLOSED` from `closedPeerRunRefusal` before any send (AR-001); the linking root's own check gives the same |
+| 14 | an agent on P (where the fenced run runs) or on a third node C | that fenced run, still running | — on P / P from C | Delivered (DEC-011: only the Task's node knows the closure; the run is never woken) (AR-005) |
 
 **Unlinked endpoint (data, not a callback; avoids Case 1):**
 
@@ -389,10 +395,10 @@ All other changes extend existing files (table above).
 
 ```json
 { "agents": [
-  { "run_id": "project_task_manager_7c8d…", "kind": "agent", "name": "Project Task Manager", "address": "/project_task_manager",
-    "state": "idle", "started_at": "2026-11-14T09:12:03Z", "project": "AutoByteus", "node": "docker-node" },
-  { "run_id": "team_…", "kind": "agent_team", "name": "Product Team", "address": "/product_team",
-    "coordinator_agent_run_id": "product_lead_…", "state": "running", "started_at": "…" } ] }
+  { "kind": "agent", "name": "Project Task Manager", "address": "/project_task_manager", "agent_run_id": "project_task_manager_7c8d…",
+    "workspace": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo", "state": "idle", "started_at": "2026-11-14T09:12:03Z", "project": "AutoByteus", "node": "docker-node" },
+  { "kind": "agent_team", "name": "Product Team", "address": "/product_team", "team_run_id": "team_…",
+    "team_coordinator_agent_run_id": "product_lead_…", "workspace": "/Users/…/product-designs", "state": "running", "started_at": "…" } ] }
 ```
 
 ## Backward-Compatibility Rejection Log (Mandatory)
@@ -410,7 +416,7 @@ All other changes extend existing files (table above).
 3. Remote contract: transmission union, `unlinked_run` endpoint, `RemoteMessageSend.sendToPeerRun` and unpaired branch; roots' `deliverToPeerRun` / `acceptPeerRunMessage`; `remote-requests.ts`, gateway route, client, receiver; router `node` and tool contract.
 4. Listing: `RunOwnAgentsReader.listingFactsOf`, `RunningAgentsListing`, peer route and client reader, discovery; the tool on all runtimes.
 5. Removals (table), docs (collaboration model CM-13 and § 1 terms, modules), wording.
-6. Two-server E2E extended (`tests/e2e/remote-collaboration/`): AC-004, AC-006, AC-008 remote part, QR-003.
+6. Two-server E2E extended (`tests/e2e/remote-collaboration/`): AC-004, AC-006, AC-008 remote part (rows 13 and 14: a sender in another root of A with `node` to A's fenced run on B is refused CLOSED; an agent on B reaches it while it runs), QR-003. Server unit tests: `closedPeerRunRefusal`; `RunningAgents.rootOf` for a root that only links the run ID (not running); `teamCoordinatorOf` for a team a root of this node delegated elsewhere (`null`).
 
 ## Key Tradeoffs
 
@@ -428,4 +434,4 @@ All other changes extend existing files (table above).
 
 - Reproduction to start from: PRB-002 as a server test — two user-started standalone roots on one node; `send_message_to` from one to the other must be delivered and logged in both runs (it is refused `TASK_AGENT_RESOURCE_CONFLICT` today).
 - Keep agent-facing texts in the wording authority (`agent-team-collaboration-llm-contract.ts`, `domain/remote-refusals.ts`); refusal codes in `remote-refusal-codes.ts`.
-- The tool description of `list_running_agents` says: for messages only (start work with `delegate_task`); message an Agent by `run_id`, a Team by `coordinator_agent_run_id`; on another node pass `node` to `send_message_to`; stopped runs are not listed and are not woken.
+- The tool description of `list_running_agents` says: for messages only (start work with `delegate_task`); message an Agent by `agent_run_id`, a Team by `team_coordinator_agent_run_id` (as with `delegate_task`'s result); `workspace` tells which project folder a run works in; on another node pass `node` to `send_message_to`; stopped runs are not listed and are not woken.
