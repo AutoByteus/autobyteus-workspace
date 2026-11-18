@@ -1,0 +1,22 @@
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    PASS
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      PASS
+codex       brand-new team member                    PASS
+codex       different same-named skill               PASS
+grok        new run + restore, linked workspace      FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 60636
+grok        brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"COLLABORATION_AGENT_ACTIVATION_FAILED","message":"ACP_REQUEST_TIMEOUT: initialize did not respond in time.","error_scope":"runtime","error_effect":"terminal","turn_id":null,"change_sequence":2,"agent_run_id":"link_probe_agent_2500262d_19c1c13b0a2840daa86d9604d0c
+grok        different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 60636
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+
+commit    5bb41f0dd12fe273cdcb9800be0b1b3f888829da
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}
+duration  live 263s, antigravity 97s, autobyteus 17s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-l5q7pqjh
+smoke exit 1

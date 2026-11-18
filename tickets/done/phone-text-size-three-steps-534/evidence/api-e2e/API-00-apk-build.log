@@ -1,0 +1,5 @@
+# API-00 debug APK; commit 6df3a5c12f; 2026-11-18T11:06:08Z
+
+BUILD SUCCESSFUL in 46s
+35 actionable tasks: 35 executed
+-rw-r--r--@ 1 normy  staff  2523306 Nov 18 12:06 app/build/outputs/apk/debug/app-debug.apk

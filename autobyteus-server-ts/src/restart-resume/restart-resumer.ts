@@ -187,7 +187,7 @@ export class RestartResumer {
       if (!claim) return this.skipped(label, "its next input carried the reminder");
       const message = buildRestartNotice({ agentRunId: entry.agentRunId, facts: claim.reminder, resumedDelegated });
       const postOptions: AgentRunInputOptions = {
-        lifecycleObserver: restartNoticeLifecycleObserver(() => host ?? this.dependencies.liveRuns.getActiveRun(entry.agentRunId), message.content),
+        lifecycleObserver: restartNoticeLifecycleObserver(() => host ?? this.dependencies.liveRuns.getActiveRun(entry.agentRunId), message),
         onlyAsFirstInput: true,
       };
       // A standalone root has one agent, its host; a Team or Org root posts to its member.

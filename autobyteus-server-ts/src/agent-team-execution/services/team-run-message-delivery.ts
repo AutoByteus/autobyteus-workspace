@@ -23,7 +23,9 @@ import type { TeamExecutionIndex } from "./team-execution-index.js";
 import { TeamRecipientResolver } from "./team-recipient-resolver.js";
 import type { TeamDelegationPlacement } from "./resolved-team-recipient.js";
 import type { TeamRunCollaborators } from "./team-run-collaborators.js";
-import { REMOTE_REFUSAL } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
+import { REMOTE_REFUSAL, remoteTargetNotRunning } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
+import { unlinkedRunEndpoint } from "../../agent-collaboration/execution/remote/remote-endpoint.js";
+import type { PeerRunMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RemoteInboundMessage, RemoteInboundWorkPacket, RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { buildTaskAssigneeWorkPacket } from "../../agent-collaboration/execution/task/task-execution-input.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
@@ -79,6 +81,27 @@ export class TeamRunMessageDelivery {
     return this.options.communication.acceptFromRun({ ...input,
       receiverIdentity: this.identityFor(receiver.address, receiver.agentRunId),
       receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId });
+  }
+
+  /** DS-004: `send_message_to(node, run ID)` from a member to an agent of a peer node (`RemoteMessageSend` chooses the endpoint). */
+  deliverToPeerRun(input: PeerRunMessageInput): Promise<AgentOperationResult> {
+    const sender = input.sender.identity;
+    this.options.authorizeIdentity(sender);
+    return this.options.remoteSend.sendToPeerRun({ sender, nodeId: input.nodeId, targetAgentRunId: input.targetAgentRunId,
+      content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles });
+  }
+
+  /** DS-004 on the receiving node: a peer agent's message by run ID only, for a member while it runs (never woken, DEC-003). */
+  acceptPeerRunMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
+    const receiver = this.options.getIndex().getAgent(input.message.receiverAgentRunId);
+    if (!receiver || !this.options.isLiveAgent(receiver.agentRunId)) return Promise.resolve(remoteTargetNotRunning(input.message.receiverAgentRunId));
+    return this.options.communication.acceptFromRemote({
+      message: input.message,
+      endpoint: unlinkedRunEndpoint({ nodeId: input.fromNodeId, agentRunId: input.message.senderAgentRunId, pairedAgentRunId: receiver.agentRunId }),
+      receiverIdentity: this.identityFor(receiver.address, receiver.agentRunId),
+      receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
+      senderNodeName: input.fromNodeName,
+    });
   }
 
   /** The inbound order: the link check, then the paired agent is woken or restored (N-8), then the engine admits it. */

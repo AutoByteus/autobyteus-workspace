@@ -9,6 +9,7 @@ import {
   SkillFolderWatcher,
   type SkillFolderWatchFactory,
 } from "../../../src/skill-update-notices/monitor/skill-folder-watcher.js";
+import { FILE_EVENT_TEST_TIMEOUT_MS, OS_FILE_EVENT_WAIT_MS } from "../../helpers/os-latency-under-load.js";
 
 type FakeWatch = {
   dir: string;
@@ -204,13 +205,13 @@ describe("SkillFolderWatcher", () => {
     expect(settled).not.toHaveBeenCalled();
 
     await fs.writeFile(path.join(skillDir, "SKILL.md"), "v2");
-    await vi.waitFor(() => expect(settled).toHaveBeenCalledWith([skillDir]), { timeout: 3000 });
+    await vi.waitFor(() => expect(settled).toHaveBeenCalledWith([skillDir]), { timeout: OS_FILE_EVENT_WAIT_MS });
 
     settled.mockClear();
     await fs.rm(skillDir, { recursive: true, force: true });
-    await vi.waitFor(() => expect(settled).toHaveBeenCalledWith([skillDir]), { timeout: 3000 });
+    await vi.waitFor(() => expect(settled).toHaveBeenCalledWith([skillDir]), { timeout: OS_FILE_EVENT_WAIT_MS });
     await watcher.close();
-  });
+  }, FILE_EVENT_TEST_TIMEOUT_MS);
 
   it("releases a folder's OS handles when no run uses it any more, and still reports changes once it is watched again (CR-005)", async () => {
     const root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "skill-watcher-release-")));
@@ -241,19 +242,19 @@ describe("SkillFolderWatcher", () => {
 
     // The folder still used never stopped being watched.
     await fs.writeFile(path.join(kept, "SKILL.md"), "v2");
-    await vi.waitFor(() => expect(settled).toHaveBeenCalledWith([kept]), { timeout: 3000 });
+    await vi.waitFor(() => expect(settled).toHaveBeenCalledWith([kept]), { timeout: OS_FILE_EVENT_WAIT_MS });
 
     // Watched again: changes are reported again.
     watcher.syncWatchedFolders([released, kept]);
     await new Promise((resolve) => setTimeout(resolve, 1000));
     settled.mockClear();
     await fs.writeFile(path.join(released, "references", "r3.md"), "r3");
-    await vi.waitFor(() => expect(settled).toHaveBeenCalledWith([released]), { timeout: 3000 });
+    await vi.waitFor(() => expect(settled).toHaveBeenCalledWith([released]), { timeout: OS_FILE_EVENT_WAIT_MS });
 
     watcher.syncWatchedFolders([]);
     await new Promise((resolve) => setTimeout(resolve, 500));
     if (process.platform === "darwin" && baseline !== null) expect(openDescriptors()).toBeLessThanOrEqual(baseline);
     await watcher.close();
-    // Real file watches: 3 s of fixed waits plus two change waits of up to 3 s each, more than the 5 s default.
-  }, 15_000);
+    // Real file watches: 3 s of fixed waits plus two OS file-event waits.
+  }, FILE_EVENT_TEST_TIMEOUT_MS);
 });

@@ -4,9 +4,6 @@ import path from 'node:path';
 import os from 'node:os';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
-import { EpisodicItem } from '../../../src/memory/models/episodic-item.js';
-import { SemanticItem } from '../../../src/memory/models/semantic-item.js';
-import { MemoryType } from '../../../src/memory/models/memory-types.js';
 
 describe('FileMemoryStore', () => {
   let tempDir: string;
@@ -39,42 +36,6 @@ describe('FileMemoryStore', () => {
     expect(Object.keys(items[0].toDict())).not.toContain('tags');
     expect(Object.keys(items[0].toDict())).not.toContain('tool_result_ref');
   });
-
-  it('adds and lists episodic items', () => {
-    const store = new FileMemoryStore(tempDir, 'agent-episodic');
-    const item = new EpisodicItem({
-      id: 'ep_0001',
-      ts: Date.now() / 1000,
-      summary: 'We discussed refactoring.',
-      salience: 0.7
-    });
-
-    store.add([item]);
-    const episodicItems = store.list(MemoryType.EPISODIC) as EpisodicItem[];
-
-    expect(episodicItems).toHaveLength(1);
-    expect(episodicItems[0].summary).toBe('We discussed refactoring.');
-    expect(Object.keys(episodicItems[0].toDict())).not.toContain('tags');
-  });
-
-  it('adds and lists typed semantic items', () => {
-    const store = new FileMemoryStore(tempDir, 'agent-semantic');
-    const item = new SemanticItem({
-      id: 'sem_0001',
-      ts: Date.now() / 1000,
-      category: 'user_preference',
-      fact: 'Use pnpm exec vitest.',
-      salience: 300
-    });
-
-    store.add([item]);
-    const semanticItems = store.list(MemoryType.SEMANTIC) as SemanticItem[];
-
-    expect(semanticItems).toHaveLength(1);
-    expect(semanticItems[0].category).toBe('user_preference');
-    expect(semanticItems[0].fact).toBe('Use pnpm exec vitest.');
-  });
-
 
   it('respects list limits', () => {
     const store = new FileMemoryStore(tempDir, 'agent-limit');

@@ -1,0 +1,276 @@
+{
+ "mode": "same",
+ "a": "base-largest",
+ "b": "head-largest",
+ "skipped": {
+  "a": {
+   "messages": "locator.click: Timeout 30000ms exceeded."
+  },
+  "b": {
+   "messages": "locator.click: Timeout 30000ms exceeded."
+  }
+ },
+ "errors": {
+  "a": [
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+  ],
+  "b": [
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+  ]
+ },
+ "screens": {
+  "run-list": {
+   "rootA": "19.7647px",
+   "rootB": "19.7647px",
+   "stepA": "largest",
+   "stepB": "largest",
+   "sidewaysB": false,
+   "matched": 30,
+   "onlyA": [
+    "mobile-run-age|span|4m#1 14.8235px",
+    "mobile-run-age|span|4m#2 14.8235px",
+    "mobile-run-age|span|4m#3 14.8235px",
+    "mobile-run-age|span|4m#4 14.8235px"
+   ],
+   "onlyB": [
+    "mobile-run-age|span|5m#1 14.8235px",
+    "mobile-run-age|span|5m#2 14.8235px",
+    "mobile-run-age|span|5m#3 14.8235px",
+    "mobile-run-age|span|5m#4 14.8235px"
+   ],
+   "diffs": []
+  },
+  "on-this-phone-menu": {
+   "rootA": "19.7647px",
+   "rootB": "19.7647px",
+   "stepA": "largest",
+   "stepB": "largest",
+   "sidewaysB": false,
+   "matched": 33,
+   "onlyA": [
+    "mobile-on-this-phone-title|p|On this phone#1 17.2941px",
+    "mobile-text-size|p|Text size#1 14.8235px",
+    "mobile-text-size-small|button|A#1 13px",
+    "mobile-run-age|span|4m#1 14.8235px",
+    "mobile-run-age|span|4m#2 14.8235px",
+    "mobile-run-age|span|4m#3 14.8235px",
+    "mobile-run-age|span|4m#4 14.8235px"
+   ],
+   "onlyB": [
+    "mobile-text-size-header|p|Text size#1 17.2941px",
+    "mobile-run-age|span|5m#1 14.8235px",
+    "mobile-run-age|span|5m#2 14.8235px",
+    "mobile-run-age|span|5m#3 14.8235px",
+    "mobile-run-age|span|5m#4 14.8235px"
+   ],
+   "diffs": [
+    "mobile-text-size-standard|button|A#1: x 152.47→72.06, y 153.63→119.05, w 73.02→99.81",
+    "mobile-text-size-large|button|A#1: x 232.89→179.28, y 153.63→119.05, w 73→99.81",
+    "mobile-text-size-largest|button|A#1: x 313.3→286.5, y 153.63→119.05, w 73.02→99.81"
+   ]
+  },
+  "connection-sheet": {
+   "rootA": "19.7647px",
+   "rootB": "19.7647px",
+   "stepA": "largest",
+   "stepB": "largest",
+   "sidewaysB": false,
+   "matched": 33,
+   "onlyA": [
+    "mobile-run-age|span|4m#1 14.8235px",
+    "mobile-run-age|span|4m#2 14.8235px",
+    "mobile-run-age|span|4m#3 14.8235px",
+    "mobile-run-age|span|4m#4 14.8235px"
+   ],
+   "onlyB": [
+    "mobile-run-age|span|5m#1 14.8235px",
+    "mobile-run-age|span|5m#2 14.8235px",
+    "mobile-run-age|span|5m#3 14.8235px",
+    "mobile-run-age|span|6m#1 14.8235px"
+   ],
+   "diffs": []
+  },
+  "unpair-confirm": {
+   "rootA": "19.7647px",
+   "rootB": "19.7647px",
+   "stepA": "largest",
+   "stepB": "largest",
+   "sidewaysB": false,
+   "matched": 34,
+   "onlyA": [
+    "mobile-run-age|span|4m#1 14.8235px",
+    "mobile-run-age|span|4m#2 14.8235px",
+    "mobile-run-age|span|4m#3 14.8235px",
+    "mobile-run-age|span|4m#4 14.8235px"
+   ],
+   "onlyB": [
+    "mobile-run-age|span|5m#1 14.8235px",
+    "mobile-run-age|span|5m#2 14.8235px",
+    "mobile-run-age|span|5m#3 14.8235px",
+    "mobile-run-age|span|6m#1 14.8235px"
+   ],
+   "diffs": []
+  },
+  "new-run": {
+   "rootA": "19.7647px",
+   "rootB": "19.7647px",
+   "stepA": "largest",
+   "stepB": "largest",
+   "sidewaysB": false,
+   "matched": 11,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  },
+  "new-run-agent-sheet": {
+   "rootA": "19.7647px",
+   "rootB": "19.7647px",
+   "stepA": "largest",
+   "stepB": "largest",
+   "sidewaysB": false,
+   "matched": 24,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  },
+  "conversation": {
+   "rootA": "19.7647px",
+   "rootB": "19.7647px",
+   "stepA": "largest",
+   "stepB": "largest",
+   "sidewaysB": false,
+   "matched": 14,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  },
+  "run-menu": {
+   "rootA": "19.7647px",
+   "rootB": "19.7647px",
+   "stepA": "largest",
+   "stepB": "largest",
+   "sidewaysB": false,
+   "matched": 18,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  },
+  "artifacts": {
+   "rootA": "19.7647px",
+   "rootB": "19.7647px",
+   "stepA": "largest",
+   "stepB": "largest",
+   "sidewaysB": false,
+   "matched": 3,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  },
+  "files": {
+   "rootA": "19.7647px",
+   "rootB": "19.7647px",
+   "stepA": "largest",
+   "stepB": "largest",
+   "sidewaysB": false,
+   "matched": 6,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  },
+  "file-name": {
+   "rootA": null,
+   "rootB": null,
+   "stepA": null,
+   "stepB": null,
+   "sidewaysB": false,
+   "matched": 0,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  },
+  "file-viewer": {
+   "rootA": "19.7647px",
+   "rootB": "19.7647px",
+   "stepA": "largest",
+   "stepB": "largest",
+   "sidewaysB": false,
+   "matched": 15,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  },
+  "activity": {
+   "rootA": "19.7647px",
+   "rootB": "19.7647px",
+   "stepA": "largest",
+   "stepB": "largest",
+   "sidewaysB": false,
+   "matched": 2,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  },
+  "settings": {
+   "rootA": "19.7647px",
+   "rootB": "19.7647px",
+   "stepA": "largest",
+   "stepB": "largest",
+   "sidewaysB": false,
+   "matched": 8,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  },
+  "setup": {
+   "rootA": "19.7647px",
+   "rootB": "19.7647px",
+   "stepA": "largest",
+   "stepB": "largest",
+   "sidewaysB": false,
+   "matched": 7,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  }
+ },
+ "onlyInA": [],
+ "onlyInB": [],
+ "totals": {
+  "screens": 15,
+  "matched": 238,
+  "diffs": 3
+ }
+}

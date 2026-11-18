@@ -1,0 +1,19 @@
+# API-13 folder-watcher unit files | commit 984e04707f | Node v22.23.1 | 2026-11-18T13:09:56Z | load 77.09 79.38 78.71
+     × reports definition changes per folder and ignores skills and other files 23949ms
+     × moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns 6411ms
+     × re-arms a root whose folder was replaced in place (GitHub update rename swap) 10499ms
+     × starts a registered root that is missing as FOLDER_MISSING and arms it when it appears 5031ms
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports definition changes per folder and ignores skills and other files
+Error: Test timed out in 5000ms.
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports definition changes per folder and ignores skills and other files
+Error: Hook timed out in 10000ms.
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns
+Error: Test timed out in 5000ms.
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > re-arms a root whose folder was replaced in place (GitHub update rename swap)
+Error: Test timed out in 5000ms.
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears
+Error: Timed out waiting for the monitor.
+     44|     if (Date.now() - started > timeoutMs) throw new Error("Timed out w…
+ Test Files  1 failed | 1 passed (2)
+      Tests  4 failed | 23 passed (27)
+exit 1

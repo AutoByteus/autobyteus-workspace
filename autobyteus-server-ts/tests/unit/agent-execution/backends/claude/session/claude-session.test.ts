@@ -766,6 +766,8 @@ describe("ClaudeSession background tasks and provider-initiated turns", () => {
     ]);
     const notice = events.find((event) => event.method === ClaudeSessionEventName.SYSTEM_TASK_NOTIFICATION);
     expect(notice?.params?.sender_id).toBe(CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID);
+    // autobyteus-526: each notice has its one id; the published notice and its recorded trace share it.
+    expect(notice?.params?.message_id).toEqual(expect.any(String));
     expect(events.filter((event) => event.method === ClaudeSessionEventName.TOKEN_USAGE_UPDATED)).toHaveLength(2);
   });
 

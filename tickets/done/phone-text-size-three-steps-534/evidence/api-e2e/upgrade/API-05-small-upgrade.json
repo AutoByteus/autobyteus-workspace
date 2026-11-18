@@ -1,0 +1,100 @@
+{
+ "log": [
+  {
+   "at": "base, Small chosen",
+   "stored": "small",
+   "step": "small",
+   "root": 14.1176,
+   "runName": 13.2353,
+   "feed": null,
+   "homeButton": true,
+   "menu": {
+    "label": null,
+    "header": null,
+    "heading": true,
+    "text": "On this phone Text size A A A A",
+    "buttons": [
+     {
+      "id": "mobile-text-size-small",
+      "label": "Small",
+      "pressed": "true"
+     },
+     {
+      "id": "mobile-text-size-standard",
+      "label": "Standard",
+      "pressed": "false"
+     },
+     {
+      "id": "mobile-text-size-large",
+      "label": "Large",
+      "pressed": "false"
+     },
+     {
+      "id": "mobile-text-size-largest",
+      "label": "Largest",
+      "pressed": "false"
+     }
+    ],
+    "focused": "mobile-text-size-small"
+   }
+  },
+  {
+   "at": "head after the update, run list",
+   "stored": "small",
+   "step": "standard",
+   "root": 16,
+   "runName": 15,
+   "feed": null,
+   "homeButton": true,
+   "firstScreen": {
+    "root": "16px",
+    "step": "standard"
+   }
+  },
+  {
+   "at": "head, menu",
+   "menu": {
+    "label": "On this phone",
+    "header": "Text size",
+    "heading": false,
+    "text": "Text size A A A",
+    "buttons": [
+     {
+      "id": "mobile-text-size-standard",
+      "label": "Standard",
+      "pressed": "true"
+     },
+     {
+      "id": "mobile-text-size-large",
+      "label": "Large",
+      "pressed": "false"
+     },
+     {
+      "id": "mobile-text-size-largest",
+      "label": "Largest",
+      "pressed": "false"
+     }
+    ],
+    "focused": "mobile-text-size-standard"
+   }
+  },
+  {
+   "at": "head, conversation",
+   "stored": "small",
+   "step": "standard",
+   "root": 16,
+   "runName": 16,
+   "feed": 17,
+   "homeButton": true
+  }
+ ],
+ "storage": {
+  "keys": 4,
+  "changed": [],
+  "textSize": {
+   "before": "small",
+   "after": "small"
+  }
+ },
+ "errorsAfterUpdate": []
+}

@@ -76,6 +76,9 @@ export const toMemoryTraceEvent = (trace: RawTraceRecord): MemoryTurnTraceEvent 
   if (event.traceType === 'user') Object.assign(event, normalizeAcceptedInputIdentity({
     messageId: trace.message_id, dedupeKey: trace.dedupe_key,
   }));
+  // A notice's one id (autobyteus-526): the conversation shows it once beside its live copy.
+  const noticeId = event.traceType === "system_task_notification" ? asString(trace.message_id) : null;
+  if (noticeId) event.messageId = noticeId;
   const senderId = asString(trace["sender_id"]);
   if (senderId) event.senderId = senderId;
   return event;

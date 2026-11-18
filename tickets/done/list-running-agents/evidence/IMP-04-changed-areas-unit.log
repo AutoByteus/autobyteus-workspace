@@ -1,0 +1,9 @@
+# IMP-04
+# Command: pnpm exec vitest run tests/architecture/tracked-imports.test.ts tests/unit/{agent-collaboration,agent-communication,remote-collaboration,agent-tools,standalone-agent-run-root,agent-team-execution,agent-org-execution,restart-resume,services/agent-streaming,agent-execution/shared,standalone-application-host,api/rest}
+# Commit: deacacf948
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-18
+
+     × finds no tracked code importing an untracked file in this repository 6485ms
+ Test Files  1 failed | 236 passed (237)
+      Tests  1 failed | 1759 passed (1760)

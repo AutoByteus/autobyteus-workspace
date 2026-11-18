@@ -34,6 +34,7 @@ export const combinePreface = (
         content: preface.text,
         senderId: preface.presentation.senderId,
         originalContent: original.content,
+        noticeId: preface.id,
       }),
     },
     original.recordingFileAttachments,
@@ -90,6 +91,7 @@ export class AgentRunInputPrefaceDispatch {
       payload: {
         sender_id: preface.presentation.senderId,
         content: preface.presentation.content,
+        message_id: preface.id,
         ...(forwardedTurnId ? { turn_id: forwardedTurnId } : {}),
       },
       statusHint: null,

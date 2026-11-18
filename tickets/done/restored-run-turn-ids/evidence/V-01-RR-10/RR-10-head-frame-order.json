@@ -1,0 +1,271 @@
+{
+  "TEMP_FRAMES": [
+    [
+      "CONNECTED",
+      "AGENT_STATUS",
+      "AGENT_STREAM_SNAPSHOT",
+      "AGENT_STATUS",
+      "AGENT_INPUT_STATE",
+      "AGENT_COMMAND_ACK",
+      "AGENT_STATUS",
+      "SYSTEM_TASK_NOTIFICATION:{\"sender_id\":\"system.restart_resume\",\"content\":\"[Platform notice — application restarted]\\n\\nThe application restarted at 2026-11-18 06:28 UTC (reason: a restar",
+      "AGENT_INPUT_STATE",
+      "TURN_STARTED:{\"turn_id\":\"turn_0002\"}",
+      "AGENT_INPUT_STATE",
+      "SEGMENT_START",
+      "SEGMENT_CONTENT_BATCH",
+      "SEGMENT_END",
+      "TOOL_EXECUTION_STARTED",
+      "TOOL_LOG",
+      "AGENT_STATUS",
+      "BACKGROUND_TASK_UPDATED",
+      "TOOL_LOG",
+      "TOOL_EXECUTION_SUCCEEDED",
+      "TOOL_LOG",
+      "SEGMENT_START",
+      "SEGMENT_CONTENT_BATCH",
+      "SEGMENT_END",
+      "ASSISTANT_COMPLETE",
+      "TURN_COMPLETED",
+      "AGENT_STATUS",
+      "AGENT_INPUT_STATE",
+      "AGENT_STATUS",
+      "AGENT_STATUS"
+    ],
+    [
+      "CONNECTED",
+      "AGENT_STATUS",
+      "AGENT_STREAM_SNAPSHOT",
+      "AGENT_STATUS",
+      "AGENT_INPUT_STATE",
+      "AGENT_COMMAND_ACK",
+      "AGENT_STATUS",
+      "SYSTEM_TASK_NOTIFICATION:{\"sender_id\":\"system.restart_resume\",\"content\":\"[Platform notice — application restarted]\\n\\nThe application restarted at 2026-11-18 06:29 UTC (reason: a restar",
+      "AGENT_INPUT_STATE",
+      "TURN_STARTED:{\"turn_id\":\"turn_0003\"}",
+      "AGENT_INPUT_STATE",
+      "SEGMENT_START",
+      "SEGMENT_CONTENT_BATCH",
+      "SEGMENT_END",
+      "ASSISTANT_COMPLETE",
+      "TURN_COMPLETED",
+      "AGENT_STATUS",
+      "AGENT_INPUT_STATE",
+      "AGENT_STATUS",
+      "AGENT_STATUS"
+    ]
+  ],
+  "serverDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/restored-run-turn-ids/autobyteus-server-ts",
+  "runId": "restart_reminder_d0aa1717_d4002fd19baf41d7a5e7b79f0c30b955",
+  "live": [
+    [
+      "turn_0001"
+    ],
+    [
+      "turn_0002"
+    ],
+    [
+      "turn_0003"
+    ]
+  ],
+  "files": [
+    "memory/agents/restart_reminder_d0aa1717_d4002fd19baf41d7a5e7b79f0c30b955/raw_traces_active.jsonl"
+  ],
+  "traces": [
+    {
+      "turnId": null,
+      "type": "system_instruction",
+      "content": "## Agent Identity\n\n- Name: restart-reminder-d0aa1717\n- Description: restart remi"
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "user",
+      "content": "CASE:RR-10 Start the build in the background."
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "assistant",
+      "content": ""
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "tool_call",
+      "content": ""
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "tool_result",
+      "content": ""
+    },
+    {
+      "turnId": "turn_0001",
+      "type": "assistant",
+      "content": "REPLY_ONE"
+    },
+    {
+      "turnId": "turn_0002",
+      "type": "system_task_notification",
+      "content": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-"
+    },
+    {
+      "turnId": "turn_0002",
+      "type": "user",
+      "content": "CASE:RR-10 Start the build again."
+    },
+    {
+      "turnId": "turn_0002",
+      "type": "assistant",
+      "content": ""
+    },
+    {
+      "turnId": "turn_0002",
+      "type": "tool_call",
+      "content": ""
+    },
+    {
+      "turnId": "turn_0002",
+      "type": "tool_result",
+      "content": ""
+    },
+    {
+      "turnId": "turn_0002",
+      "type": "assistant",
+      "content": "REPLY_TWO"
+    },
+    {
+      "turnId": "turn_0003",
+      "type": "system_task_notification",
+      "content": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-"
+    },
+    {
+      "turnId": "turn_0003",
+      "type": "user",
+      "content": "CASE:RR-10 And now?"
+    },
+    {
+      "turnId": "turn_0003",
+      "type": "assistant",
+      "content": "REPLY_THREE"
+    }
+  ],
+  "shown": [
+    "user:Start the build in the background.",
+    "assistant:REPLY_ONE@turn_0001",
+    "reminder",
+    "user:Start the build again.",
+    "assistant:REPLY_TWO@turn_0002",
+    "reminder",
+    "user:And now?",
+    "assistant:REPLY_THREE@turn_0003"
+  ],
+  "conversation": [
+    {
+      "kind": "message",
+      "role": "user",
+      "turnId": null,
+      "content": "CASE:RR-10 Start the build in the background."
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0001",
+      "content": ""
+    },
+    {
+      "kind": "tool_call",
+      "role": null,
+      "turnId": "turn_0001",
+      "content": ""
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0001",
+      "content": "REPLY_ONE"
+    },
+    {
+      "kind": "system_task_notification",
+      "role": null,
+      "turnId": null,
+      "content": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-"
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "turnId": null,
+      "content": "CASE:RR-10 Start the build again."
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0002",
+      "content": ""
+    },
+    {
+      "kind": "tool_call",
+      "role": null,
+      "turnId": "turn_0002",
+      "content": ""
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0002",
+      "content": "REPLY_TWO"
+    },
+    {
+      "kind": "system_task_notification",
+      "role": null,
+      "turnId": null,
+      "content": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-"
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "turnId": null,
+      "content": "CASE:RR-10 And now?"
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "turnId": "turn_0003",
+      "content": "REPLY_THREE"
+    }
+  ],
+  "requests": [
+    {
+      "at": 1794983321644,
+      "lastRole": "user",
+      "lastUser": "CASE:RR-10 Start the build in the background.",
+      "toolResults": []
+    },
+    {
+      "at": 1794983322602,
+      "lastRole": "tool",
+      "lastUser": "CASE:RR-10 Start the build in the background.",
+      "toolResults": [
+        "{\"pid\":86448,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-reminder-e2e-gc4zoV/workspace\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/restart_reminder_d0aa1717_d4002fd19baf41d7a5e7b79f0c30b955/call-1794983322580-86156.log\"}"
+      ]
+    },
+    {
+      "at": 1794983329435,
+      "lastRole": "user",
+      "lastUser": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-18 06:28 UTC (reason: a restart).\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.\n\nCASE:RR-10 Start the build again.",
+      "toolResults": []
+    },
+    {
+      "at": 1794983329632,
+      "lastRole": "tool",
+      "lastUser": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-18 06:28 UTC (reason: a restart).\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.\n\nCASE:RR-10 Start the build again.",
+      "toolResults": [
+        "{\"pid\":88441,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-reminder-e2e-gc4zoV/workspace\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/restart_reminder_d0aa1717_d4002fd19baf41d7a5e7b79f0c30b955/call-1794983329608-88384.log\"}"
+      ]
+    },
+    {
+      "at": 1794983345914,
+      "lastRole": "user",
+      "lastUser": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-18 06:29 UTC (reason: a restart).\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.\n\nCASE:RR-10 And now?",
+      "toolResults": []
+    }
+  ]
+}

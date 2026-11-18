@@ -67,6 +67,7 @@ export const buildRunProjectionConversation = (
         role: null,
         senderId: event.senderId,
         content: event.content,
+        ...(event.messageId ? { messageId: event.messageId } : {}),
         ts: event.ts,
       }];
     }

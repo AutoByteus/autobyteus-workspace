@@ -1,0 +1,4 @@
+# IMP-04 probe console lines (commit d4a14666a4, macOS headless Chrome, 2026-11-18)
+[mobile-shell] MSP-60 Pass
+[mobile-shell] MSP-74 Pass
+mobile-shell probe: Pass

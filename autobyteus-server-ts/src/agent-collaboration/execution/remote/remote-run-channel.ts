@@ -39,6 +39,19 @@ export type RemoteMessageTransmission = Readonly<{
   content: string;
   messageType: string;
   createdAt: string;
+}> | Readonly<{
+  nodeId: string;
+  /**
+   * autobyteus-492: a message to a running agent of that node by its run ID only, with no link (`unlinked_run`); it
+   * names no root: that node finds the agent's live root itself and never wakes it.
+   */
+  kind: "run_message";
+  messageId: string;
+  senderAgentRunId: string;
+  targetAgentRunId: string;
+  content: string;
+  messageType: string;
+  createdAt: string;
 }>;
 
 /** A run this node's delegation started on a peer (autobyteus-278): an Agent run, or a Team run. */

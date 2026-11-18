@@ -1,0 +1,7 @@
+# IMP-05
+# Command: python3 -I autobyteus-server-ts/tests/fixtures/collaboration-contract/export_contract_states.py tickets/done/delegated-copies-outlive-delegator-461/evidence/collaboration-model autobyteus-server-ts/tests/fixtures/collaboration-contract/contract-states.json --check
+# Commit: deacacf948
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-18
+
+autobyteus-server-ts/tests/fixtures/collaboration-contract/contract-states.json matches the model

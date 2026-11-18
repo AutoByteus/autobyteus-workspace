@@ -1,7 +1,8 @@
 <template>
-  <!-- The run list's ⋮ (autobyteus-525 DEC-001): the "On this phone" menu of the phone's own preferences. Text size is
-       its first group (a later Language group joins below it, autobyteus-509); a step applies at once to every phone
-       screen and the menu stays open so the change can be seen. The buttons keep 44 px tap targets at every step. -->
+  <!-- The run list's ⋮ (autobyteus-525 DEC-001): the menu of the phone's own preferences; "On this phone" is only its
+       accessible name (autobyteus-534 DEC-002). Text size is its first group, with its own header; a later Language
+       group joins below it with its own header (autobyteus-509). A step applies at once to every phone screen and the
+       menu stays open so the change can be seen. The buttons keep 44 px tap targets at every step. -->
   <div class="relative flex-shrink-0">
     <button
       ref="buttonRef"
@@ -20,14 +21,13 @@
       <div
         class="absolute right-0 top-12 z-30 w-72 max-w-[calc(100vw-1rem)] overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-lg"
         role="menu"
-        :aria-labelledby="headingId"
+        :aria-label="t('mobile.onThisPhone.title')"
         data-testid="mobile-on-this-phone-menu"
         @keydown.esc="close"
       >
-        <p :id="headingId" class="px-4 pb-1 pt-3 text-sm font-semibold text-slate-900" data-testid="mobile-on-this-phone-title">{{ t('mobile.onThisPhone.title') }}</p>
-        <div class="px-4 pb-3 pt-2" role="group" :aria-label="t('mobile.onThisPhone.textSize')" data-testid="mobile-text-size">
-          <p class="mb-2 text-xs font-medium text-slate-500">{{ t('mobile.onThisPhone.textSize') }}</p>
-          <div class="grid grid-cols-4 gap-1.5">
+        <div class="px-4 pb-3 pt-3" role="group" :aria-label="t('mobile.onThisPhone.textSize')" data-testid="mobile-text-size">
+          <p class="mb-2 text-sm font-semibold text-slate-900" data-testid="mobile-text-size-header">{{ t('mobile.onThisPhone.textSize') }}</p>
+          <div class="grid grid-cols-3 gap-1.5">
             <!-- Each "A" previews its own step in fixed px (autobyteus-525 REQ-006 exception). -->
             <button
               v-for="(entry, index) in PHONE_TEXT_SIZE_STEPS"
@@ -35,7 +35,7 @@
               type="button"
               class="flex h-11 min-h-[44px] items-center justify-center rounded-lg border font-medium leading-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               :class="current === entry.step ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-200 bg-white text-slate-700 active:bg-slate-100'"
-              :style="{ fontSize: `${13 + index * 3}px` }"
+              :style="{ fontSize: `${16 + index * 3}px` }"
               :aria-label="t(`mobile.onThisPhone.textSize.${entry.step}`)"
               :aria-pressed="current === entry.step"
               :data-testid="`mobile-text-size-${entry.step}`"
@@ -57,8 +57,6 @@ import { useAppFontSizeStore } from '~/stores/appFontSizeStore';
 const { t } = useLocalization();
 const appFontSize = useAppFontSizeStore();
 const current = computed(() => appFontSize.phoneTextSizeStep);
-/** One run list, so one menu: its heading names it. */
-const headingId = 'mobile-on-this-phone-title';
 const open = ref(false);
 const buttonRef = ref<HTMLButtonElement | null>(null);
 // Opened: the focus goes to the chosen step.

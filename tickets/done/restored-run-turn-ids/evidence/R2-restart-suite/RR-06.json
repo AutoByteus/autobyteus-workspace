@@ -1,0 +1,33 @@
+{
+  "runId": "restart_reminder_agy_2300d762_b1fef029b83e45418b27185d94f2f30b",
+  "entry": {
+    "root": {
+      "rootSubjectKind": "agent",
+      "rootRunId": "restart_reminder_agy_2300d762_b1fef029b83e45418b27185d94f2f30b"
+    },
+    "agentRunId": "restart_reminder_agy_2300d762_b1fef029b83e45418b27185d94f2f30b",
+    "place": "host",
+    "status": "idle",
+    "backgroundTasks": true,
+    "recordedAt": "2026-11-18T08:56:22.575Z",
+    "version": "1.5.13-beta.10"
+  },
+  "afterTake": {
+    "reminders": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "restart_reminder_agy_2300d762_b1fef029b83e45418b27185d94f2f30b"
+        },
+        "agentRunId": "restart_reminder_agy_2300d762_b1fef029b83e45418b27185d94f2f30b",
+        "place": "host",
+        "cause": "restart",
+        "version": "1.5.13-beta.10",
+        "restartedAt": "2026-11-18T08:56:35.419Z",
+        "interruptedTurn": false
+      }
+    ]
+  },
+  "echoed": "ECHO:\\\"[Platform notice — application restarted]\\\\n\\\\nThe application restarted at 2026-11-18 08:56 UTC (reason: a restart).\\\\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.\\\\n\\\\nECHO_INPUT what is the status?\\\"\",\"media\":null,\"ts\":1794992195.833}]",
+  "remindersAfter": null
+}

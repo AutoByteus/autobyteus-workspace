@@ -113,9 +113,10 @@
 //                  a folder (same file, after MSP-31).
 //   MSP-43 autobyteus-472  Touch zoom (pinch, scroll, double tap) of a PDF and an image in the phone viewer, the page itself
 //                  never zooming, and Download: `mobile-file-zoom-cases.mjs` (on the phone page, right after MSP-16).
-//   MSP-47…49, MSP-59 autobyteus-473, autobyteus-483  Background tasks: on the phone's Activity (a task started before it
-//                  opened, its end with its end line, a task started while open, a task the run's end stopped) and on the
-//                  desktop after a reload: `mobile-background-tasks-cases.mjs` (after MSP-43).
+//   MSP-47…49, MSP-59, MSP-78 autobyteus-473, autobyteus-483, autobyteus-517  Background tasks: on the phone's Activity
+//                  (a task started before it opened, its end with its end line, a task started while open, a task the
+//                  run's end stopped, a task that ended before it opened) and on the desktop after a reload:
+//                  `mobile-background-tasks-cases.mjs` (after MSP-43).
 //   MSP-33 autobyteus-435 REQ-005  A reload reopens the same subject on the same screen, after "Opening…" and never the
 //                  list first (a phone of its own): an agent run's Activity, a Team run's Messages, a Team member, a delegated
 //                  task agent (its host's rows read first); a row no node lists gives the list. New run → Create run: a
@@ -160,10 +161,15 @@
 //                  after the limits were raised with no reload, and a stale read of the limits gets the node's 413 as the same
 //                  line; cancel mid-upload leaves no message and no draft, a network drop shows the interrupted line and leaves
 //                  no draft: `mobile-context-file-size-cases.mjs` (its own node eta).
+//   MSP-75 autobyteus-526  A native run restarted twice (each time with a background build running), on the phone in
+//                  Europe/Berlin: live and after a reload, every input and reply once and one reminder card per restart, its
+//                  time in the viewer's zone; the agent got UTC. MSP-76, MSP-77 (SR-002): a Team's coordinator and an Org's
+//                  member told that their background build ended show that notice once, live and after a reload:
+//                  `mobile-restored-run-cases.mjs` (its own node delta).
 //   MSP-60…66, MSP-74 autobyteus-458/506/525  The readable phone conversation at 412 and 360 px (body width − 24, 17 px / 1.5, one
 //                  avatar and speaker line per turn, composer 8 px above the bottom; another agent's message keeps its arrow
-//                  and type line, as on the desktop); the run list's ⋮ → On this phone → Text size (the whole phone at
-//                  16 × step/17 px, the conversation 15/19/21 px, kept over a reload) and every phone screen at Largest;
+//                  and type line, as on the desktop); the run list's ⋮ → Text size (three steps; the whole phone at
+//                  16 × step/17 px, the conversation 17/19/21 px, kept over a reload) and every phone screen at Largest;
 //                  ⋮ → Settings on a stopped Team member (Runtime → Grok Build, its model, Save back, the node holds it,
 //                  the run continues on it), a refused Save (the run woken before Save: the node's words in the red card), a
 //                  live idle and a working run (the red stop icon, one tap, the rows open): `mobile-run-settings-cases.mjs`
@@ -205,6 +211,8 @@ import { runFileOpenCases } from './mobile-file-open-cases.mjs';
 // base merge; those IDs are autobyteus-workspace-6's context-file size cases).
 import { runStoppedDelegatorCases } from './mobile-stopped-delegator-cases.mjs';
 import { runContextFileSizeCases } from './mobile-context-file-size-cases.mjs';
+// MSP-75..77 (autobyteus-526): platform notices of native runs on the phone (its own node, Europe/Berlin).
+import { runRestoredRunCases } from './mobile-restored-run-cases.mjs';
 import { runFileZoomCases } from './mobile-file-zoom-cases.mjs';
 import { runLiveFileRefreshCases } from './mobile-live-file-refresh-cases.mjs';
 import { runBackgroundTaskCases } from './mobile-background-tasks-cases.mjs';
@@ -1456,7 +1464,7 @@ const runCases = async () => {
     await menuOpen(page, 'files');
     const remoteFiles = (await page.locator(sel('mobile-files-remote')).innerText().catch(() => '')).trim();
     await toList(page);
-    // autobyteus-458 UIS-002: Settings follows Activity (the Text size block below the divider is no menu item).
+    // autobyteus-458 UIS-002, autobyteus-534 REQ-005: Settings is the last entry (no VNC Viewer on alpha).
     assert(JSON.stringify(items.map(([id]) => id)) === JSON.stringify(['mobile-run-menu-artifacts', 'mobile-run-menu-files', 'mobile-run-menu-messages', 'mobile-run-menu-activity', 'mobile-run-menu-settings']), 'the member\'s ⋮ items in order', items);
     assert(artifacts.direct === 1 && artifacts.list === 0 && artifacts.text, 'one artifact shown directly', artifacts);
     assert(['docs', 'src', 'README.md'].every(name => filesTop.some(text => text.includes(name))) && filters === 0 && pathLine.includes('docs'), 'the Files tree, its path line, no filters', { filesTop, filters, pathLine });
@@ -2622,6 +2630,7 @@ const runCases = async () => {
   await runHeadingLinksCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
   await runCodeWrapCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
   await runContextFileSizeCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
+  await runRestoredRunCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
 
   await runCase('MSP-32', async () => {
     // autobyteus-435 REQ-010 (c): MSP-13 revoked the open phone (label `phone`), whose Check took it to pairing; the page

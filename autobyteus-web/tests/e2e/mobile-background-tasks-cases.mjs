@@ -14,6 +14,8 @@
 //   MSP-59 autobyteus-483 AC-007  The run is terminated while its task runs and the phone's Activity is open: the row shows
 //                  Stopped and the line "Stopped: the run ended". (MSP-47 also checks autobyteus-483 AC-006's line
 //                  "exit code 1".)
+//   MSP-78 autobyteus-517 AC-002  A task that ended (code 1) before the phone opened the run's Activity is still listed
+//                  there (the Antigravity view keeps ended tasks): Failed, with the line "exit code 1".
 import { attachToBrowserContext } from './fixtures/probe-node-access.mjs';
 import { waitForDevServerReady } from './fixtures/dev-server-ready.mjs';
 
@@ -149,6 +151,29 @@ export const runBackgroundTaskCases = async (probe) => {
     assert(terminated.success === true, 'the run was terminated', details);
     assert(ended.length === 1 && ended[0].status === 'stopped' && /Stopped/.test(ended[0].text), 'autobyteus-483 AC-007 the task shows Stopped', details);
     assert(ended[0].end === 'Stopped: the run ended', 'autobyteus-483 AC-007 the phone shows "Stopped: the run ended"', details);
+    await page.goBack();
+    return details;
+  });
+  await runCase('MSP-78', async () => {
+    const lateRun = await createRun();
+    const tasks = await startTask(lateRun, 5, 1, 'BG-517-LATE');
+    const task = tasks.find(entry => entry.status === 'running');
+    // The task ends (code 1) before anyone opens the run's Activity; the node's view still lists it (autobyteus-517 FU-003).
+    await waitFor('the node lists the ended task', async () => (await nodeTasks(lateRun)).some(entry => entry.status === 'failed'), 60_000).catch(() => undefined);
+    const nodeAfterEnd = await nodeTasks(lateRun);
+    await toList(page);
+    await waitFor('the run in the phone list', async () => (await page.locator(sel(`mobile-run-row-agent:${lateRun}`)).count()) > 0, 30_000);
+    await openRow(page, `agent:${lateRun}`);
+    await menuOpen(page, 'activity');
+    await page.locator(sel('mobile-activity')).waitFor({ timeout: 20_000 });
+    await waitFor('the ended task listed on the phone', async () => (await phoneRows()).length > 0, 20_000).catch(() => undefined);
+    const listed = await phoneRows();
+    await shot(page, 'MSP-78-activity-opened-after-end');
+    const details = { lateRun, task, nodeAfterEnd, listed };
+    assert(nodeAfterEnd.length === 1 && nodeAfterEnd[0].status === 'failed', 'autobyteus-517 AC-002 the node view still lists the ended task', details);
+    assert(listed.length === 1 && listed[0].status === 'failed' && /Failed/.test(listed[0].text) && listed[0].text.includes(task.command),
+      'autobyteus-517 AC-002 Activity opened after the end lists the task as Failed, with its command', details);
+    assert(listed[0].end === 'exit code 1', 'autobyteus-517 AC-002 the phone shows its end line "exit code 1"', details);
     await page.goBack();
     return details;
   });

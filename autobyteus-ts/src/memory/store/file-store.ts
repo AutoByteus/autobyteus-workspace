@@ -1,10 +1,7 @@
 import path from 'node:path';
 
 import { MemoryStore, type PreparedCompactionArchive } from './base-store.js';
-import { MemoryType, MemoryItem } from '../models/memory-types.js';
-import { RawTraceItem } from '../models/raw-trace-item.js';
-import { EpisodicItem } from '../models/episodic-item.js';
-import { SemanticItem } from '../models/semantic-item.js';
+import type { RawTraceItem } from '../models/raw-trace-item.js';
 import { RunMemoryFileStore } from './run-memory-file-store.js';
 import type { SystemInstructionCaptureResult } from '../models/system-instruction-trace.js';
 
@@ -29,14 +26,8 @@ export class FileMemoryStore extends MemoryStore {
     this.runStore = new RunMemoryFileStore(this.agentDir);
   }
 
-  add(items: Iterable<MemoryItem>): void {
+  add(items: Iterable<RawTraceItem>): void {
     this.runStore.add(items);
-  }
-
-  list(memoryType: MemoryType, limit?: number): MemoryItem[] {
-    const records = this.runStore.readMemoryDicts(memoryType);
-    const items = records.map((record) => this.deserialize(memoryType, record));
-    return typeof limit === 'number' ? items.slice(-limit) : items;
   }
 
   listTurnRawTracesOrdered(limit?: number): RawTraceItem[] {
@@ -69,18 +60,5 @@ export class FileMemoryStore extends MemoryStore {
 
   pruneRawTracesById(traceIdsToRemove: Iterable<string>, archive = true): void {
     this.runStore.pruneRawTracesById(traceIdsToRemove, archive);
-  }
-
-  private deserialize(memoryType: MemoryType, data: Record<string, unknown>): MemoryItem {
-    if (memoryType === MemoryType.RAW_TRACE) {
-      return RawTraceItem.fromDict(data);
-    }
-    if (memoryType === MemoryType.EPISODIC) {
-      return EpisodicItem.fromDict(data);
-    }
-    if (memoryType === MemoryType.SEMANTIC) {
-      return SemanticItem.fromDict(data);
-    }
-    throw new Error(`Unknown memory type: ${memoryType}`);
   }
 }

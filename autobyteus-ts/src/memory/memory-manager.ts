@@ -11,7 +11,6 @@ import { toModelToolName } from '../agent/tool-search/call-tool.js';
 import type { ContextFileReference } from '../agent/message/context-file-reference.js';
 import { RawTraceItem, type RawTraceItemOptions } from './models/raw-trace-item.js';
 import { toolCallIdentityKey } from './models/tool-call-identity.js';
-import { MemoryType } from './models/memory-types.js';
 import { MemoryStore } from './store/base-store.js';
 import type { SystemInstructionCaptureResult } from './models/system-instruction-trace.js';
 import { TurnTracker } from './turn-tracker.js';
@@ -95,7 +94,6 @@ export type OperationBoundaryNoteInput = { scope: MemoryProjectionScope; reason?
 export class MemoryManager {
   store: MemoryStore;
   turnTracker: TurnTracker;
-  memoryTypes = MemoryType;
   private readonly workingContextController: MemoryManagerWorkingContextController;
   workingContextSnapshotStore: WorkingContextSnapshotStore | null;
   private readonly compactionCoordinator: MemoryManagerCompactionCoordinator;
@@ -111,7 +109,10 @@ export class MemoryManager {
     workingContextSnapshotStore?: WorkingContextSnapshotStore | null;
     agentId?: string | null }) {
     this.store = options.store;
-    this.turnTracker = options.turnTracker ?? new TurnTracker();
+    // The run's complete stored raw-trace corpus (archived segments and the active file): a restored run's turn ids
+    // continue after its stored turns, and its tool lifecycle state is rebuilt from it.
+    const storedTraces = this.store.listTurnRawTraceCorpusOrdered();
+    this.turnTracker = options.turnTracker ?? TurnTracker.continuingAfter(storedTraces.map((item) => item.turnId));
     this.automaticCompactionConfiguration = options.memoryCompaction ?? DEFAULT_MEMORY_COMPACTION_CONFIGURATION;
     this.workingContextSnapshotStore = options.workingContextSnapshotStore ?? null;
     this.workingContextController = new MemoryManagerWorkingContextController({
@@ -125,7 +126,7 @@ export class MemoryManager {
       snapshotStore: this.workingContextSnapshotStore,
       agentId: options.agentId ?? this.workingContextSnapshotStore?.agentId ?? null,
     });
-    this.toolLifecycleState = new ToolTraceLifecycleState(this.store.listTurnRawTraceCorpusOrdered());
+    this.toolLifecycleState = new ToolTraceLifecycleState(storedTraces);
     this.llmRequestRecovery = new LlmRequestRecoveryBoundary({
       getWorkingContext: () => this.workingContextController.getContext(),
       setWorkingContext: (workingContext) => this.workingContextController.install(workingContext),

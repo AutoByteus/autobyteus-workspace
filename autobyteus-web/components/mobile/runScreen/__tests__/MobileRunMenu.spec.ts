@@ -1,5 +1,6 @@
-// The run screen's ⋮ menu (autobyteus-458, autobyteus-522, autobyteus-525 REQ-003): Settings for every run, right after
-// Activity; Messages and VNC Viewer when they apply; no Text size (the phone's Text size is on the run list).
+// The run screen's ⋮ menu (autobyteus-458, autobyteus-522, autobyteus-525 REQ-003, autobyteus-534 REQ-005): Settings for
+// every run, the last entry; Messages and VNC Viewer when they apply; no Text size (the phone's Text size is on the run
+// list).
 import { afterEach, describe, expect, it } from 'vitest';
 import { enableAutoUnmount, mount } from '@vue/test-utils';
 import MobileRunMenu from '../MobileRunMenu.vue';
@@ -18,8 +19,9 @@ describe('the run menu\'s entries', () => {
   it.each([
     [{ showMessages: false, showDesktop: false }, ['Artifacts', 'Files', 'Activity', 'Settings']],
     [{ showMessages: true, showDesktop: false }, ['Artifacts', 'Files', 'Messages', 'Activity', 'Settings']],
-    [{ showMessages: true, showDesktop: true }, ['Artifacts', 'Files', 'Messages', 'Activity', 'Settings', 'VNC Viewer']],
-  ])('%j: Settings after Activity, always (autobyteus-522)', async (props, entries) => {
+    [{ showMessages: false, showDesktop: true }, ['Artifacts', 'Files', 'Activity', 'VNC Viewer', 'Settings']],
+    [{ showMessages: true, showDesktop: true }, ['Artifacts', 'Files', 'Messages', 'Activity', 'VNC Viewer', 'Settings']],
+  ])('%j: Settings always, and last (autobyteus-522, autobyteus-534)', async (props, entries) => {
     expect(await entriesOf(props)).toEqual(entries);
   });
 

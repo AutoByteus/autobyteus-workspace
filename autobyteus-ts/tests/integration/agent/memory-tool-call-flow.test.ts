@@ -9,7 +9,6 @@ import { LLMUserMessage } from '../../../src/llm/user-message.js';
 import { CompleteResponse } from '../../../src/llm/utils/response-types.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
-import { MemoryType } from '../../../src/memory/models/memory-types.js';
 import { defaultToolRegistry } from '../../../src/tools/registry/tool-registry.js';
 import { registerWriteFileTool } from '../../../src/tools/file/write-file.js';
 import { OpenAiJsonSchemaFormatter } from '../../../src/tools/usage/formatters/openai-json-schema-formatter.js';
@@ -112,7 +111,7 @@ runIntegration('Memory tool call flow (LM Studio)', () => {
         'LLMCompleteResponseReceivedEvent'
       );
 
-      const rawItems = store.list(MemoryType.RAW_TRACE);
+      const rawItems = store.listTurnRawTracesOrdered();
       const traceTypes = new Set(rawItems.map((item) => item.traceType));
       expect(traceTypes.has('tool_call')).toBe(true);
       expect(traceTypes.has('tool_result')).toBe(true);

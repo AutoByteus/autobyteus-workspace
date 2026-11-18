@@ -1,0 +1,590 @@
+{
+  "startedAt": "2026-11-18T11:25:16.190Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 62964,
+      "nodeId": "srv_YNRpN4lpCcJhz9U0MMuLckJ1L8Oj-Ws0",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 62963,
+      "nodeId": "srv_DdpLTyyM6IcxqOKQKGllmQGj1jGYyn49",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_3ac10fa5cac34ffb8b3c5fdc21b7940f",
+    "writerRun": "release_notes_writer_9da7a6abec8e450788145cc01c653b42",
+    "squadRun": "docs_review_team_3a4635ba9800467fab527c219d615fc9",
+    "reviewer": "release_notes_writer_21e90f9062f3499baebb2778756f478e",
+    "memberDelegated": "fact_checker_79198e929e6e44eeb11709236db565c6",
+    "remoteAgentRun": "publisher_708bbbb1237847298ee031e8b1ff8f1c",
+    "remoteTeamRun": "studio_team_97c6af6efef9439a8edfac9422a9436f",
+    "plain": [
+      "fact_checker_8789a784cff5416c94eed57e19dec065",
+      "fact_checker_f1098f0a2e1e433db3d9b62234bfcb51",
+      "fact_checker_29d5a8e2eede4483a095958a8cc7d56f"
+    ],
+    "org": "delivery_org_9e72127557234d9d88462cc8eb52dc56",
+    "orgPlanner": "release_notes_writer_3ca886982206407a8ab1d5757b858a3f",
+    "reviewOrg": "review_org_7391f83045b2453d9bc91a6d67522b28",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_055450c216bc4f82826ac1b92e6b71cc",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_0fbfc5a4bd1940e885046f3ba3d5ca51",
+    "deliveryLead": "fact_checker_bd2311647ab647ee96278c22e524ee7c",
+    "deliveryMate": "release_notes_writer_1ce76de468624046ae996d006287e501",
+    "leadDelegated": "changelog_helper_326877b65d8a4c809c5d729d91659b06",
+    "approver": "approver_827a8cb5bcf34fe19e86b0e65c7aa643",
+    "taskA": "launch-62058f-1",
+    "taskB": "launch-62058f-2"
+  },
+  "cases": {
+    "MSP-08": {
+      "result": "Pass",
+      "seconds": 8.3,
+      "items": [
+        [
+          "mobile-run-menu-artifacts",
+          "Artifacts"
+        ],
+        [
+          "mobile-run-menu-files",
+          "Files"
+        ],
+        [
+          "mobile-run-menu-messages",
+          "Messages"
+        ],
+        [
+          "mobile-run-menu-activity",
+          "Activity"
+        ],
+        [
+          "mobile-run-menu-settings",
+          "Settings"
+        ]
+      ],
+      "artifacts": {
+        "direct": 1,
+        "list": 0,
+        "title": "Artifacts",
+        "text": true
+      },
+      "filesTop": [
+        "docs",
+        "src",
+        "notes.md",
+        "README.md"
+      ],
+      "filters": 0,
+      "pathLine": "workspace docs",
+      "attach": 0,
+      "searchRows": [
+        "app.ts src/app.ts"
+      ],
+      "messages": [
+        "To mate Nov 18, 11:25 AM Read the guide first. Marker TEAM-NOTE. guide.md"
+      ],
+      "referenceText": true,
+      "activity": [
+        "generate_image generate_image success"
+      ],
+      "plainItems": [
+        "Artifacts",
+        "Files",
+        "Activity",
+        "Settings"
+      ],
+      "artifactsEmpty": "No Artifacts yet Generated or edited files for this run will appear here as they become available.",
+      "activityEmpty": "No activity yet",
+      "remoteArtifacts": "The files this run wrote are on beta-node. Open it in that node's window to see them.",
+      "remoteFiles": "The files of this run are on beta-node. Open it in that node's window to see them."
+    },
+    "MSP-60": {
+      "result": "Pass",
+      "seconds": 6.3,
+      "before": {
+        "step": "standard",
+        "root": 16,
+        "runName": 15,
+        "feed": null,
+        "menuOpen": false,
+        "pressed": null
+      },
+      "menu": {
+        "label": "On this phone",
+        "title": false,
+        "visibleText": "Text size",
+        "header": "Text size",
+        "group": "Text size",
+        "steps": [
+          "mobile-text-size-standard",
+          "mobile-text-size-large",
+          "mobile-text-size-largest"
+        ]
+      },
+      "steps": {
+        "large": {
+          "step": "large",
+          "root": 17.8824,
+          "runName": 16.7647,
+          "feed": null,
+          "menuOpen": true,
+          "pressed": "mobile-text-size-large"
+        },
+        "largest": {
+          "step": "largest",
+          "root": 19.7647,
+          "runName": 18.5294,
+          "feed": null,
+          "menuOpen": true,
+          "pressed": "mobile-text-size-largest"
+        }
+      },
+      "focusBack": "mobile-on-this-phone-button",
+      "conversation": {
+        "step": "largest",
+        "root": 19.7647,
+        "runName": null,
+        "feed": 21,
+        "menuOpen": false,
+        "pressed": null
+      },
+      "runMenu": {
+        "entries": [
+          "Artifacts",
+          "Files",
+          "Messages",
+          "Activity",
+          "Settings"
+        ],
+        "textSize": 0
+      },
+      "afterReload": {
+        "step": "largest",
+        "root": 19.7647,
+        "runName": null,
+        "feed": 21,
+        "menuOpen": false,
+        "pressed": null,
+        "firstScreen": {
+          "root": "19.7647px",
+          "step": "largest"
+        }
+      },
+      "reopened": {
+        "step": "largest",
+        "root": 19.7647,
+        "runName": 18.5294,
+        "feed": null,
+        "menuOpen": true,
+        "pressed": "mobile-text-size-largest"
+      },
+      "savedSmall": {
+        "step": "standard",
+        "root": 16,
+        "runName": 15,
+        "feed": null,
+        "menuOpen": false,
+        "pressed": null,
+        "firstScreen": {
+          "root": "16px",
+          "step": "standard"
+        },
+        "stored": "small"
+      },
+      "savedSmallMenu": {
+        "step": "standard",
+        "root": 16,
+        "runName": 15,
+        "feed": null,
+        "menuOpen": true,
+        "pressed": "mobile-text-size-standard"
+      },
+      "standard": {
+        "step": "standard",
+        "root": 16,
+        "runName": 15,
+        "feed": null,
+        "menuOpen": true,
+        "pressed": "mobile-text-size-standard",
+        "stored": "standard"
+      }
+    },
+    "MSP-74": {
+      "result": "Pass",
+      "seconds": 51.2,
+      "monacoPx": 17,
+      "cleanup": null,
+      "screens": {
+        "412-run-list": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-on-this-phone-menu": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-connection-sheet": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-unpair-confirm": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-new-run": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-new-run-agent-sheet": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-conversation": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-run-menu": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-artifacts": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-files": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-file-viewer": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-messages": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-activity": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-settings": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-setup": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-pairing-link": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-connected-to": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-run-list": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-on-this-phone-menu": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-connection-sheet": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-unpair-confirm": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-new-run": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-new-run-agent-sheet": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-conversation": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-run-menu": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-artifacts": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-files": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-file-viewer": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-messages": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-activity": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-settings": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-setup": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-pairing-link": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-connected-to": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-background-row": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-background-run-screen": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-remote-run-settings": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-background-row": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-background-run-screen": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-remote-run-settings": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        }
+      }
+    },
+    "MSP-67": {
+      "result": "Pass",
+      "seconds": 6.9,
+      "entries": [
+        "artifacts",
+        "files",
+        "messages",
+        "activity",
+        "settings"
+      ],
+      "stop": {
+        "live": {
+          "open": true,
+          "subject": "reviewerIdle · in docs review team",
+          "status": "Idle · in docs review team",
+          "runtime": "Antigravity CLI",
+          "model": "Gemini test",
+          "rows": true,
+          "runtimeDisabled": true,
+          "save": true,
+          "saveDisabled": true,
+          "stop": true,
+          "remote": null,
+          "error": null
+        },
+        "stopped": {
+          "open": true,
+          "subject": "reviewerStopped · in docs review team",
+          "status": "Stopped · in docs review team",
+          "runtime": "Antigravity CLI",
+          "model": "Gemini test",
+          "rows": true,
+          "runtimeDisabled": false,
+          "save": true,
+          "saveDisabled": true,
+          "stop": false,
+          "remote": null,
+          "error": null
+        }
+      },
+      "before": {
+        "ptm": {
+          "isActive": true,
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        },
+        "team": {
+          "isActive": true,
+          "members": {
+            "/reviewer": {
+              "agentRunId": "release_notes_writer_73b1fe8456184bf0a9abaf17346c1af1",
+              "runtimeKind": "antigravity_cli",
+              "model": "gemini-3.8-flash-low"
+            },
+            "/editor": {
+              "agentRunId": "fact_checker_fb4cfe102310467fa386f1d37748a832",
+              "runtimeKind": "antigravity_cli",
+              "model": "gemini-3.8-flash-low"
+            }
+          }
+        }
+      },
+      "afterStop": {
+        "ptm": {
+          "isActive": true,
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        },
+        "team": false
+      },
+      "saved": {
+        "chosen": {
+          "open": true,
+          "subject": "reviewerStopped · in docs review team",
+          "status": "Stopped · in docs review team",
+          "runtime": "Grok Build",
+          "model": "Grok 4.7",
+          "rows": true,
+          "runtimeDisabled": false,
+          "save": true,
+          "saveDisabled": false,
+          "stop": false,
+          "remote": null,
+          "error": null
+        },
+        "back": true
+      },
+      "after": {
+        "/reviewer": {
+          "agentRunId": "release_notes_writer_73b1fe8456184bf0a9abaf17346c1af1",
+          "runtimeKind": "grok_build",
+          "model": "grok-4.7"
+        },
+        "/editor": {
+          "agentRunId": "fact_checker_fb4cfe102310467fa386f1d37748a832",
+          "runtimeKind": "antigravity_cli",
+          "model": "gemini-3.8-flash-low"
+        }
+      },
+      "again": {
+        "open": true,
+        "subject": "reviewerStopped · in docs review team",
+        "status": "Stopped · in docs review team",
+        "runtime": "Grok Build",
+        "model": "Grok 4.7",
+        "rows": true,
+        "runtimeDisabled": false,
+        "save": true,
+        "saveDisabled": true,
+        "stop": false,
+        "remote": null,
+        "error": null
+      },
+      "continued": {
+        "isActive": true,
+        "reviewer": {
+          "agentRunId": "release_notes_writer_73b1fe8456184bf0a9abaf17346c1af1",
+          "runtimeKind": "grok_build",
+          "model": "grok-4.7"
+        }
+      }
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [
+    {
+      "case": "MSP-60",
+      "label": "phone",
+      "url": "http://192.168.77.10:62963/graphql",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-60",
+      "label": "phone",
+      "url": "http://192.168.77.10:62963/graphql",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-08": "Pass",
+      "MSP-60": "Pass",
+      "MSP-74": "Pass",
+      "MSP-67": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-18T11:27:42.007Z"
+}

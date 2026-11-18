@@ -1,6 +1,5 @@
 import { contextFileReferenceToDict, type ContextFileReference } from '../../agent/message/context-file-reference.js';
 import { parseRawTraceFileAttachments, validateFileAttachments } from './raw-trace-attachments.js';
-import { MemoryType, MemoryItem } from './memory-types.js';
 
 export type RawTraceMedia = {
   images?: string[];
@@ -31,7 +30,7 @@ export type RawTraceItemOptions = {
   dedupeKey?: string;
 };
 
-export class RawTraceItem implements MemoryItem {
+export class RawTraceItem {
   id: string;
   ts: number;
   turnId: string;
@@ -76,11 +75,10 @@ export class RawTraceItem implements MemoryItem {
     if (this.traceType === 'user') {
       this.messageId = normalizeInputKey(options.messageId);
       this.dedupeKey = normalizeInputKey(options.dedupeKey);
+    } else if (this.traceType === 'system_task_notification') {
+      // A notice's one id (autobyteus-526), the same as on its published notice.
+      this.messageId = normalizeInputKey(options.messageId);
     }
-  }
-
-  get memoryType(): MemoryType {
-    return MemoryType.RAW_TRACE;
   }
 
   toDict(): Record<string, unknown> {
@@ -107,6 +105,8 @@ export class RawTraceItem implements MemoryItem {
     if (this.traceType === 'user') {
       if (this.messageId) data.message_id = this.messageId;
       if (this.dedupeKey) data.dedupe_key = this.dedupeKey;
+    } else if (this.traceType === 'system_task_notification' && this.messageId) {
+      data.message_id = this.messageId;
     }
 
     return data;

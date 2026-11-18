@@ -1,0 +1,15 @@
+# R2 phone: node tests/e2e/mobile-shell-probe.mjs --cases=MSP-75,MSP-76,MSP-77 (own node delta = dist of ee5e87495f; production phone bundle; Europe/Berlin)
+# earlier attempts: the probe's shared stack setup (AGY discovery / phone pairing) timed out at load 50-90; my module's pairing wait and list navigation fixed (no product cause)
+[mobile-shell] MSP-75 …
+[mobile-shell] MSP-75 Pass
+[mobile-shell] MSP-76 …
+[mobile-shell] MSP-76 Pass
+[mobile-shell] MSP-77 …
+[mobile-shell] MSP-77 Pass
+mobile-shell probe: Pass
+MSP-75 agentTimes ['2026-11-18 09:35 UTC', '2026-11-18 09:36 UTC'] expected ['18 Nov 2026, 10:35 CET', '18 Nov 2026, 10:36 CET']
+MSP-75 afterFirst cards 1 inputs [1, 1, 0] replies [1, 1, 0]
+MSP-75 live cards 2 inputs [1, 1, 1] replies [1, 1, 1]
+MSP-75 reloaded cards 2 inputs [1, 1, 1] replies [1, 1, 1]
+MSP-76 live cards 1 started 1 noted 1 | reload cards 1 started 1 noted 1 | notice reached agent True
+MSP-77 live cards 1 started 1 noted 1 | reload cards 1 started 1 noted 1 | notice reached agent True

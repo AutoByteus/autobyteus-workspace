@@ -62,7 +62,7 @@ const buildItems = (): RecentEventMonitorPresentationItem[] => [{
         type: 'edit_file', invocationId: 'edit-1', toolName: '', arguments: {}, status: 'success',
         path: '/workspace/edit.txt', originalContent: 'hidden patch', language: 'text', ...toolLifecycle,
       },
-      { type: 'system_task_notification', senderId: 'hidden-sender', content: 'task ready' },
+      { type: 'system_task_notification', senderId: 'hidden-sender', content: 'task ready', messageId: null },
       {
         type: 'inter_agent_message', messageId: 'inter-1', senderAgentRunId: 'sender-1',
         recipientRoleName: 'Reviewer', messageType: 'handoff', content: 'please review',

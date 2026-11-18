@@ -1,0 +1,10 @@
+# IMP-03 autobyteus-ts full suite
+# command: pnpm -C autobyteus-ts test
+# commit: working tree = 9f9ad727b5's autobyteus-ts (tests and src as committed there)
+# environment: macOS, node v22.23.1; host load average ~70
+# date: 2026-11-18
+      Tests  1 failed | 2492 passed | 108 skipped (2601)
+ FAIL  tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: probe cases > 8 background form: kill <pid> stops everything the command started, reported in the kill's own result
+ Test Files  1 failed | 404 passed | 23 skipped (428)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+# rerun alone: pnpm -C autobyteus-ts exec vitest run tests/integration/tools/terminal/run-bash-wrapper.test.ts -> Tests  26 passed (26)

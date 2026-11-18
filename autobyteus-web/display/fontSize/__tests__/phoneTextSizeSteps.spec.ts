@@ -15,11 +15,12 @@ afterEach(() => {
 });
 
 describe('phoneTextSizeSteps', () => {
-  it('has the four steps of autobyteus-506 under the same storage key', () => {
-    expect(PHONE_TEXT_SIZE_STEPS.map((entry) => [entry.step, entry.px])).toEqual([['small', 15], ['standard', 17], ['large', 19], ['largest', 21]]);
+  it('has three steps, Standard the smallest (autobyteus-534), under the same storage key', () => {
+    expect(PHONE_TEXT_SIZE_STEPS.map((entry) => [entry.step, entry.px])).toEqual([['standard', 17], ['large', 19], ['largest', 21]]);
     expect(PHONE_TEXT_SIZE_STORAGE_KEY).toBe('autobyteus.phone.textSize');
     expect(isPhoneTextSizeStep('largest')).toBe(true);
     expect(isPhoneTextSizeStep('extra-large')).toBe(false);
+    expect(isPhoneTextSizeStep('small')).toBe(false);
   });
 
   it('Standard is today\'s sizes; every step scales the root by px/17 so 1.0625rem is the step\'s px; code text 14 × px/17', () => {
@@ -28,9 +29,9 @@ describe('phoneTextSizeSteps', () => {
       const metrics = phoneTextSizeMetrics(step);
       expect(16 * (metrics.rootPercent / 100) * 1.0625).toBeCloseTo(px, 9);
     }
-    expect(PHONE_TEXT_SIZE_STEPS.map(({ step }) => phoneTextSizeMetrics(step).editorFontPx)).toEqual([12, 14, 16, 17]);
+    expect(PHONE_TEXT_SIZE_STEPS.map(({ step }) => phoneTextSizeMetrics(step).editorFontPx)).toEqual([14, 16, 17]);
     expect(phoneTextSizeMetrics('largest').rootPercent).toBeCloseTo(123.529, 3);
-    expect(phoneTextSizeMetrics('small').rootPercent).toBeCloseTo(88.235, 3);
+    expect(phoneTextSizeMetrics('large').rootPercent).toBeCloseTo(111.765, 3);
   });
 
   it('reads the kept step (a beta.9 choice carries over); none, unknown or unreadable storage is Standard', () => {
@@ -43,10 +44,20 @@ describe('phoneTextSizeSteps', () => {
     expect(readStoredPhoneTextSizeStep()).toBe('standard');
   });
 
+  it('a saved Small (no longer a step, autobyteus-534 REQ-003) reads as Standard; the reader writes nothing', () => {
+    window.localStorage.setItem(PHONE_TEXT_SIZE_STORAGE_KEY, 'small');
+    const setItem = vi.spyOn(Storage.prototype, 'setItem');
+    const removeItem = vi.spyOn(Storage.prototype, 'removeItem');
+    expect(readStoredPhoneTextSizeStep()).toBe('standard');
+    expect(window.localStorage.getItem(PHONE_TEXT_SIZE_STORAGE_KEY)).toBe('small');
+    expect(setItem).not.toHaveBeenCalled();
+    expect(removeItem).not.toHaveBeenCalled();
+  });
+
   it('keeps a step; a storage that refuses the write does not throw', () => {
     writeStoredPhoneTextSizeStep('large');
     expect(window.localStorage.getItem(PHONE_TEXT_SIZE_STORAGE_KEY)).toBe('large');
     vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('full'); });
-    expect(() => writeStoredPhoneTextSizeStep('small')).not.toThrow();
+    expect(() => writeStoredPhoneTextSizeStep('largest')).not.toThrow();
   });
 });

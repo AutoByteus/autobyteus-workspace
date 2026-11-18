@@ -1,0 +1,30 @@
+# DEL-10 gated memory flows on the merged state (delivery) | HEAD 45b410675c | 2026-11-18T13:39:37Z
+14:39  up 30 days, 18 mins, 10 users, load averages: 44.61 84.01 89.04
+
+IDENTIFIER              MODEL                   STATUS    SIZE        CONTEXT    PARALLEL    LOAD CONFIG    DEVICE    TTL     
+qwen/qwen3.6-35b-a3b    qwen/qwen3.6-35b-a3b    IDLE      20.43 GB    262144     4           LM Studio      Local     58m / 1h
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/retired-memory-items-and-stale-built-ins/autobyteus-ts
+
+stdout | tests/integration/agent/memory-llm-flow.test.ts > Memory assembler with LM Studio > ingests memory around LLM responses
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/integration/agent/memory-tool-call-flow.test.ts > Memory tool call flow (LM Studio) > ingests tool calls/results and follow-up responses
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/integration/agent/memory-tool-call-flow.test.ts > Memory tool call flow (LM Studio) > ingests tool calls/results and follow-up responses
+Successfully registered tool definition: 'write_file'
+
+ ✓ tests/integration/agent/memory-llm-flow.test.ts > Memory assembler with LM Studio > ingests memory around LLM responses 20736ms
+stdout | tests/integration/agent/memory-tool-call-flow.test.ts > Memory tool call flow (LM Studio) > ingests tool calls/results and follow-up responses
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+ ✓ tests/integration/agent/memory-tool-call-flow.test.ts > Memory tool call flow (LM Studio) > ingests tool calls/results and follow-up responses 26946ms
+
+ Test Files  2 passed (2)
+      Tests  2 passed (2)
+   Start at  14:39:38
+   Duration  28.83s (transform 1.78s, setup 121ms, import 3.27s, tests 47.69s, environment 0ms)
+
+=== DEL-10 exit 0

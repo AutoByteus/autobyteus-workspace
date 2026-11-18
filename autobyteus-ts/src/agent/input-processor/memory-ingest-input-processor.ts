@@ -58,6 +58,7 @@ export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcess
       // linked to both traces explicitly, because its content matches neither.
       const traceIds = [memoryManager.appendRawTrace({
         turnId, traceType: 'system_task_notification', content: preface.content, senderId: preface.senderId, sourceEvent: SOURCE_EVENT,
+        messageId: preface.noticeId ?? undefined,
       }).id];
       const inputContent = stripPlatformInputPreface(llmUserMessage.content, preface);
       if (inputContent !== null) {

@@ -20,6 +20,12 @@
  *   RR-05  update, input sent the moment the node answers: exactly one reminder between the wake and the input (AC-004)
  *   RR-06  Antigravity idle with an open daemon step (its background task): recorded, reminded with its next input
  *          (AC-003)
+ *   RR-10  a native run restarted twice (a background build running at each restart): every turn has its own id, in the
+ *          stored traces and on the live stream, and the conversation the app loads gives each reminder and each reply its
+ *          own turn (autobyteus-526 AC-002; on the base build the turns after a restart reuse `turn_0001`)
+ *   RR-11  needs RESTART_REMINDER_BASE_SERVER_DIR (a build from before autobyteus-526): a run restarted twice on that
+ *          build keeps its stored duplicate turn ids when this build opens it (not rewritten), and its next turn continues
+ *          after the highest stored id (autobyteus-526 DEC-003; what its old turns show is recorded)
  *
  *   RR-07  (live) Claude idle with a background Bash command: recorded, reminded with its next input, and it answers
  *          knowing the command was stopped (AC-003)
@@ -55,6 +61,7 @@ import { capturedTestVaultSetting } from "../../../../test-support/test-vault/te
 const ENABLED = process.env.RUN_RESTART_REMINDER_E2E === "1" && process.platform !== "win32";
 const LIVE = ENABLED && process.env.RUN_RESTART_REMINDER_LIVE_E2E === "1";
 const SERVER_DIR = path.resolve(process.env.RESTART_REMINDER_SERVER_DIR ?? path.resolve(__dirname, "../../.."));
+const BASE_SERVER_DIR = process.env.RESTART_REMINDER_BASE_SERVER_DIR?.trim() ? path.resolve(process.env.RESTART_REMINDER_BASE_SERVER_DIR) : null;
 const EVIDENCE_DIR = process.env.RESTART_REMINDER_E2E_EVIDENCE_DIR?.trim() || null;
 const AGY_CLI = path.resolve(__dirname, "../../fixtures/agy-failure-cli.mjs");
 const HEADER = "[Platform notice — application restarted]";
@@ -215,6 +222,8 @@ const previousReleaseOf = async (serverDir: string): Promise<string> => {
   return dir;
 };
 
+/** One item of the conversation the app loads (`getRunProjection`). */
+type ConversationItem = { kind: string; role: string | null; turnId: string | null; content: string };
 type Channel = { frames: Array<{ type: string; payload: Json; at: number }>; send: (content: string) => void; close: () => void };
 const channelOf = async (session: Session, runId: string): Promise<Channel> => {
   const socket = new WebSocket(`${session.url.replace(/^http/, "ws")}/ws/agent/${runId}`);
@@ -551,6 +560,113 @@ describe.skipIf(!ENABLED)("Restart reminder across real restarts of the built se
     expect(remindersAfter?.reminders ?? []).toEqual([]);
   }, 300_000);
   /** A run of another runtime on the node (live cases); returns its id and channel. */
+  /** The run's stored raw traces in order (archived segments, then the active file): turn id, type, content start. */
+  const tracesOf = async (node: TestNode, runId: string) => {
+    const files = execFileSync("find", [node.root, "-path", `*${runId}*`, "-name", "raw_traces*.jsonl"], { encoding: "utf8" }).trim().split("\n").filter(Boolean)
+      .sort((left, right) => Number(left.endsWith("raw_traces_active.jsonl")) - Number(right.endsWith("raw_traces_active.jsonl")) || left.localeCompare(right));
+    const lines = (await Promise.all(files.map((file) => fs.readFile(file, "utf8")))).flatMap((body) => body.split("\n").filter(Boolean));
+    return { files: files.map((file) => path.relative(node.root, file)), lines,
+      traces: lines.map((line) => JSON.parse(line) as Json).map((trace) => ({ turnId: (trace.turn_id ?? null) as string | null, type: String(trace.trace_type ?? ""), content: String(trace.content ?? "").slice(0, 80) })) };
+  };
+  /** The conversation as the app loads it (a reload, the phone opening the run). */
+  const conversationOf = async (session: Session, runId: string): Promise<ConversationItem[]> => ((await session.gql(`query($id:String!){getRunProjection(runId:$id){conversation}}`, { id: runId }))
+    .getRunProjection?.conversation ?? []).map((item: Json) => ({ kind: String(item.kind ?? ""), role: (item.role ?? null) as string | null, turnId: (item.turnId ?? null) as string | null,
+    content: String(item.content ?? "") }));
+  /** The conversation as a reader sees it: inputs, reminders and the agent's text replies (with their turn), in order. */
+  const shownOf = (conversation: ConversationItem[]) => conversation.flatMap((item) =>
+    item.content.includes(HEADER) ? ["reminder"]
+      : item.kind === "message" && item.role === "user" ? [`user:${item.content.replace(/^CASE:[A-Z0-9-]+ /, "")}`]
+        : item.kind === "message" && item.role === "assistant" && item.content ? [`assistant:${item.content}@${item.turnId}`] : []);
+  const turnsStarted = (channel: Channel) => [...new Set(channel.frames.filter((frame) => frame.type === "TURN_STARTED").map((frame) => String(frame.payload.turn_id ?? "")))];
+  /**
+   * A native run on `serverDir`: a first turn starts a background build; two graceful restarts follow, each with the build
+   * running (the second turn starts it again), and the input after each restart carries the reminder. Returns each
+   * session's live turn ids; the node is left stopped.
+   */
+  const restartedTwice = async (caseId: string, node: TestNode, serverDir: string) => {
+    const tag = `${caseId.replace("-", "")}_${randomUUID().slice(0, 8)}`;
+    tags.push(tag);
+    let session = await node.start(serverDir);
+    const { runId, channel } = await busyNativeRun(caseId, session, node, [() => ({ toolCalls: [background(tagged(tag))] }), text("REPLY_ONE"),
+      () => ({ toolCalls: [background(tagged(tag))] }), text("REPLY_TWO"), text("REPLY_THREE")]);
+    await idleAfter(channel, 0);
+    await expectBackgroundStarted(caseId);
+    await recordEntry(node, runId);
+    const live = [turnsStarted(channel)];
+    channel.close();
+    for (const input of [`CASE:${caseId} Start the build again.`, `CASE:${caseId} And now?`]) {
+      await node.stop(session, "SIGTERM");
+      session = await node.start(serverDir);
+      await restore(session, runId);
+      const next = await channelOf(session, runId);
+      next.send(input);
+      await idleAfter(next, 0);
+      if (input.includes("again")) {
+        const started = await until(() => model.of(caseId)[3]?.toolResults[0], `${caseId}: the second background start result`, 60_000);
+        expect(started, `${caseId} precondition: the second background command started`).toContain('"status":"running"');
+        await recordEntry(node, runId);
+      }
+      live.push(turnsStarted(next));
+      next.close();
+    }
+    await node.stop(session, "SIGTERM");
+    return { runId, live };
+  };
+
+  it("RR-10: a native run restarted twice keeps one id per turn; each reminder and each reply has its own turn in the conversation (autobyteus-526)", async () => {
+    const node = await newNode();
+    const { runId, live } = await restartedTwice("RR-10", node, SERVER_DIR);
+    const session = await node.start();
+    const { traces, files } = await tracesOf(node, runId);
+    const conversation = await conversationOf(session, runId);
+    await node.stop(session, "SIGTERM");
+    const shown = shownOf(conversation);
+    await record("RR-10", { serverDir: SERVER_DIR, runId, live, files, traces, shown,
+      conversation: conversation.map((item) => ({ ...item, content: item.content.slice(0, 80) })), requests: digest("RR-10") });
+
+    // The stored traces: the three inputs are turns 1, 2, 3; each reminder is stored once, in the turn of the input it came with.
+    expect(traces.filter((trace) => trace.type === "user").map((trace) => trace.turnId)).toEqual(["turn_0001", "turn_0002", "turn_0003"]);
+    expect(traces.filter((trace) => trace.type === "system_task_notification" && trace.content.includes(HEADER)).map((trace) => trace.turnId)).toEqual(["turn_0002", "turn_0003"]);
+    // Live: each session's turn is new, not an id an earlier session used.
+    expect(live).toEqual([["turn_0001"], ["turn_0002"], ["turn_0003"]]);
+    // As the app loads it (inputs and notices carry no turn id there; the agent's items do): each input, reminder and reply
+    // once, in order, and each reply in its own turn, so a view grouping by turn shows them apart.
+    expect(shown).toEqual(["user:Start the build in the background.", "assistant:REPLY_ONE@turn_0001", "reminder", "user:Start the build again.",
+      "assistant:REPLY_TWO@turn_0002", "reminder", "user:And now?", "assistant:REPLY_THREE@turn_0003"]);
+  }, 600_000);
+
+  it.skipIf(!BASE_SERVER_DIR)("RR-11: a run restored twice before the fix keeps its stored ids; its next turn continues after the highest (autobyteus-526 DEC-003)", async () => {
+    const node = await newNode();
+    const { runId, live } = await restartedTwice("RR-11", node, BASE_SERVER_DIR!);
+    const before = await tracesOf(node, runId);
+    const session = await node.start();
+    const oldConversation = await conversationOf(session, runId);
+    model.script("RR-11", [text("REPLY_AFTER_FIX")]);
+    await restore(session, runId);
+    const next = await channelOf(session, runId);
+    next.send("CASE:RR-11 After the fix?");
+    await idleAfter(next, 0);
+    const newLive = turnsStarted(next);
+    next.close();
+    const after = await tracesOf(node, runId);
+    const conversation = await conversationOf(session, runId);
+    await node.stop(session, "SIGTERM");
+    const highest = Math.max(...before.traces.flatMap((trace) => /^turn_(\d+)$/.exec(trace.turnId ?? "") ? [Number(/^turn_(\d+)$/.exec(trace.turnId!)![1])] : []));
+    await record("RR-11", { baseServerDir: BASE_SERVER_DIR, runId, liveOnBase: live, tracesBefore: before.traces, highest, newLive,
+      oldShown: shownOf(oldConversation), shown: shownOf(conversation),
+      tracesAfter: after.traces, conversation: conversation.map((item) => ({ ...item, content: item.content.slice(0, 80) })) });
+
+    // The base build reused ids after its restarts: that is the stored history this build opens.
+    expect(new Set(before.traces.filter((trace) => trace.type === "user").map((trace) => trace.turnId)).size).toBeLessThan(3);
+    // Opening and continuing it rewrites nothing: the stored lines are kept as they were, the new turn is appended.
+    expect(after.lines.slice(0, before.lines.length)).toEqual(before.lines);
+    // The next turn continues after the highest stored id, live and stored, and is its own turn as the app loads it.
+    const expected = `turn_${String(highest + 1).padStart(4, "0")}`;
+    expect(newLive).toEqual([expected]);
+    expect(after.traces.slice(before.traces.length).filter((trace) => trace.type === "user").map((trace) => trace.turnId)).toEqual([expected]);
+    expect(shownOf(conversation).at(-1)).toBe(`assistant:REPLY_AFTER_FIX@${expected}`);
+  }, 600_000);
+
   const runtimeRun = async (session: Session, node: TestNode, runtimeKind: string, llmModelIdentifier: string) => {
     const definitionId = (await session.gql(`mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}`,
       { input: { name: `restart-reminder-${runtimeKind}-${randomUUID().slice(0, 8)}`, role: "engineer", description: "restart reminder E2E",

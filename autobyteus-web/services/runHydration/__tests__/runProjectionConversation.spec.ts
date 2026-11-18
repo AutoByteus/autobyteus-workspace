@@ -7,7 +7,7 @@ describe('runProjectionConversation', () => {
       { kind: 'message', role: 'user', content: 'build in the background', ts: 1 },
       { kind: 'message', role: 'assistant', content: 'Started.', ts: 2 },
       { kind: 'system_task_notification', role: null, senderId: 'system.claude_background_task',
-        content: 'Background task completed: Build app (completed)', ts: 3 },
+        content: 'Background task completed: Build app (completed)', messageId: 'notice-1', ts: 3 },
       { kind: 'message', role: 'assistant', content: 'Build finished.', ts: 4 },
     ], { agentDefinitionId: 'agent-1', agentName: 'Agent', llmModelIdentifier: 'haiku' });
 
@@ -16,9 +16,18 @@ describe('runProjectionConversation', () => {
       type: 'system_task_notification',
       senderId: 'system.claude_background_task',
       content: 'Background task completed: Build app (completed)',
+      messageId: 'notice-1',
     });
     const aiText = conversation.messages.filter((message) => message.type === 'ai').map((message) => message.text).join('|');
     expect(aiText).not.toContain('Background task completed');
+  });
+
+  it('autobyteus-526: a stored notice without an id (older history) hydrates with messageId null', () => {
+    const conversation = buildConversationFromProjection('run-old-notice', [
+      { kind: 'system_task_notification', role: null, senderId: 'system.restart_resume', content: 'Restarted.', ts: 1 },
+    ], { agentDefinitionId: 'agent-1', agentName: 'Agent', llmModelIdentifier: 'haiku' });
+    const segments = conversation.messages.flatMap((message) => message.type === 'ai' ? message.segments : []);
+    expect(segments).toEqual([{ type: 'system_task_notification', senderId: 'system.restart_resume', content: 'Restarted.', messageId: null }]);
   });
 
   it('rehydrates an AGY provider ERROR denial without making other errors denied', () => {

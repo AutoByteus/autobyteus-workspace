@@ -1,0 +1,19 @@
+# API-04 excerpt (see API-04-server-integration.log)
+# Commit: 548f9425b8; Node 22.23.1
+
+ Test Files  4 failed | 84 passed | 20 skipped (108)
+      Tests  17 failed | 489 passed | 69 skipped (575)
+EXIT 1
+
+  14  FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts
+   1  FAIL  tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+   1  FAIL  tests/integration/api/studio-server-http-contract.integration.test.ts
+   4  FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts
+
+## FSEvents measurement right after the run (/tmp/api492/probe/fsevents-latency.mjs: write a file in a watched temp folder; time to the first event, then close() time):
+{"results":[{"eventMs":4801,"closeMs":11},{"eventMs":null,"closeMs":128},{"eventMs":null,"closeMs":1781}]}  (null = no event within 20 s); fseventsd 184% CPU
+
+## Rerun of the fixed file (agent-tools-mcp-routes.integration.test.ts, node added to send_message_to's schema keys):
+pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts --no-watch
+ Test Files  1 passed (1)
+      Tests  14 passed (14)

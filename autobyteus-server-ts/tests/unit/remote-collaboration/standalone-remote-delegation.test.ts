@@ -213,8 +213,12 @@ const buildNode = async (input: Readonly<{
       standalone: (runId) => manager.resolveRoot(runId),
       team: async () => null,
       org: async () => null,
-    }, { recordFirstMessage: async (root, content) => { if (!titles.has(root.runId)) titles.set(root.runId, content); } }, new PeerStartedRunDecisions()),
+      pairedAgents: () => manager.pairedAgents,
+      liveRoot: () => null,
+    }, { recordFirstMessage: async (root, content) => { if (!titles.has(root.runId)) titles.set(root.runId, content); } }, new PeerStartedRunDecisions(),
+    { rootOf: () => null, teamCoordinatorOf: () => null }),
     availableAgents: new RemoteCatalogLister({ policy: () => admission.policy, catalogPort: new NodeCatalogPort(path.join(memoryDir, "temp_workspace")) }),
+    runningAgents: { list: async () => ({ accepted: true as const, agents: [] }) },
     runViews: new RemoteRunViewProvider({
       storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found",
       pairedAgents: () => manager.pairedAgents,

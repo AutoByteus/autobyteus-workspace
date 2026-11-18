@@ -1,0 +1,6 @@
+# API-02 pnpm -C autobyteus-server-ts typecheck | commit cbdf02f15a (code 91ee1603a5) + RRB-3 | Node v22.23.1 | 2026-11-18T08:51:26Z
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.8s
+[typecheck] server tests (tsconfig.tests.json): 1011 errors, exit 2, 32.5s
+[typecheck] production errors: 0; test-file errors: 1011 in 316 files (baseline 1011 in 316 files)
+[typecheck] PASS
+exit 0

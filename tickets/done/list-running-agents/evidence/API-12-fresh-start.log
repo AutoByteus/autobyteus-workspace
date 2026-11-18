@@ -1,0 +1,19 @@
+# API-12 fresh-start check (TESTING.md § Fresh-start build: typecheck-baseline.json is a build input)
+# Commands: git clone --no-local <worktree> /tmp/api492/fresh; git checkout ec66ee7d01; pnpm install --frozen-lockfile; cd autobyteus-web; pnpm typecheck; pnpm prepare-server (the desktop job's install, then the TypeScript steps of build:electron:mac in its order; guards, generate:electron and packaging not run: they read no file this ticket changed)
+# No .gitmodules: the job's recursive submodule checkout adds nothing. No release workflow reads autobyteus-server-ts/typecheck-baseline.json.
+# Commit: ec66ee7d01; Node 22.23.1; macOS 26 arm64; 2026-11-18
+
+Done in 9s using pnpm v10.28.2
+[typecheck] Nuxt app (tsconfig.json): 60 errors, exit 2, 44.2s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.1s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 31.9s
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+++ pnpm prepare-server
+> autobyteus@1.5.13-beta.10 prepare-server /private/tmp/api492/fresh/autobyteus-web
+> node ./scripts/prepare-server-dispatch.mjs
+Done in 1.6s using pnpm v10.28.1
+   Server files prepared successfully!   
+Target directory: /private/tmp/api492/fresh/autobyteus-web/resources/server
+EXIT 0

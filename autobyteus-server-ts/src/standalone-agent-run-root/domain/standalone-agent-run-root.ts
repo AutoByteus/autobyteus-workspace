@@ -17,7 +17,7 @@ import type { TaskExecutionIdleTimers } from "../../agent-collaboration/executio
 import type { WorkPacket } from "../../agent-collaboration/execution/task/task-delegation.js";
 import { RootCommunicationEngine, type RunSendInput } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { CrossRunAcceptInput } from "../../agent-collaboration/communication/cross-run-accept-input.js";
-import type { ActiveRootMessageBoundary, ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
+import type { ActiveRootMessageBoundary, ExactAgentMessageInput, PeerRunMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RunViewStream, RootSnapshotConnection } from "../../agent-collaboration/delegation/run-view-stream.js";
 import { OWN_RUN_LOG, OTHER_RUN_LOG } from "../../run-history/store/message-log-owners.js";
 import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
@@ -209,9 +209,17 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
     return this.operationGate.run(() => this.delivery.deliverExact(input));
   }
+  /** autobyteus-492 DS-004: to an agent of a peer node by its run ID. */
+  deliverToPeerRun(input: PeerRunMessageInput): Promise<AgentOperationResult> {
+    return this.operationGate.run(() => this.delivery.deliverToPeerRun(input));
+  }
   /** A message from a linked run on a peer node, admitted by its peer gateway. */
   acceptRemoteMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
     return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptRemoteMessage(input); });
+  }
+  /** autobyteus-492 DS-004: a peer agent's message by run ID only, while this run's agent runs (never woken). */
+  acceptPeerRunMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
+    return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptPeerRunMessage(input); });
   }
   /** The work packet of a local delegation that created this run (DS-1): its first input, in the gate. */
   acceptWorkPacket(packet: WorkPacket): Promise<AgentOperationResult> {

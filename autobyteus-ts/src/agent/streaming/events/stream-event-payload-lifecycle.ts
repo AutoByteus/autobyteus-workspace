@@ -142,12 +142,15 @@ export class SegmentEventData extends BaseStreamPayload {
 export class SystemTaskNotificationData extends BaseStreamPayload {
   sender_id: string;
   content: string;
+  /** The notice's one id (autobyteus-526); null when it has none. */
+  message_id: string | null;
 
   constructor(data: Record<string, any>) {
     assertRequiredKeys(data, ['sender_id', 'content'], 'SystemTaskNotificationData');
     super(data);
     this.sender_id = String(data.sender_id ?? '');
     this.content = String(data.content ?? '');
+    this.message_id = typeof data.message_id === 'string' && data.message_id.trim() ? data.message_id : null;
   }
 }
 

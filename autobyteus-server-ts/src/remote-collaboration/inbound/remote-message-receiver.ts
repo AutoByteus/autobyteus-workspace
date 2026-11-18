@@ -7,14 +7,20 @@ import type {
   StoredRemoteLinkCheck,
 } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import type { RemoteTargetRoot } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
+import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { remoteTargetNotRunning } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
+import { targetIsTeamRunText } from "../../agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
+import type { RunningAgents } from "../../agent-collaboration/running/running-agents.js";
 import type { PairedAgentAccess } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
 import type { PeerHandlerRefusal, RemoteMessageHandler } from "../channel/peer-gateway.js";
 import type { PeerNode } from "../domain/peer-node.js";
 import { REMOTE_REFUSAL } from "../domain/remote-refusals.js";
-import type { DeliverRemoteMessageRequest } from "../domain/remote-requests.js";
+import type { DeliverRemoteMessageRequest, DeliverRunMessageRequest } from "../domain/remote-requests.js";
 
 /** A collaboration root that admits messages from its linked runs on peer nodes (all three root kinds). */
 export type RemoteMessageRoot = Readonly<{ acceptRemoteMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> }>;
+/** autobyteus-492: a live root (any kind) that admits a peer agent's message by run ID only, for an agent it runs now. */
+export type RemotePeerRunRoot = Readonly<{ acceptPeerRunMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> }>;
 /** A root a peer started (a standalone root or a Team root), which also admits the work packet that starts it. */
 export type RemoteHostRoot = RemoteMessageRoot & Readonly<{ acceptRemoteWorkPacket(input: RemoteInboundWorkPacket): Promise<AgentOperationResult> }>;
 
@@ -36,6 +42,8 @@ export type RemoteRootDirectory = Readonly<{
    * own source of output, commands and readiness, offered by its manager. Callers check the link first.
    */
   pairedAgents(kind: "agent" | "agent_team"): PairedAgentAccess;
+  /** autobyteus-492: the root as it is live now, never restored; `null` when it is not active. */
+  liveRoot(root: RootExecutionIdentity): RemotePeerRunRoot | null;
 }>;
 
 /**
@@ -63,7 +71,33 @@ export class RemoteMessageReceiver implements RemoteMessageHandler {
     private readonly titles: RemoteRunTitles,
     /** autobyteus-32: the decision records a run started for a peer keeps until its work packet arrives. */
     private readonly decisions: Pick<PeerStartedRunDecisions, "workArrived">,
+    /** autobyteus-492: which live root runs an agent now, and a live team's coordinator. */
+    private readonly running: Pick<RunningAgents, "rootOf" | "teamCoordinatorOf">,
   ) {}
+
+  /**
+   * autobyteus-492 DS-004 on the receiving node: a peer agent's message by run ID only (the run ID is the address, CM-13).
+   * The running agent's live root accepts it in its gate, as from a one-message `unlinked_run` endpoint (its own log;
+   * the header names the sender's node); nothing is restored or woken (DEC-003). A team run's ID is refused with the
+   * coordinator's run ID when the team runs here (BEH-006); any other run ID is not running.
+   */
+  async acceptRunMessage(request: DeliverRunMessageRequest, from: PeerNode) {
+    const target = request.target.agentRunId;
+    const running = this.running.rootOf(target);
+    const root = running ? this.roots.liveRoot(running.root) : null;
+    if (!root) {
+      const coordinator = this.running.teamCoordinatorOf(target);
+      return coordinator ? refusal("TARGET_IS_TEAM_RUN", targetIsTeamRunText(target, coordinator)) : refusal(REMOTE_REFUSAL.TARGET_NOT_RUNNING, remoteTargetNotRunning(target).message);
+    }
+    return answerOf(await root.acceptPeerRunMessage({
+      fromNodeId: from.nodeId,
+      fromNodeName: from.name,
+      message: {
+        messageId: request.messageId, senderAgentRunId: request.sender.agentRunId, receiverAgentRunId: target,
+        content: request.content, messageType: request.messageType, referenceFiles: [], createdAt: request.createdAt,
+      },
+    }));
+  }
 
   async accept(request: DeliverRemoteMessageRequest, from: PeerNode) {
     const query: RemoteInboundQuery = Object.freeze({

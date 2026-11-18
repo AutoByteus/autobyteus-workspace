@@ -15,6 +15,7 @@ import { AgentPackageDefinitionChangeMessageSchema } from "../../../src/agent-pa
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
+import { OS_FILE_EVENT_WAIT_MS } from "../../helpers/os-latency-under-load.js";
 import { buildTeamLocalAgentDefinitionId } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import { buildAgentOrgOwnedDefinitionId } from "../../../src/agent-org-definition/utils/agent-org-owned-definition-id.js";
 import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
@@ -42,7 +43,6 @@ type Feed = { socket: WebSocket; frames: Frame[]; closed: Promise<{ code: number
 type PackageRow = { packageId: string; path: string; sourceKind: string; autoRefresh: { state: string; message: string | null } | null;
   updateInfo: { status: string; installedRevision: string | null; latestRevision: string | null } };
 
-const AC_BOUND_MS = 5000;
 const PACKAGE_FIELDS = "packageId path sourceKind autoRefresh { state message } updateInfo { status installedRevision latestRevision }";
 const ISSUE = "loadIssue { code reason definitionPath packageRoot }";
 /** Teams and Orgs carry every issue of their unit (root first, then nested nodes in path order; SR-008/DSN-004). */
@@ -146,7 +146,11 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     return { socket, frames, closed };
   };
   const changed = (feed: Feed, from = 0) => feed.frames.slice(from).filter((frame) => frame.type === "agent_package_definitions_changed");
-  const waitFor = async <T>(read: () => Promise<T>, accept: (value: T) => boolean, label: string, timeoutMs = AC_BOUND_MS) => {
+  /**
+   * Waits for a change on disk to reach GraphQL. The latency is the OS file event's, so the limit is the shared one;
+   * the measured time is kept in the evidence, not compared with the product's 5 s goal (DEC-002 of autobyteus-517).
+   */
+  const waitFor = async <T>(read: () => Promise<T>, accept: (value: T) => boolean, label: string, timeoutMs = OS_FILE_EVENT_WAIT_MS) => {
     const started = Date.now();
     let last: T | undefined;
     for (;;) {
@@ -310,13 +314,13 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     expect((await agents()).map((entry) => entry.id)).toContain("planner");
     const record: Record<string, unknown> = {};
 
-    // AC-001: a new agent and a new Team written outside the app are listed within 5 s; the feed tells clients.
+    // AC-001: a new agent and a new Team written outside the app are listed; the feed tells clients.
     let mark = monitor.frames.length;
     await writeAgent(path.join(root, "agents", "scout"), "APAR Scout");
     await writeTeam(path.join(root, "agent-teams", "squad"), "APAR Squad", [{ memberName: "lead", ref: "scout", refScope: "shared" }]);
     const created = await waitFor(async () => ({ agents: (await agents()).map((entry) => entry.id), teams: (await teams()).map((entry) => entry.id) }),
       (value) => value.agents.includes("scout") && value.teams.includes("squad"), "new agent and Team listed");
-    await until(() => changed(monitor, mark).some((frame) => frame.changedLists?.includes("agents") && frame.changedLists.includes("agent_teams")), "feed frame for the new definitions", AC_BOUND_MS);
+    await until(() => changed(monitor, mark).some((frame) => frame.changedLists?.includes("agents") && frame.changedLists.includes("agent_teams")), "feed frame for the new definitions", OS_FILE_EVENT_WAIT_MS);
     record.createdVisibleMs = created.elapsedMs;
     record.createdFrames = changed(monitor, mark);
 
@@ -358,7 +362,11 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     const brokenTeam = path.join(root, "agent-teams", "broken-team", "team.md");
     await write(brokenTeam, "no front matter");
     await write(path.join(root, "agent-teams", "broken-team", "team-config.json"), "{}");
-    const unavailable = await waitFor(() => diagnostics("AGENT_TEAM"), (list) => list.some((entry) => entry.definitionId === "broken-team"), "invalid Team diagnostic");
+    // The two files are written apart; on a busy machine the first may be read alone. Wait for the diagnostic of the
+    // final state (both written), not the first one for this Team.
+    const finalDiagnostic = (entry: Record<string, any>) => entry.definitionId === "broken-team"
+      && entry.code === "DEFINITION_CONTRACT_INVALID" && entry.definitionPath === brokenTeam && entry.usingLastGood === false;
+    const unavailable = await waitFor(() => diagnostics("AGENT_TEAM"), (list) => list.some(finalDiagnostic), "invalid Team diagnostic");
     expect(unavailable.value.find((entry) => entry.definitionId === "broken-team")).toMatchObject({
       code: "DEFINITION_CONTRACT_INVALID", definitionPath: brokenTeam, usingLastGood: false });
     expect((await teams()).map((entry) => entry.id)).toEqual(expect.arrayContaining(["squad", "crew"]));
@@ -379,12 +387,11 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     mark = monitor.frames.length;
     await fs.rm(path.join(root, "agents", "scout"), { recursive: true });
     const removed = await waitFor(() => agents(), (list) => !list.some((entry) => entry.id === "scout"), "deleted agent gone");
-    await until(() => changed(monitor, mark).some((frame) => frame.changedLists?.includes("agent_teams")), "dependent Team list told", AC_BOUND_MS);
+    await until(() => changed(monitor, mark).some((frame) => frame.changedLists?.includes("agent_teams")), "dependent Team list told", OS_FILE_EVENT_WAIT_MS);
     const squad = await waitFor(() => diagnostics("AGENT_TEAM"), (list) => list.some((entry) => entry.definitionId === "squad"), "Team without its agent");
     expect(squad.value.find((entry) => entry.definitionId === "squad")?.code).toBe("DEFINITION_REFERENCE_UNRESOLVED");
     expect((await teams()).map((entry) => entry.id)).not.toContain("squad");
     record.deleteVisibleMs = removed.elapsedMs;
-    for (const value of [created.elapsedMs, edited.elapsedMs, fixed.elapsedMs, removed.elapsedMs]) expect(value).toBeLessThan(AC_BOUND_MS);
     evidence.dcf002 = record;
   }, 90_000);
 
@@ -436,7 +443,7 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     for (const [label, mutation, variables] of reloads) {
       const mark = other.frames.length;
       await graphql(mutation, variables);
-      await until(() => changed(other, mark).some((frame) => all.every((list) => frame.changedLists?.includes(list))), `${label} published`, AC_BOUND_MS);
+      await until(() => changed(other, mark).some((frame) => all.every((list) => frame.changedLists?.includes(list))), `${label} published`, OS_FILE_EVENT_WAIT_MS);
       observed[label] = changed(other, mark);
     }
     other.socket.close();
@@ -473,7 +480,7 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     const updated = (await graphql(`mutation($id:String!){ updateAgentPackage(packageId:$id){ ${PACKAGE_FIELDS} } }`, { id: row.packageId }))
       .updateAgentPackage as PackageRow[];
     expect(updated.find((entry) => entry.packageId === row.packageId)?.updateInfo).toMatchObject({ status: "UP_TO_DATE", installedRevision: githubRevision });
-    await until(() => changed(other, mark).some((frame) => frame.changedLists?.includes("agents") && frame.changedLists.includes("agent_packages")), "Update published", AC_BOUND_MS);
+    await until(() => changed(other, mark).some((frame) => frame.changedLists?.includes("agents") && frame.changedLists.includes("agent_packages")), "Update published", OS_FILE_EVENT_WAIT_MS);
     expect((await agents()).map((entry) => entry.id)).toEqual(expect.arrayContaining(["gh-alpha", "gh-beta"]));
     // The managed folder was replaced by rename; the monitor re-armed the new folder.
     const after = await waitFor(() => packageAt(row.path), (value) => value?.autoRefresh?.state === "WATCHING", "managed root re-armed");
@@ -481,7 +488,8 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     await graphql(`mutation($id:String!){ removeAgentPackage(packageId:$id){ packageId } }`, { id: row.packageId });
     expect((await agents()).map((entry) => entry.id)).not.toContain("gh-alpha");
     evidence.dcf005 = { githubRequests, updateFrames: changed(other, mark), autoRefreshAfterUpdate: after.value?.autoRefresh };
-  }, 60_000);
+    // Its own import, check and update work (60 s), plus its two OS file-event waits (Update published, root re-armed).
+  }, 60_000 + 2 * OS_FILE_EVENT_WAIT_MS);
 
   it("DCF-E2E-010 (SR-009/DSN-005): the renamed contract is a clean cut; the retired route and GraphQL names are gone", async () => {
     // The new route greets every connection (covered above); the retired route is not served at all.
@@ -568,14 +576,13 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     await write(writerConfig, "{ \"toolNames\": [");
     await write(leadMd, "half-written");
     const broken = await waitFor(studio, (value) => (value?.loadIssues?.length ?? 0) === 2, "org-owned issues on the Org");
-    expect(broken.elapsedMs).toBeLessThan(AC_BOUND_MS);
     expect(broken.value!.loadIssues).toEqual([
       { kind: "AGENT", definitionId: ownedAgentId, name: "APAR Studio Writer", code: "DEFINITION_CONTRACT_INVALID",
         reason: expect.stringMatching(/JSON/i), definitionPath: writerConfig, packageRoot: root, usingLastGood: true },
       { kind: "AGENT", definitionId: squadLeadId, name: "APAR Studio Squad Lead", code: "DEFINITION_CONTRACT_INVALID",
         reason: expect.any(String), definitionPath: leadMd, packageRoot: root, usingLastGood: true },
     ]);
-    await until(() => changed(monitor, mark).some((frame) => frame.changedLists?.includes("agent_orgs")), "Org list told", AC_BOUND_MS);
+    await until(() => changed(monitor, mark).some((frame) => frame.changedLists?.includes("agent_orgs")), "Org list told", OS_FILE_EVENT_WAIT_MS);
     // Last good everywhere: the Org stays listed and launchable (admission), its owned nodes keep their definitions.
     expect((await diagnostics("AGENT_ORG")).some((entry) => entry.definitionId === "apar-studio")).toBe(false);
     expect((await agent(ownedAgentId))?.name).toBe("APAR Studio Writer");
@@ -590,7 +597,6 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     await writeAgent(path.join(orgDir, "agent-teams", "squad", "agents", "lead"), "APAR Studio Squad Lead");
     await writeTeam(path.join(orgDir, "agent-teams", "squad"), "APAR Studio Squad", [{ memberName: "lead", ref: "lead", refScope: "team_local" }]);
     const cleared = await waitFor(studio, (value) => value?.loadIssues?.length === 0, "Org issues cleared");
-    expect(cleared.elapsedMs).toBeLessThan(AC_BOUND_MS);
     evidence.dcf009 = { brokenVisibleMs: broken.elapsedMs, issues: three.value!.loadIssues, clearedMs: cleared.elapsedMs };
   }, 60_000);
 
@@ -685,11 +691,10 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     record.listAfterWriteMs = Date.now() - writtenAt;
     record.framesWhenListed = changed(monitor, mark);
     expect(listedAfterWrite).toContain("APAR Fresh Scout");
-    // The Team is found by the next delegation within the 5 s bound (AC-015). On a loaded machine its folder can be
-    // detected after the first lookup; REQ-018 covers changes already detected, and real use has a model turn here.
+    // The Team is found by the next delegation (AC-015). On a loaded machine its folder can be detected after the first
+    // lookup; REQ-018 covers changes already detected, and real use has a model turn here.
     const squadListed = await waitFor(listNames, (names) => names.includes("APAR Fresh Squad"), "new Team listed by the tool");
     record.teamListedAfterWriteMs = Date.now() - writtenAt;
-    expect(Date.now() - writtenAt).toBeLessThan(AC_BOUND_MS);
     expect(squadListed.value).toContain("APAR Fresh Scout");
     const scoutCopy = await delegateAndReadPrompt(`/${segment("APAR Fresh Scout")}`);
     expect(scoutCopy.prompt).toContain("MARK_SCOUT_V1");

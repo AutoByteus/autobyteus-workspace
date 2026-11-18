@@ -8,10 +8,11 @@
 //                  from the left; one 22 px avatar and the speaker's name per turn; 17 px text with a 1.5 line height; the
 //                  composer box 8 px above the screen's bottom. The mate's conversation: the lead's message to it keeps
 //                  its arrow, and a tap on the arrow shows its `agent_message` line, as on the desktop (SR-004).
-//   MSP-60 autobyteus-525 AC-001…004  The run list's ⋮ → On this phone → Text size: Small, Large, Largest scale the run
-//                  list at once (root 16 × step/17 px) with the menu open; Esc closes it (focus back on ⋮); the conversation
-//                  at 21 px; the run's ⋮ has no Text size; after a reload the step applies from the first screen; back to
-//                  Standard.
+//   MSP-60 autobyteus-525 AC-001…004, autobyteus-534  The run list's ⋮ opens the menu headed "Text size" (no visible
+//                  "On this phone") with Standard, Large, Largest; Large and Largest scale the run list at once (root
+//                  16 × step/17 px) with the menu open; Esc closes it (focus back on ⋮); the conversation at 21 px; the
+//                  run's ⋮ has no Text size; after a reload the step applies from the first screen; a saved Small starts
+//                  at Standard; back to Standard. Screenshots of the menu and the run list at the three steps.
 //   MSP-74 autobyteus-525 AC-005  Largest at 412 and 360 px: the run list, its menu, the connection sheet, the unpair
 //                  confirmation, New run and its agent sheet, the conversation, the run's ⋮, Artifacts, Files, a code file
 //                  (17 px), Messages, Activity, Settings, the setup page, a pairing link's page and "Connected to …": no
@@ -229,24 +230,37 @@ export const runRunSettingsCases = async (probe) => {
   };
 
   await runCase('MSP-60', async () => {
-    // autobyteus-525 AC-001, AC-003, AC-004: the run list's ⋮ → On this phone → Text size: each step scales the run list at
-    // once (root 16 × step/17 px) with the menu still open; Esc closes it, the focus back on ⋮; the conversation is the
-    // step's px; the run's ⋮ has no Text size (AC-002); the step is applied from the first screen after a reload.
+    // autobyteus-525 AC-001, AC-003, AC-004 and autobyteus-534 REQ-001…003: the run list's ⋮ opens the menu headed "Text
+    // size" (no visible "On this phone") with three steps; each step scales the run list at once (root 16 × step/17 px)
+    // with the menu still open; Esc closes it, the focus back on ⋮; the conversation is the step's px; the run's ⋮ has no
+    // Text size (AC-002); the step is applied from the first screen after a reload; a phone that saved Small starts at
+    // Standard.
     await backToList();
     const before = await sizes();
+    await shot(page, 'MSP-60-list-standard');
     await homeMenu();
-    const menu = await page.evaluate(() => ({ title: document.querySelector('[data-testid="mobile-on-this-phone-title"]')?.textContent?.trim() ?? null,
-      group: document.querySelector('[data-testid="mobile-text-size"]')?.getAttribute('aria-label') ?? null }));
+    const menuShape = () => page.evaluate(() => {
+      const menu = document.querySelector('[data-testid="mobile-on-this-phone-menu"]');
+      return { label: menu?.getAttribute('aria-label') ?? null, title: Boolean(document.querySelector('[data-testid="mobile-on-this-phone-title"]')),
+        visibleText: menu?.innerText.replace(/\bA\b/g, '').replace(/\s+/g, ' ').trim() ?? null,
+        header: menu?.querySelector('[data-testid="mobile-text-size-header"]')?.textContent?.trim() ?? null,
+        group: menu?.querySelector('[data-testid="mobile-text-size"]')?.getAttribute('aria-label') ?? null,
+        steps: [...(menu?.querySelectorAll('[data-testid="mobile-text-size"] button') ?? [])].map((button) => button.getAttribute('data-testid')) };
+    });
+    const menu = await menuShape();
+    await shot(page, 'MSP-60-menu-standard');
     const steps = {};
-    for (const step of ['small', 'large', 'largest']) {
+    let focusBack = null;
+    for (const step of ['large', 'largest']) {
+      await homeMenu();
       await page.locator(sel(`mobile-text-size-${step}`)).click();
       steps[step] = await sizes(); // the run list behind the open menu, at once
+      await shot(page, `MSP-60-menu-${step}`);
+      await page.keyboard.press('Escape');
+      await page.locator(sel('mobile-on-this-phone-menu')).waitFor({ state: 'detached', timeout: 5_000 }).catch(() => undefined);
+      focusBack ??= await page.evaluate(() => document.activeElement?.getAttribute('data-testid') ?? null);
+      await shot(page, `MSP-60-list-${step}`);
     }
-    await shot(page, 'MSP-60-home-menu-largest');
-    await page.keyboard.press('Escape');
-    await page.locator(sel('mobile-on-this-phone-menu')).waitFor({ state: 'detached', timeout: 5_000 }).catch(() => undefined);
-    const focusBack = await page.evaluate(() => document.activeElement?.getAttribute('data-testid') ?? null);
-    await shot(page, 'MSP-60-list-largest');
     await openTeam();
     await sleep(500);
     const conversation = await sizes();
@@ -273,23 +287,40 @@ export const runRunSettingsCases = async (probe) => {
     await page.locator(`${sel('mobile-run-tree')}:visible`).waitFor({ timeout: 60_000 });
     await homeMenu();
     const reopened = await sizes();
-    await page.locator(sel('mobile-text-size-standard')).click();
-    const standard = await sizes();
     await closeHomeMenu();
-    const details = { before, menu, steps, focusBack, conversation, runMenu, afterReload, reopened, standard };
+    // autobyteus-534 REQ-003: a phone that saved Small (beta.10) starts at Standard; the stored value is left as it is.
+    await page.evaluate(() => window.localStorage.setItem('autobyteus.phone.textSize', 'small'));
+    await page.goto(new URL('/mobile/', page.url()).href, { waitUntil: 'domcontentloaded' });
+    await page.locator(`${sel('mobile-run-tree')}:visible`).waitFor({ timeout: 60_000 });
+    await sleep(500);
+    const savedSmall = { ...(await sizes()), firstScreen: await page.evaluate(() => window.__firstScreenRoot ?? null),
+      stored: await page.evaluate(() => window.localStorage.getItem('autobyteus.phone.textSize')) };
+    await shot(page, 'MSP-60-list-saved-small');
+    await homeMenu();
+    const savedSmallMenu = await sizes();
+    await page.locator(sel('mobile-text-size-standard')).click();
+    const standard = { ...(await sizes()), stored: await page.evaluate(() => window.localStorage.getItem('autobyteus.phone.textSize')) };
+    await closeHomeMenu();
+    const details = { before, menu, steps, focusBack, conversation, runMenu, afterReload, reopened, savedSmall, savedSmallMenu, standard };
     const near = (value, expected) => value !== null && Math.abs(value - expected) <= 0.05;
     assert(before.step === 'standard' && near(before.root, 16) && near(before.runName, 15), 'AC-006 Standard: root 16 px, run name 15 px, as before', details);
-    assert(menu.title === 'On this phone' && menu.group === 'Text size', 'AC-001 the run list\'s ⋮ opens "On this phone" with the Text size group', details);
-    assert(['small', 'large', 'largest'].every((step) => steps[step].step === step && steps[step].menuOpen && steps[step].pressed === `mobile-text-size-${step}`),
+    assert(menu.label === 'On this phone' && !menu.title && menu.visibleText === 'Text size' && menu.header === 'Text size' && menu.group === 'Text size',
+      '534 REQ-002 the menu shows only the "Text size" header; "On this phone" is its accessible name only', details);
+    assert(JSON.stringify(menu.steps) === JSON.stringify(['mobile-text-size-standard', 'mobile-text-size-large', 'mobile-text-size-largest']),
+      '534 REQ-001 three steps: Standard, Large, Largest', details);
+    assert(['large', 'largest'].every((step) => steps[step].step === step && steps[step].menuOpen && steps[step].pressed === `mobile-text-size-${step}`),
       'AC-001 each step applies at once with the menu still open, the step marked', details);
-    assert(near(steps.small.root, 16 * 15 / 17) && near(steps.large.root, 16 * 19 / 17) && near(steps.largest.root, 16 * 21 / 17), 'AC-003 the root is 16 × step/17 px', details);
-    assert(near(steps.largest.runName, 15 * 21 / 17) && near(steps.small.runName, 15 * 15 / 17), 'AC-003 the run list scales with the step', details);
+    assert(near(steps.large.root, 16 * 19 / 17) && near(steps.largest.root, 16 * 21 / 17), 'AC-003 the root is 16 × step/17 px', details);
+    assert(near(steps.large.runName, 15 * 19 / 17) && near(steps.largest.runName, 15 * 21 / 17), 'AC-003 the run list scales with the step', details);
     assert(focusBack === 'mobile-on-this-phone-button', 'AC-001 Esc closes the menu and the focus goes back to ⋮', details);
     assert(near(conversation.feed, 21), 'AC-003 the conversation is 21 px at Largest', details);
     assert(runMenu.textSize === 0 && runMenu.entries.length > 0 && !runMenu.entries.includes('Text size'), 'AC-002 the run\'s ⋮ has no Text size', details);
     assert(afterReload.step === 'largest' && near(afterReload.feed, 21) && afterReload.firstScreen?.step === 'largest' && near(parseFloat(afterReload.firstScreen.root), 16 * 21 / 17),
       'AC-004, QR-001 the step survives a reload and applies from the first screen', details);
-    assert(reopened.pressed === 'mobile-text-size-largest' && standard.step === 'standard' && near(standard.root, 16), 'AC-004 the kept step is marked; back to Standard', details);
+    assert(reopened.pressed === 'mobile-text-size-largest', 'AC-004 the kept step is marked', details);
+    assert(savedSmall.step === 'standard' && near(savedSmall.root, 16) && savedSmall.firstScreen?.step === 'standard' && savedSmall.stored === 'small'
+      && savedSmallMenu.pressed === 'mobile-text-size-standard', '534 REQ-003 a saved Small starts at Standard from the first screen, Standard marked, storage untouched', details);
+    assert(standard.step === 'standard' && near(standard.root, 16) && standard.stored === 'standard', 'back to Standard', details);
     return details;
   });
 

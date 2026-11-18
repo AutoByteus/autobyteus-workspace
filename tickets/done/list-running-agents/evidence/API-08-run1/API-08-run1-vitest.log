@@ -1,0 +1,15 @@
+# API-08 run 1: gated collaboration-contract-stories E2E (built servers, scripted AGY)
+# Command (worktree root): env -i PATH HOME=<fresh temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs CONTRACT_STORIES_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/collaboration-contract-stories.e2e.test.ts --no-watch
+# Commit: 9fc0df5db3 (fixture as at deacacf948); Node 22.23.1; macOS 26; load average ~48-61; 2026-11-18
+# Result: §5.1 S0…S27 Pass (S27 the new not-running text); §5.2 U9 disk mismatch (fixture message ID 'x' bound inside the word 'examples'); §5.3 O0 AGY model discovery timeout (15 s bound) before any collaboration step
+
+     ✓ §5.1 S0 … S27: a standalone agent delegates on its node and to a peer node  921505ms
+     × §5.2 U0 … U11: a team the user starts delegates 325173ms
+     × §5.3 O0 … O8: an org the user starts delegates 92775ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: U9 (R-7) Delivered: runs of different open Tasks (autobyteus-492, CM-13): expected [ Array(1) ] to deeply equal []
++   "A:ad-hoc-tasks/adhoc_task_91a1/task.json.description: \"Collect onboarding examples …\" does not match \"Collect onboarding ecollabmsg_qgULtmT_arp8F3MyheIZk0oD5MahGBYsamples …\"",
+AssertionError: Invalid configuration for '/': The model list of Antigravity CLI could not be read: Antigravity model discovery timed out; check the CLI and retry. Try again.: expected false to be true // Object.is equality
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+EXIT 1

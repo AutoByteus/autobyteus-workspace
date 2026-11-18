@@ -1,0 +1,70 @@
+# API-11 fresh-start build (TESTING.md § Fresh-start build; release-desktop.yml macOS ARM64 job steps) | commit 984e04707f | Node v22.23.1 | pnpm 10.28.2 | 2026-11-18T12:58:29Z | load 63.41 66.78 76.67 | script /tmp/ec491-fresh-scripts/run.sh (copied below)
+#   #!/bin/bash
+#   # API-11 fresh-start build proof for autobyteus-491 (TESTING.md § Fresh-start build): a fresh clone of the commit under
+#   # test, `pnpm install --frozen-lockfile` alone, then the desktop job's macOS ARM64 build and its verify steps, in order.
+#   set -o pipefail
+#   WT=/Users/normy/autobyteus_org/autobyteus-worktrees/retired-memory-items-and-stale-built-ins
+#   COMMIT="$1"
+#   DIR="$(cd "$(mktemp -d)" && pwd -P)/clone"
+#   echo "## clone: git clone --no-local $WT $DIR; checkout $COMMIT"
+#   git clone -q --no-local "$WT" "$DIR" && cd "$DIR" && git checkout -q "$COMMIT" && git log --oneline -1 || exit 10
+#   git submodule status 2>/dev/null | head -5
+#   echo "## fresh: no build output: $(find . -maxdepth 3 -type d \( -name dist -o -name electron-dist \) -not -path './node_modules/*' | head -5 | tr '\n' ' ')"
+#   echo "## step: pnpm install --frozen-lockfile"; pnpm install --frozen-lockfile 2>&1 | tail -5 || exit 11
+#   echo "## step: build:electron:mac --arm64 (cd autobyteus-web)"
+#   ( cd autobyteus-web && NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=darwin-arm64,debian-openssl-1.1.x,debian-openssl-3.0.x CSC_IDENTITY_AUTO_DISCOVERY=false GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace pnpm build:electron:mac -- --arm64 ) > "$DIR/../build-electron.log" 2>&1; rc=$?
+#   grep -aE "typecheck\]|production errors|PASS|FAIL|error TS|ERR_PNPM|electron-builder|Error:" "$DIR/../build-electron.log" | tail -25; echo "build exit $rc"; [ $rc -eq 0 ] || exit 12
+#   echo "## step: Verify bundled Prisma ARM64 engine target"
+#   ENGINES_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth 6 -type d -path '*/@prisma/engines' | head -n1)"; test -n "$ENGINES_DIR" && test -f "$ENGINES_DIR/schema-engine-darwin-arm64" && echo "engines ok: $ENGINES_DIR" || exit 13
+#   CLIENT_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth 10 -type d -path '*/node_modules/.prisma/client' | head -n1)"; test -n "$CLIENT_DIR" && test -f "$CLIENT_DIR/libquery_engine-darwin-arm64.dylib.node" && echo "client ok: $CLIENT_DIR" || exit 14
+#   echo "## step: Verify packaged terminal runtime ARM64"
+#   node autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs --server-root autobyteus-web/resources/server --platform darwin --arch arm64 || exit 15
+#   APP_SERVER_ROOT="$(find autobyteus-web/electron-dist -path '*/AutoByteus.app/Contents/Resources/server' -type d -print -quit)"; test -n "$APP_SERVER_ROOT" || exit 16
+#   node autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs --server-root "$APP_SERVER_ROOT" --platform darwin --arch arm64 || exit 17
+#   APP_BUNDLE="${APP_SERVER_ROOT%/Contents/Resources/server}"
+#   ELECTRON_RUN_AS_NODE=1 "$APP_BUNDLE/Contents/MacOS/AutoByteus" autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs --server-root "$APP_SERVER_ROOT" --platform darwin --arch arm64 --spawn-probe || exit 18
+#   echo "## step: Verify macOS signing policy ARM64 (unsigned local build)"
+#   node autobyteus-web/scripts/verify-macos-signing-policy.mjs --app "$APP_BUNDLE"; echo "signing policy exit $?"
+#   echo "## done; clone at $DIR (removed by the caller)"
+## clone: git clone --no-local /Users/normy/autobyteus_org/autobyteus-worktrees/retired-memory-items-and-stale-built-ins /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.5XImDi9oRq/clone; checkout 984e04707fcd676fcbf0e8c89cf94d8dc5f9c084
+984e04707f test(e2e): list_available_agents and the Agents page after the retired built-ins' removal (autobyteus-491)
+## fresh: no build output: ./autobyteus-collaboration-stream-contracts/dist ./autobyteus-team-stream-contracts/dist ./autobyteus-agent-presentation-contracts/dist 
+## step: pnpm install --frozen-lockfile
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 11s using pnpm v10.28.2
+## step: build:electron:mac --arm64 (cd autobyteus-web)
+[typecheck] Nuxt app (tsconfig.json): 60 errors, exit 2, 43.3s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.6s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 25.9s
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+Starting electron-builder...
+  • electron-builder  version=25.1.8 os=25.5.0
+  • @electron/rebuild already used by electron-builder, please consider to remove excess dependency from devDependencies
+To ensure your native dependencies are always matched electron version, simply add script `"postinstall": "electron-builder install-app-deps" to your `package.json`
+build exit 0
+## step: Verify bundled Prisma ARM64 engine target
+engines ok: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+client ok: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+## step: Verify packaged terminal runtime ARM64
+[terminal-runtime] node-pty root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.5XImDi9oRq/clone/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.5XImDi9oRq/clone/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.5XImDi9oRq/clone/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] node-pty root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.5XImDi9oRq/clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.5XImDi9oRq/clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.5XImDi9oRq/clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] node-pty root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.5XImDi9oRq/clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.5XImDi9oRq/clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.5XImDi9oRq/clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+## step: Verify macOS signing policy ARM64 (unsigned local build)
+[mac-signing-policy] Command failed: codesign --verify --deep --strict --verbose=2 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.5XImDi9oRq/clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.5XImDi9oRq/clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: code has no resources but signature indicates they must be present
+
+signing policy exit 1
+## done; clone at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.5XImDi9oRq/clone (removed by the caller)
+exit 0

@@ -1,0 +1,24 @@
+Release smoke check
+runtime     scenario                                                      result  reason
+claude      new run + restore, linked workspace                           PASS
+claude      brand-new team member                                         PASS
+claude      different same-named skill                                    PASS
+codex       new run + restore, linked workspace                           PASS
+codex       brand-new team member                                         PASS
+codex       different same-named skill                                    PASS
+grok        new run + restore, linked workspace                           FAIL    skipped: Error: [{"message":"Grok Build model discovery timed out; check the CLI and retry.","locations":[{"line":1,"column":21}],"path":["providerModelCatalogSnapshots"]}]
+grok        brand-new team member                                         FAIL    skipped: Error: [{"message":"Grok Build model discovery timed out; check the CLI and retry.","locations":[{"line":1,"column":21}],"path":["providerModelCatalogSnapshots"]}]
+grok        different same-named skill                                    FAIL    skipped: Error: [{"message":"Grok Build model discovery timed out; check the CLI and retry.","locations":[{"line":1,"column":21}],"path":["providerModelCatalogSnapshots"]}]
+antigravity brand-new run, linked workspace                               PASS
+antigravity brand-new team member, linked workspace                       PASS
+autobyteus  brand-new run, linked workspace                               PASS
+autobyteus  brand-new team member, linked workspace                       PASS
+other       E07: a linked run resumes after its skill folder was deleted  FAIL    failed: Error: Timed out waiting for TURN_COMPLETED: [{"type":"CONNECTED","payload":{"agent_id":"resume_deleted_985ed54b_a3c956f58715404f80ea1012463ce538","session_id":"e7ae2d7a-c0dd-4574-8fe5-2c8dabd9f3fc"}},{"type":"AGENT_STATUS","payload":{"status":"offline","background_tasks_running":0,"recoverableBlock
+other       agy-linked-skills-transport.e2e.test.ts                       FAIL    Error: Hook timed out in 60000ms.
+
+commit    5bb41f0dd12fe273cdcb9800be0b1b3f888829da
+models    {"claude": "haiku", "codex": "gpt-5.6-luna"}
+duration  live 161s, antigravity 171s, autobyteus 11s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-r2e9d20m
+smoke exit 1

@@ -1,5 +1,5 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import { platformInputPrefaceMetadata } from "autobyteus-ts/agent/message/platform-input-preface-metadata.js";
+import { platformInputPrefaceMetadata, readPlatformInputPreface } from "autobyteus-ts/agent/message/platform-input-preface-metadata.js";
 import { SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY } from "autobyteus-ts/agent/message/system-task-notification-metadata.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import { RESTART_RESUME_NOTICE_SENDER_ID } from "../agent-execution/domain/system-task-notification-senders.js";
@@ -75,7 +75,8 @@ export const buildRestartNotice = (input: Readonly<{
     message_id: messageId,
     dedupe_key: `agent_run_input:${input.agentRunId}:${messageId}`,
     [SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY]: true,
-    ...platformInputPrefaceMetadata({ content: text, senderId: RESTART_RESUME_NOTICE_SENDER_ID, originalContent: null }),
+    // The wake's message id is the notice's one id too (autobyteus-526): the message, its trace and its notice.
+    ...platformInputPrefaceMetadata({ content: text, senderId: RESTART_RESUME_NOTICE_SENDER_ID, originalContent: null, noticeId: messageId }),
   });
 };
 
@@ -86,13 +87,14 @@ export const buildRestartNotice = (input: Readonly<{
  */
 export const restartNoticeLifecycleObserver = (
   runOf: () => Pick<AgentRun, "runId" | "publishEvent"> | null,
-  text: string,
+  message: Pick<AgentInputUserMessage, "content" | "metadata">,
 ): AgentRunInputLifecycleObserver => (fact) => {
   if (fact.kind !== "forwarded") return;
   const run = runOf();
   if (!run) return;
   void run.publishEvent({
     eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION, runId: run.runId, statusHint: null,
-    payload: { sender_id: RESTART_RESUME_NOTICE_SENDER_ID, content: text, ...(fact.turnId ? { turn_id: fact.turnId } : {}) },
+    payload: { sender_id: RESTART_RESUME_NOTICE_SENDER_ID, content: message.content,
+      message_id: readPlatformInputPreface(message.metadata)?.noticeId ?? null, ...(fact.turnId ? { turn_id: fact.turnId } : {}) },
   }).catch(() => undefined);
 };

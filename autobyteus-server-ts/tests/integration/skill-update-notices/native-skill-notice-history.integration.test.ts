@@ -71,13 +71,14 @@ describe("native AutoByteus skill update notice history", () => {
   it("replays a notice combined into the user's input as a system notice, then the message as sent", async () => {
     const run = await createNativeRun();
     const combined = new AgentInputUserMessage(`${NOTICE}\n\nReview PR 12.`, SenderType.USER, null, {
-      ...platformInputPrefaceMetadata({ content: NOTICE, senderId: SKILL_UPDATE_NOTICE_SENDER_ID, originalContent: "Review PR 12." }),
+      ...platformInputPrefaceMetadata({ content: NOTICE, senderId: SKILL_UPDATE_NOTICE_SENDER_ID, originalContent: "Review PR 12.", noticeId: "notice-1" }),
     });
 
     await run.ingest(combined, "turn_0001");
 
     expect(run.conversation()).toEqual([
-      expect.objectContaining({ kind: "system_task_notification", senderId: SKILL_UPDATE_NOTICE_SENDER_ID, content: NOTICE }),
+      // autobyteus-526: the stored notice keeps its one id, so the conversation shows it once beside its live copy.
+      expect.objectContaining({ kind: "system_task_notification", senderId: SKILL_UPDATE_NOTICE_SENDER_ID, content: NOTICE, messageId: "notice-1" }),
       expect.objectContaining({ role: "user", content: "Review PR 12." }),
     ]);
   });
@@ -85,10 +86,10 @@ describe("native AutoByteus skill update notice history", () => {
   it("replays a notice posted alone to a busy run as one system notice and no user message", async () => {
     const run = await createNativeRun();
 
-    await run.ingest(buildSkillUpdateNoticeMessage(NOTICE), "turn_0002");
+    await run.ingest(buildSkillUpdateNoticeMessage(NOTICE, "notice-2"), "turn_0002");
 
     expect(run.conversation()).toEqual([
-      expect.objectContaining({ kind: "system_task_notification", senderId: SKILL_UPDATE_NOTICE_SENDER_ID, content: NOTICE }),
+      expect.objectContaining({ kind: "system_task_notification", senderId: SKILL_UPDATE_NOTICE_SENDER_ID, content: NOTICE, messageId: "notice-2" }),
     ]);
   });
 });

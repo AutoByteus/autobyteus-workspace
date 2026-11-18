@@ -223,14 +223,14 @@ export class ToolListUpdateService implements AgentRunInputPreface, AgentRunLife
       if (tracked.inFlight?.id !== id) return;
       tracked.inFlight = null;
       if (!delivered || !this.isCurrent(tracked)) return;
-      void run.publishEvent(buildToolListUpdateNoticeEvent(run.runId, text, turnId))
+      void run.publishEvent(buildToolListUpdateNoticeEvent(run.runId, text, turnId, id))
         .catch((error) => logger.warn(`TOOL_LIST_UPDATE_NOTICE_EVENT_FAILED:${run.runId}: ${String(error)}`));
       this.recordSeen(tracked, toolNames);
       // A change that arrived while this notice was on its way.
       void this.deliverIfBusy(tracked);
     };
     try {
-      const result = await run.postUserMessage(buildToolListUpdateNoticeMessage(text), {
+      const result = await run.postUserMessage(buildToolListUpdateNoticeMessage(text, id), {
         lifecycleObserver: (fact: AgentRunInputLifecycle) => {
           if (fact.kind === "forwarded") settle(true, fact.turnId);
           else if (fact.kind === "failed" || fact.kind === "cancelled") settle(false, null);

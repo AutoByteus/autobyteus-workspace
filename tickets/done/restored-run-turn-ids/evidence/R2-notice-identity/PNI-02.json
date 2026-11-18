@@ -1,0 +1,18 @@
+{
+  "teamRunId": "pni_team_4a41a09b_841bd3d24e0e469f8d16d1371760ecdf",
+  "leadRunId": "pni_b30dde96_b6aa8264a76849bfa8fd3e42bd27ea6e",
+  "live": [
+    {
+      "messageId": "3014b398-c141-4f69-a0ab-48bca5a5983e",
+      "agentRunId": "pni_b30dde96_b6aa8264a76849bfa8fd3e42bd27ea6e",
+      "content": "[Platform notice — background tasks finished]\n\n- pid 91946 `sleep 3; echo built`: exit code 0 after 3s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/pni_b30dde96_b6aa8264a76849bfa8fd3e42bd27ea6e/call-1794991172602-91915.log. Last lines:\n    built",
+      "at": 1794991177636
+    }
+  ],
+  "stored": [
+    {
+      "messageId": "3014b398-c141-4f69-a0ab-48bca5a5983e",
+      "content": "[Platform notice — background tasks finished]\n\n- pid 91946 `sleep 3; echo built`: exit code 0 after 3s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/pni_b30dde96_b6aa8264a76849bfa8fd3e42bd27ea6e/call-1794991172602-91915.log. Last lines:\n    built"
+    }
+  ]
+}

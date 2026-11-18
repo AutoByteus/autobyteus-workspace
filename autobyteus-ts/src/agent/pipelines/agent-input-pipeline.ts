@@ -97,7 +97,9 @@ export class AgentInputPipeline {
     ) {
       options.notifier?.notifyAgentDataSystemTaskNotificationReceived({
         sender_id: originalMessage.metadata?.sender_id ?? 'system',
-        content: originalMessage.content
+        content: originalMessage.content,
+        // No platform producer reaches this (each suppresses it); such a notice has no id (autobyteus-526 R-1).
+        message_id: null
       });
     }
 

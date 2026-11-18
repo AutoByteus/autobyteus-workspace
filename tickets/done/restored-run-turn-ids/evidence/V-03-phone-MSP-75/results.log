@@ -1,0 +1,11 @@
+# V-03 MSP-75 (autobyteus-web/tests/e2e/mobile-restored-run-cases.mjs): own node delta (dist of 238be7dbc0), scripted LM Studio model, production phone bundle, phone zone Europe/Berlin
+# node tests/e2e/mobile-shell-probe.mjs --cases=MSP-75 --output-dir=<dir>; earlier attempts: probe setup AGY discovery timeouts (load, shared stack), then my reload step and my agent count (fixed)
+## head 238be7dbc0 (final run)
+case: "Fail" agentTimes ['2026-11-18 06:58 UTC', '2026-11-18 06:58 UTC'] expectedCards ['18 Nov 2026, 07:58 CET', '18 Nov 2026, 07:58 CET']
+afterFirst cards 2 inputs [1, 1, 0] replies [1, 1, 0] ['] The application restarted at 18 Nov 2026, 07:58 CET (', '] The application restarted at 18 Nov 2026, 07:58 CET (']
+live cards 3 inputs [1, 1, 1] replies [1, 1, 1] ['] The application restarted at 18 Nov 2026, 07:58 CET (', '] The application restarted at 18 Nov 2026, 07:58 CET (', '] The application restarted at 18 Nov 2026, 07:58 CET (']
+reloaded cards 2 inputs [1, 1, 1] replies [1, 1, 1] ['] The application restarted at 18 Nov 2026, 07:58 CET (', '] The application restarted at 18 Nov 2026, 07:58 CET (']
+## base 2e9ac1e65b (this module copied into a temporary base worktree; base phone bundle and dist)
+afterFirst cards 2 inputs [1, 1, 0] replies [0, 1, 0] ['] The application restarted at 2026-11-18 06:33 UTC (re', '] The application restarted at 2026-11-18 06:33 UTC (re']
+live cards 3 inputs [1, 1, 1] replies [0, 0, 1] ['] The application restarted at 2026-11-18 06:33 UTC (re', '] The application restarted at 2026-11-18 06:33 UTC (re', '] The application restarted at 2026-11-18 06:33 UTC (re']
+reloaded cards 2 inputs [1, 1, 1] replies [1, 1, 1] ['] The application restarted at 2026-11-18 06:33 UTC (re', '] The application restarted at 2026-11-18 06:33 UTC (re']

@@ -1,4 +1,5 @@
 import type { AvailableCollaboratorEntry } from "../../agent-collaboration/collaborators/available-collaborator-entry.js";
+import { onNode, type RunningAgentEntry } from "../../agent-collaboration/running/running-agent-entry.js";
 import type { PeerNodeStatus, PeerDiscoveryChannel } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import type { RemoteChannelRefusal } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { PeerClient } from "../channel/peer-client.js";
@@ -14,6 +15,7 @@ import { localRefusalText, REMOTE_REFUSAL } from "../domain/remote-refusals.js";
  *   (a refusal by the peer, the wrong node, an HTTP error such as an older build's 404, a transport failure or a
  *   timeout) is `unavailable`: `listAvailableAgents` with that node says why.
  * - `listAvailableAgents`: the peer by name (the same refusals as `delegate_task`), then its *available agents*.
+ * - `listRunningAgents` (autobyteus-492): the peer by name, then its *running agents*.
  * - `listAvailableAgentsOf`, `checkAvailabilityOf`: one peer by its node ID, for the Nodes page (autobyteus-267,
  *   one-nodes-tab DS-004); an unreachable peer's refusal carries the classified `reason`.
  */
@@ -21,7 +23,7 @@ export class PeerNodeDiscovery implements PeerDiscoveryChannel {
   constructor(private readonly dependencies: Readonly<{
     capability: Readonly<{ isEnabled(): boolean }>;
     peers: Readonly<{ list(): Promise<readonly PeerNode[]> }>;
-    client: Pick<PeerClient, "findPeer" | "checkAvailability" | "listAvailableAgents">;
+    client: Pick<PeerClient, "findPeer" | "checkAvailability" | "listAvailableAgents" | "runningAgents">;
   }>) {}
 
   async listPeerNodes(): Promise<readonly PeerNodeStatus[] | RemoteChannelRefusal> {
@@ -36,6 +38,17 @@ export class PeerNodeDiscovery implements PeerDiscoveryChannel {
     const peer = await this.dependencies.client.findPeer(node);
     if ("accepted" in peer) return peer;
     return this.listAvailableAgentsOf(peer.nodeId);
+  }
+
+  /**
+   * autobyteus-492 DS-002: the peer by name (the same refusals as `listAvailableAgents`), then its running runs a person
+   * started, asked now; each entry with `node`, this owner's name for the peer.
+   */
+  async listRunningAgents(node: string): Promise<readonly RunningAgentEntry[] | RemoteChannelRefusal> {
+    const peer = await this.dependencies.client.findPeer(node);
+    if ("accepted" in peer) return peer;
+    const answer = await this.dependencies.client.runningAgents(peer.nodeId);
+    return answer.accepted ? Object.freeze(answer.agents.map((entry) => onNode(entry, peer.name))) : answer;
   }
 
   /**

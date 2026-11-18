@@ -277,12 +277,12 @@ export class SkillUpdateNoticeService implements AgentRunInputPreface, AgentRunL
         for (const name of names) state.dirty.add(name);
         return;
       }
-      void tracked.run.publishEvent(buildSkillUpdateNoticeEvent(runId, text, turnId))
+      void tracked.run.publishEvent(buildSkillUpdateNoticeEvent(runId, text, turnId, id))
         .catch((error) => logger.warn(`SKILL_UPDATE_NOTICE_EVENT_FAILED:${runId}: ${String(error)}`));
       void this.recordDelivered(runId, notice).then(() => this.deliverIfBusy(runId));
     };
     try {
-      const result = await tracked.run.postUserMessage(buildSkillUpdateNoticeMessage(text), {
+      const result = await tracked.run.postUserMessage(buildSkillUpdateNoticeMessage(text, id), {
         lifecycleObserver: (fact: AgentRunInputLifecycle) => {
           if (fact.kind === "forwarded") settle(true, fact.turnId);
           else if (fact.kind === "failed" || fact.kind === "cancelled") settle(false, null);

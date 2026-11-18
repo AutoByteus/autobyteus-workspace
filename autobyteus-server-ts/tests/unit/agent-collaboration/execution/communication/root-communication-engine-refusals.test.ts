@@ -23,8 +23,8 @@ const deliver = (engine: RootCommunicationEngine, to = receiver) => engine.deliv
 });
 
 describe("RootCommunicationEngine refusals reach the agent as results (SR-003 T-4, REQ-008)", () => {
+  // autobyteus-492 (CM-13): a different Task is no message refusal any more; only a closed Task is.
   it.each([
-    ["TASK_AGENT_RESOURCE_CONFLICT", "You can't message this agent: it works on a different Task."],
     ["TASK_AGENT_RESOURCE_CLOSED", "Your Task is DONE or CANCELLED, so you can't start new work."],
   ] as const)("%s from the delivery scope is returned, not thrown", async (code, message) => {
     const { engine, adapter } = engineWith(() => { throw new TaskDelegationError(code, message); });

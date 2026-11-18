@@ -1,0 +1,88 @@
+{
+ "activity": {
+  "pixels": 0,
+  "bboxCss": null
+ },
+ "artifacts": {
+  "pixels": 0,
+  "bboxCss": null
+ },
+ "connection-sheet": {
+  "pixels": 284,
+  "bboxCss": [
+   347,
+   73,
+   385,
+   604
+  ]
+ },
+ "conversation": {
+  "pixels": 4,
+  "bboxCss": [
+   382,
+   26,
+   386,
+   30
+  ]
+ },
+ "file-viewer": {
+  "pixels": 0,
+  "bboxCss": null
+ },
+ "files": {
+  "pixels": 0,
+  "bboxCss": null
+ },
+ "new-run-agent-sheet": {
+  "pixels": 0,
+  "bboxCss": null
+ },
+ "new-run": {
+  "pixels": 0,
+  "bboxCss": null
+ },
+ "on-this-phone-menu": {
+  "pixels": 12474,
+  "bboxCss": [
+   120,
+   73,
+   400,
+   780
+  ]
+ },
+ "run-list": {
+  "pixels": 453,
+  "bboxCss": [
+   346,
+   73,
+   385,
+   780
+  ]
+ },
+ "run-menu": {
+  "pixels": 0,
+  "bboxCss": null
+ },
+ "settings": {
+  "pixels": 0,
+  "bboxCss": null
+ },
+ "setup": {
+  "pixels": 1488,
+  "bboxCss": [
+   62,
+   358,
+   362,
+   610
+  ]
+ },
+ "unpair-confirm": {
+  "pixels": 284,
+  "bboxCss": [
+   347,
+   73,
+   385,
+   604
+  ]
+ }
+}

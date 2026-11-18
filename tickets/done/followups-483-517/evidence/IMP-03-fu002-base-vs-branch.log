@@ -1,0 +1,96 @@
+# IMP-03 AC-001: base vs branch under the same machine load
+# commit: branch 807951b6e0, base files from 24d438fa31; node v22.23.1; macOS 26.5.2, 10 cores
+## base (2026-11-18T10:52:42Z)
+load: 128.75 131.94 134.50
+fseventsd CPU %: 157.5
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests | 1 failed | 2 skipped) 121372ms
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts (22 tests | 6 failed) 100309ms
+ ❯ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts (15 tests | 9 failed) 391748ms
+ ❯ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (6 tests) 25221ms
+ ❯ tests/integration/file-explorer/file-system-watcher.integration.test.ts (14 tests | 8 failed) 75440ms
+ ❯ tests/integration/api/studio-server-http-contract.integration.test.ts (4 tests) 26902ms
+ FAIL  tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)
+Error: Hook timed out in 10000ms.
+ ❯ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts:80:3
+ FAIL  tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Error: Hook timed out in 10000ms.
+ ❯ tests/integration/api/studio-server-http-contract.integration.test.ts:79:3
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload
+AssertionError: expected 24175 to be less than 5000
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts:387:114
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload
+AssertionError: expected 5104 to be less than 5000
+ ❯ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts:148:30
+    148|     expect(listed.elapsedMs).toBeLessThan(AC_BOUND_MS);
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-016: a lookup inside the settle window applies the detected change first
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-002/AC-015(b)/QR-004: edits reach every reader; other agents never disappear during the refresh
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-004: a broken edit keeps the last good agent usable with an issue; fixing it clears the issue
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-005: a new invalid Team is unavailable with a diagnostic and other Teams are unaffected
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-006: a 50-file burst is coalesced into a bounded number of publications
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > CR-001/REQ-015: an unreadable package folder at startup does not block startup or other packages
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > DSN-003: a broken team-local agent keeps its last good version and its Team stays launchable
+Error: Hook timed out in 10000ms.
+ ❯ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts:133:1
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-006: a 50-file burst is coalesced into a bounded number of publications
+ ❯ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts:262:17
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-012: a root renamed away keeps its definitions and reports FOLDER_MISSING; restoring it resumes watching
+ ❯ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts:328:5
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits file creation event with node metadata
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+AssertionError: expected [ 'move', 'rename' ] to include 'delete'
+ ❯ tests/integration/file-explorer/file-system-watcher.integration.test.ts:272:52
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports definition changes per folder and ignores skills and other files
+Error: Test timed out in 5000ms.
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:62:3
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns
+Error: Test timed out in 5000ms.
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:86:3
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > re-arms a root whose folder was replaced in place (GitHub update rename swap)
+Error: Test timed out in 5000ms.
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:111:3
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:145:5
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports UNAVAILABLE when a running watcher fails
+Error: Hook timed out in 10000ms.
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:54:1
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > checks that the package folder is still there first: a folder renamed away is reported missing, with no coverage repair
+Error: Test timed out in 5000ms.
+ ❯ tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts:486:3
+ Test Files  6 failed | 1 passed (7)
+      Tests  24 failed | 54 passed | 2 skipped (80)
+   Duration  845.75s (transform 43.67s, setup 882ms, import 83.67s, tests 755.63s, environment 0ms)
+load: 104.06 122.86 132.00
+fseventsd CPU %: 138.3
+## branch (2026-11-18T11:06:53Z)
+load: 104.06 122.86 132.00
+fseventsd CPU %: 147.7
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests | 2 failed | 2 skipped) 429973ms
+ ❯ tests/integration/file-explorer/file-system-watcher.integration.test.ts (14 tests | 6 failed) 184600ms
+ ❯ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (6 tests | 1 failed) 11847ms
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts:365:25
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+Error: Test timed out in 60000ms.
+ ❯ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts:450:3
+ FAIL  tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts > Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay) > lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002)
+ ❯ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts:151:20
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > captures rapid changes without dropping events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+AssertionError: expected [ 'move', 'rename' ] to include 'delete'
+ ❯ tests/integration/file-explorer/file-system-watcher.integration.test.ts:275:52
+ Test Files  3 failed | 4 passed (7)
+      Tests  9 failed | 69 passed | 2 skipped (80)
+   Duration  1151.00s (transform 37.37s, setup 470ms, import 55.94s, tests 1092.02s, environment 1ms)
+load: 74.46 90.82 109.65
+fseventsd CPU %: 172.0

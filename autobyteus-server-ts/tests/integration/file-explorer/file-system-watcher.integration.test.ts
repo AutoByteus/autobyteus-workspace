@@ -10,15 +10,17 @@ import {
   FileSystemChangeEvent,
 } from "../../../src/file-explorer/file-system-changes.js";
 import { WorkspaceFileExplorer } from "../../../src/file-explorer/file-explorer.js";
+import { FILE_EVENT_TEST_TIMEOUT_MS, IN_PROCESS_SERVER_HOOK_TIMEOUT_MS, OS_FILE_EVENT_WAIT_MS } from "../../helpers/os-latency-under-load.js";
 
 const createTempWorkspace = async (): Promise<string> => {
   const base = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-server-ts-watch-"));
   return base;
 };
 
+// Event waits take the shared OS file-event limit (os-latency-under-load.ts); "no event" checks keep their short windows.
 const nextEvent = async (
   events: AsyncGenerator<string, void, void>,
-  timeoutMs = 12000,
+  timeoutMs = OS_FILE_EVENT_WAIT_MS,
 ): Promise<FileSystemChangeEvent> => {
   const timer = new Promise<never>((_, reject) => {
     const timeout = setTimeout(() => {
@@ -40,7 +42,7 @@ const nextEvent = async (
 const expectEventAfterAction = async (
   events: AsyncGenerator<string, void, void>,
   action: () => Promise<void> | void,
-  timeoutMs = 8000,
+  timeoutMs = OS_FILE_EVENT_WAIT_MS,
 ): Promise<FileSystemChangeEvent> => {
   const eventPromise = nextEvent(events, timeoutMs);
   await Promise.resolve();
@@ -90,7 +92,7 @@ const expectNoEventAfterAction = async (
 const waitForChange = async (
   events: AsyncGenerator<string, void, void>,
   predicate: (change: FileSystemChange) => boolean,
-  timeoutMs = 12000,
+  timeoutMs = OS_FILE_EVENT_WAIT_MS,
 ): Promise<FileSystemChange> => {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
@@ -108,21 +110,22 @@ describe("FileSystemWatcher integration", () => {
   let workspace: string;
   let explorer: WorkspaceFileExplorer;
 
+  // Starting and closing the watcher arm and close OS folder watches: seconds under an FSEvents backlog.
   beforeEach(async () => {
     workspace = await createTempWorkspace();
     explorer = new WorkspaceFileExplorer(workspace);
     await explorer.buildWorkspaceDirectoryTree();
     await explorer.startWatcher();
-  });
+  }, IN_PROCESS_SERVER_HOOK_TIMEOUT_MS);
 
   afterEach(async () => {
     await explorer.close();
     await fs.rm(workspace, { recursive: true, force: true });
-  });
+  }, IN_PROCESS_SERVER_HOOK_TIMEOUT_MS);
 
   it(
     "does not emit events for pre-existing root .gitignore excluded directories",
-    { timeout: 15000 },
+    { timeout: FILE_EVENT_TEST_TIMEOUT_MS },
     async () => {
       const isolatedWorkspace = await createTempWorkspace();
       const isolatedExplorer = new WorkspaceFileExplorer(isolatedWorkspace);
@@ -158,7 +161,7 @@ describe("FileSystemWatcher integration", () => {
 
   it(
     "does not emit events for pre-existing nested .gitignore excluded directories",
-    { timeout: 15000 },
+    { timeout: FILE_EVENT_TEST_TIMEOUT_MS },
     async () => {
       const isolatedWorkspace = await createTempWorkspace();
       const isolatedExplorer = new WorkspaceFileExplorer(isolatedWorkspace);
@@ -191,7 +194,7 @@ describe("FileSystemWatcher integration", () => {
 
   it(
     "emits add + modify + delete events",
-    { timeout: 15000 },
+    { timeout: FILE_EVENT_TEST_TIMEOUT_MS },
     async () => {
       const stream = explorer.fileWatcher?.events();
       if (!stream) {
@@ -218,7 +221,7 @@ describe("FileSystemWatcher integration", () => {
 
   it(
     "returns one idle event stream without stopping other subscribers",
-    { timeout: 15000 },
+    { timeout: FILE_EVENT_TEST_TIMEOUT_MS },
     async () => {
       const firstStream = explorer.fileWatcher?.events();
       const secondStream = explorer.fileWatcher?.events();
@@ -255,7 +258,7 @@ describe("FileSystemWatcher integration", () => {
 
   it(
     "emits move/rename event",
-    { timeout: 15000 },
+    { timeout: FILE_EVENT_TEST_TIMEOUT_MS },
     async () => {
       const stream = explorer.fileWatcher?.events();
       if (!stream) {
@@ -277,7 +280,7 @@ describe("FileSystemWatcher integration", () => {
 
   it(
     "emits file creation event with node metadata",
-    { timeout: 15000 },
+    { timeout: FILE_EVENT_TEST_TIMEOUT_MS },
     async () => {
       const stream = explorer.fileWatcher?.events();
       if (!stream) {
@@ -288,7 +291,6 @@ describe("FileSystemWatcher integration", () => {
       const changePromise = waitForChange(
         stream,
         (change) => change.type === ChangeType.ADD,
-        4000,
       );
 
       await fs.writeFile(filePath, "hello", { encoding: "utf-8" });
@@ -306,7 +308,7 @@ describe("FileSystemWatcher integration", () => {
 
   it(
     "emits folder creation and deletion events",
-    { timeout: 25000 },
+    { timeout: FILE_EVENT_TEST_TIMEOUT_MS },
     async () => {
       const stream = explorer.fileWatcher?.events();
       if (!stream) {
@@ -330,7 +332,6 @@ describe("FileSystemWatcher integration", () => {
       const deleteChangePromise = waitForChange(
         stream,
         (change) => change.type === ChangeType.DELETE,
-        12000,
       );
       await fs.rm(folderPath, { recursive: true, force: true });
       const deleteChange = (await deleteChangePromise) as DeleteChange;
@@ -343,7 +344,7 @@ describe("FileSystemWatcher integration", () => {
 
   it(
     "ignores default strategy paths like __pycache__",
-    { timeout: 15000 },
+    { timeout: FILE_EVENT_TEST_TIMEOUT_MS },
     async () => {
       const ignoreStream = explorer.fileWatcher?.events();
       if (!ignoreStream) {
@@ -357,7 +358,7 @@ describe("FileSystemWatcher integration", () => {
 
   it(
     "ignores specific folders like .git and their contents",
-    { timeout: 15000 },
+    { timeout: FILE_EVENT_TEST_TIMEOUT_MS },
     async () => {
       const ignoreStream = explorer.fileWatcher?.events();
       if (!ignoreStream) {
@@ -378,7 +379,7 @@ describe("FileSystemWatcher integration", () => {
 
   it(
     "respects nested .gitignore files",
-    { timeout: 15000 },
+    { timeout: FILE_EVENT_TEST_TIMEOUT_MS },
     async () => {
       const stream = explorer.fileWatcher?.events();
       if (!stream) {
@@ -419,7 +420,7 @@ describe("FileSystemWatcher integration", () => {
 
   it(
     "respects root .gitignore files",
-    { timeout: 15000 },
+    { timeout: FILE_EVENT_TEST_TIMEOUT_MS },
     async () => {
       const stream = explorer.fileWatcher?.events();
       if (!stream) {
@@ -450,7 +451,7 @@ describe("FileSystemWatcher integration", () => {
 
   it(
     "captures rapid changes without dropping events",
-    { timeout: 15000 },
+    { timeout: FILE_EVENT_TEST_TIMEOUT_MS },
     async () => {
       const stream = explorer.fileWatcher?.events();
       if (!stream) {
@@ -472,7 +473,7 @@ describe("FileSystemWatcher integration", () => {
       }
 
       if (!addNames.has("another_file.txt") || !addNames.has("another_folder")) {
-        const second = await nextEvent(stream, 2000);
+        const second = await nextEvent(stream);
         for (const change of second.changes) {
           if (change.type === ChangeType.ADD) {
             const node = (change as AddChange).node;
@@ -490,7 +491,7 @@ describe("FileSystemWatcher integration", () => {
 
   it(
     "treats moves into ignored directories as deletes from the visible tree",
-    { timeout: 15000 },
+    { timeout: FILE_EVENT_TEST_TIMEOUT_MS },
     async () => {
       const stream = explorer.fileWatcher?.events();
       if (!stream) {
@@ -522,7 +523,6 @@ describe("FileSystemWatcher integration", () => {
       const deleteChangePromise = waitForChange(
         ignoreStream2,
         (change) => change.type === ChangeType.DELETE,
-        4000,
       );
       await fs.rename(sourceFile, path.join(buildDir, "main.js"));
       const deleteChange = (await deleteChangePromise) as DeleteChange;
@@ -535,7 +535,7 @@ describe("FileSystemWatcher integration", () => {
 
   it(
     "emits delete events even if the in-memory node is missing",
-    { timeout: 15000 },
+    { timeout: FILE_EVENT_TEST_TIMEOUT_MS },
     async () => {
       const stream = explorer.fileWatcher?.events();
       if (!stream) {
@@ -559,7 +559,6 @@ describe("FileSystemWatcher integration", () => {
       const deleteChangePromise = waitForChange(
         stream,
         (change) => change.type === ChangeType.DELETE,
-        4000,
       );
 
       await fs.unlink(ghostPath);

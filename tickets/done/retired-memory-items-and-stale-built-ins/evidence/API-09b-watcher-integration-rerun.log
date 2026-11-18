@@ -1,0 +1,33 @@
+# API-09b the two failing integration files alone | commit cbdf02f15a | Node v22.23.1 | 2026-11-18T09:01:22Z | load 67.79 70.76 76.70
+ × tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload 29545ms
+ × tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > autobyteus-324: a tool list edit on disk and an in-app save each signal an agent definition change 23660ms
+ × tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-016: a lookup inside the settle window applies the detected change first 46178ms
+ × tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-002/AC-015(b)/QR-004: edits reach every reader; other agents never disappear during the refresh 35554ms
+ ✓ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-003/AC-015(c): a deleted agent or Team is gone and delegation gets the existing not-found result 15426ms
+ ✓ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-004: a broken edit keeps the last good agent usable with an issue; fixing it clears the issue 3653ms
+ ✓ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-005: a new invalid Team is unavailable with a diagnostic and other Teams are unaffected 5350ms
+ × tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-006: a 50-file burst is coalesced into a bounded number of publications 20109ms
+ ✓ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-007: skill edits inside a package produce no reload and no notification 3097ms
+ ✓ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-011: an imported root is watched; a removed root is released and its later edits are ignored 4490ms
+ ✓ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-012: a root renamed away keeps its definitions and reports FOLDER_MISSING; restoring it resumes watching 15145ms
+ ✓ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-012: a watcher that cannot be set up reports UNAVAILABLE and manual Reload still works 1515ms
+ ✓ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > CR-001/REQ-015: an unreadable package folder at startup does not block startup or other packages 13625ms
+ ✓ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AR-001: a Team created before its agent becomes available once the agent appears, and its list is told to reload 4775ms
+ ✓ tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > DSN-003: a broken team-local agent keeps its last good version and its Team stays launchable 1156ms
+ ✓ tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories 1193ms
+ ✓ tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories 1132ms
+ ✓ tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events 2114ms
+ × tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers 8061ms
+ × tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event 1878ms
+ ✓ tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits file creation event with node metadata 2395ms
+ ✓ tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events 3085ms
+ ✓ tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores default strategy paths like __pycache__ 866ms
+ ✓ tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents 1652ms
+ ✓ tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files 9512ms
+ ✓ tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files 4663ms
+ ✓ tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > captures rapid changes without dropping events 5716ms
+ × tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree 15067ms
+ ✓ tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing 4055ms
+ Test Files  2 failed (2)
+      Tests  8 failed | 21 passed (29)
+exit 1

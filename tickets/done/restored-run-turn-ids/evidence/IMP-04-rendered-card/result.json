@@ -1,0 +1,21 @@
+{
+  "errors": [],
+  "cases": {
+    "desktop-berlin": {
+      "card": "[Platform notice — application restarted]\n\nThe application restarted at 18 Nov 2026, 06:41 CET (reason: a restart).\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+      "segmentContentKeepsUtc": true,
+      "cardWidth": 712
+    },
+    "phone-berlin": {
+      "card": "[Platform notice — application restarted]\n\nThe application restarted at 18 Nov 2026, 06:41 CET (reason: a restart).\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+      "segmentContentKeepsUtc": true,
+      "cardWidth": 292
+    },
+    "desktop-tokyo": {
+      "card": "[Platform notice — application restarted]\n\nThe application restarted at 18 Nov 2026, 14:41 GMT+9 (reason: a restart).\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+      "segmentContentKeepsUtc": true,
+      "cardWidth": 712
+    }
+  },
+  "routeRemoved": true
+}

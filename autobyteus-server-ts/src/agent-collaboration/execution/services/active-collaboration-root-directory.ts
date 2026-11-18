@@ -22,9 +22,24 @@ export interface ActiveRootMessageBoundary {
   prepareSendToRun?(input: import("../communication/root-communication-engine.js").RunSendInput): import("../communication/root-communication-engine.js").PreparedRunSend;
   commitSentToRun?(message: import("../communication/collaboration-communication-message.js").CollaborationCommunicationMessage): Promise<void>;
   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult>;
+  /**
+   * autobyteus-492 DS-004: `send_message_to(node, run ID)` from an agent of this root to an agent of a peer node, named by
+   * its run ID only: the sender's check and lease here, the endpoint choice and the order in `RemoteMessageSend`.
+   */
+  deliverToPeerRun(input: PeerRunMessageInput): Promise<AgentOperationResult>;
   /** The coordinator agent run of this team run, or of a peer team run it delegated to; `null` otherwise. Reads only. */
   teamCoordinatorOf?(teamRunId: string): string | null;
 }
+
+/** A message from an agent of a root to an agent of a peer node, by the peer's node ID and the agent's run ID (DS-004). */
+export type PeerRunMessageInput = Readonly<{
+  sender: ActiveRootMessageSender;
+  nodeId: string;
+  targetAgentRunId: string;
+  content: string;
+  messageType?: string | null;
+  referenceFiles?: readonly string[] | null;
+}>
 
 /** Where a live agent run sits in its own root: a standalone run's agent, or a Team or Org member (autobyteus-461 DS-9). */
 export type CollaborationRunPlace = "host" | "member";
@@ -101,6 +116,11 @@ export class ActiveCollaborationRootDirectory {
   resolve(root: RootExecutionIdentity): ActiveRootMessageBoundary | null {
     const entry = this.active.get(rootExecutionIdentityKey(root));
     return entry && sameRootExecutionIdentity(entry.root, root) ? entry.boundary : null;
+  }
+
+  /** Every registered root, by identity (autobyteus-492: `RunningAgents` and the running-agents listing). Reads only. */
+  liveRoots(): readonly RootExecutionIdentity[] {
+    return Object.freeze([...this.active.values()].map(({ root }) => cloneRootExecutionIdentity(root)));
   }
 
   /**

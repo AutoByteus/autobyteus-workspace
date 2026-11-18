@@ -107,8 +107,8 @@ describe('MobileRunScreen', () => {
     expect(router.currentRoute.value.query.screen).toBeUndefined();
   });
 
-  // autobyteus-522: Settings after Activity for every run, whatever its kind, a run on another node too (its screen says it
-  // can be changed only on that node).
+  // autobyteus-522: Settings for every run, whatever its kind, a run on another node too (its screen says it can be
+  // changed only on that node); the last entry (autobyteus-534).
   it.each([
     ['standalone_agent', false, false], ['agent_run_task_agent', false, false], ['standalone_team_member', true, false],
     ['agent_run_task_team_member', true, false], ['agent_run_task_agent', false, true],
@@ -134,7 +134,7 @@ describe('MobileRunScreen', () => {
     const { wrapper } = await mountScreen();
     await wrapper.get('[data-testid="mobile-run-menu-button"]').trigger('click');
     expect(wrapper.find('[data-testid="mobile-run-menu-desktop"]').exists()).toBe(shown);
-    if (shown) expect(wrapper.findAll('[role="menuitem"]').map((item) => item.text())).toEqual(['Artifacts', 'Files', 'Activity', 'Settings', 'VNC Viewer']);
+    if (shown) expect(wrapper.findAll('[role="menuitem"]').map((item) => item.text())).toEqual(['Artifacts', 'Files', 'Activity', 'VNC Viewer', 'Settings']);
   });
 
   it('VNC Viewer opens the desktop screen', async () => {

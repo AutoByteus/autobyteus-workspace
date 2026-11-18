@@ -9,6 +9,11 @@ export type CrossRunAcceptInput = Readonly<{
   senderAddress: string | null;
   /** The gate-head re-check from the Task side (AR-017); throws a Task refusal. */
   assertAllowed(): void;
+  /**
+   * autobyteus-492 G-1 (DEC-014): whether the message enters run views (the Team tab): `true` between runs of one Task
+   * tree (related), `false` between unrelated runs, which stay out of run views like a message with another node.
+   */
+  publishToViews: boolean;
 }>;
 
 /** The receiver is not an agent of this run (the run that the Task records name for it does not have it). */

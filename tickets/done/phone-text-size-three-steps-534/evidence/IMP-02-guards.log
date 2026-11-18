@@ -1,0 +1,7 @@
+# IMP-02 web guards; commit d4a14666a4; macOS node v22.23.1; 2026-11-18
+== pnpm -C autobyteus-web guard:web-boundary
+[guard:web-boundary] Passed.
+== pnpm -C autobyteus-web guard:localization-boundary
+[guard:localization-boundary] Passed.
+== pnpm -C autobyteus-web audit:localization-literals
+[audit:localization-literals] Passed with zero unresolved findings.

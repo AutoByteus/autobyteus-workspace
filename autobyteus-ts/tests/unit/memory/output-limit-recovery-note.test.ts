@@ -3,7 +3,6 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
-import { MemoryType } from '../../../src/memory/models/memory-types.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { WorkingContextSnapshotStore } from '../../../src/memory/store/working-context-snapshot-store.js';
 import { WorkingContextSnapshotSerializer } from '../../../src/memory/working-context-snapshot-serializer.js';
@@ -27,7 +26,7 @@ describe('MemoryManager.appendOutputLimitRecoveryNote (D-06)', () => {
 
       manager.appendOutputLimitRecoveryNote({ turnId, content: NOTE });
 
-      const traces = store.list(MemoryType.RAW_TRACE) as any[];
+      const traces = store.listTurnRawTracesOrdered() as any[];
       const noteTrace = traces.find((trace) => trace.traceType === OUTPUT_LIMIT_RECOVERY_TRACE_TYPE);
       expect(noteTrace).toMatchObject({ turnId, content: NOTE });
       expect(traces.filter((trace) => trace.traceType === 'user')).toHaveLength(0);

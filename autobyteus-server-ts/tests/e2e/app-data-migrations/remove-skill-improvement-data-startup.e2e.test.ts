@@ -135,6 +135,9 @@ describe("Removal of the Skill Improvement feature's data on startup (built Stud
   it("SID-2 deletes exactly the feature's data once, keeps everything else byte-identical, and other runs list and open", async () => {
     await setupRoot([ENV_KEPT[0]!, RETIRED_KEYS[0] + "=true", ENV_KEPT[1]!, `${RETIRED_KEYS[1]}=${IMPROVER_ID}`, ENV_KEPT[2]!, `${RETIRED_KEYS[2]}=false`]);
     const paths = await writeFeatureDataRoot(root);
+    // autobyteus-491: the same start also runs 20261118_remove_retired_built_in_agents, which deletes the installed
+    // Skill Self-Evolver (20261020 itself keeps it); its own unit test covers 20261020 alone.
+    const startupDeleted = [...paths.deleted, "agents/autobyteus-skill-evolver"];
     // REQ-008: a beta.5-era compactor run carries `server_helper` too, but is not the feature's; it and its row stay.
     const indexPath = path.join(root, "memory", "run_history_index.json");
     await writeRun(path.join(root, "memory"), COMPACTOR_RUN, "autobyteus-memory-compactor", { launchPurpose: "server_helper" });
@@ -151,13 +154,13 @@ describe("Removal of the Skill Improvement feature's data on startup (built Stud
     const first = await studio();
     const record = await first.migration();
     expect(record, JSON.stringify(record)).toMatchObject({ status: "SUCCEEDED", errorMessage: null, attempts: 1 });
-    for (const gone of paths.deleted) expect(await exists(path.join(root, gone)), gone).toBe(false);
+    for (const gone of startupDeleted) expect(await exists(path.join(root, gone)), gone).toBe(false);
     await expectHistoryIndex();
     // Every file that existed and is not the feature's is byte-identical (the server may add its own new files),
     // except the delegated copy's own file, which autobyteus-461's migration (registered last, CR-461-048) converts
     // by design (contract E6: `taskAgent` → `delegatedFrom`). The copy itself is kept (F-25).
     const copyMetadata = `memory/agents/${IMPROVER_TASK_COPY}/run_metadata.json`;
-    const expected = without(before, [...paths.deleted, "memory/run_history_index.json", ".env", copyMetadata]);
+    const expected = without(before, [...startupDeleted, "memory/run_history_index.json", ".env", copyMetadata]);
     const converted = JSON.parse(await fs.readFile(path.join(root, copyMetadata), "utf8")) as Record<string, unknown>;
     expect(converted, JSON.stringify(converted)).toMatchObject({ delegatedFrom: { delegatingRun: { kind: "agent", runId: USER_RUNS[0] } } });
     expect(converted).not.toHaveProperty("taskAgent");
@@ -166,7 +169,7 @@ describe("Removal of the Skill Improvement feature's data on startup (built Stud
     // The settings: the three keys are gone, every other line is kept.
     expect(await fs.readFile(path.join(root, ".env"), "utf8")).toBe(`${ENV_KEPT.join("\n")}\n`);
     expect((await first.settings()).filter((key) => RETIRED_KEYS.includes(key))).toEqual([]);
-    // Other runs list and open; helper runs are gone from history; the Skill Self-Evolver and user agents stay.
+    // Other runs list and open; helper runs are gone from history; user agents stay, the Skill Self-Evolver is gone.
     const history = await first.historyRunIds();
     // (USER_RUNS[2]'s row is archived, so it is not listed; its row is checked above.)
     expect(history).toEqual(expect.arrayContaining([USER_RUNS[0], USER_RUNS[1], USER_RUNS[3], USER_RUNS[4], USER_RUNS[5]]));
@@ -177,8 +180,9 @@ describe("Removal of the Skill Improvement feature's data on startup (built Stud
     expect(Object.keys(expected).filter((rel) => rel.startsWith(`memory/agents/${COMPACTOR_RUN}/`)).length).toBeGreaterThan(0);
     expect(history).toContain(COMPACTOR_RUN);
     const agents = await first.agentIds();
-    expect(agents).toEqual(expect.arrayContaining(["autobyteus-skill-evolver", "my-agent", "autobyteus-daily-assistant"]));
+    expect(agents).toEqual(expect.arrayContaining(["my-agent", "autobyteus-daily-assistant"]));
     expect(agents).not.toContain(IMPROVER_ID);
+    expect(agents).not.toContain("autobyteus-skill-evolver");
     await stop(first.child);
     const afterFirst = await snapshot(root);
     const indexAfterFirst = await fs.readFile(indexPath, "utf8");
@@ -189,7 +193,7 @@ describe("Removal of the Skill Improvement feature's data on startup (built Stud
     expect(keptNow(await snapshot(root))).toEqual(expected);
     expect(await fs.readFile(indexPath, "utf8")).toBe(indexAfterFirst);
     await expectHistoryIndex();
-    for (const gone of paths.deleted) expect(await exists(path.join(root, gone)), gone).toBe(false);
+    for (const gone of startupDeleted) expect(await exists(path.join(root, gone)), gone).toBe(false);
     expect(await second.historyRunIds()).toContain(COMPACTOR_RUN);
     expect(Object.keys(afterFirst).filter((rel) => rel.startsWith("memory/")).sort())
       .toEqual(Object.keys(await snapshot(root)).filter((rel) => rel.startsWith("memory/")).sort());

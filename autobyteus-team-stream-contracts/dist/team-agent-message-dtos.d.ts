@@ -577,6 +577,7 @@ export declare const teamAgentPayloadSchemas: {
             }, z.core.$strict>;
         }, z.core.$strict>]>;
         content: z.ZodString;
+        message_id: z.ZodNullable<z.ZodString>;
         change_sequence: z.ZodNumber;
         agent_run_id: z.ZodString;
     }, z.core.$strict>;

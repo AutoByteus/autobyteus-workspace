@@ -237,7 +237,7 @@ describe("restart resume input through the handle (autobyteus-285 SR-005)", () =
     const input = new AgentInputUserMessage("Please continue the page.");
     f.fakeRun.postUserMessage.mockImplementationOnce(async (message: AgentInputUserMessage) => {
       // A skill-update or tool-list notice is combined into the input inside AgentRun.
-      Object.assign(message.metadata, platformInputPrefaceMetadata({ content: "[notice]", senderId: "system.skill_update_notifier", originalContent: message.content }));
+      Object.assign(message.metadata, platformInputPrefaceMetadata({ content: "[notice]", senderId: "system.skill_update_notifier", originalContent: message.content, noticeId: "notice-1" }));
       return { accepted: true };
     });
     await f.handle.postMessage(input);

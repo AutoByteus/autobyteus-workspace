@@ -17,6 +17,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { IN_PROCESS_SERVER_HOOK_TIMEOUT_MS } from "../../helpers/os-latency-under-load.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import {
   startStudioE2eRuntimeServer,
@@ -74,12 +75,13 @@ describe("Studio server HTTP contract", () => {
     baseUrl = new URL(started.mainUrl);
     // The owner reads the gateway token (an owner route; this process attaches the launch credential).
     gatewayToken = ((await (await http("/rest/mcp-gateway/token")).json()) as { token: string }).token;
-  }, 30_000);
+    // Starting and closing the in-process server arm and close its folder watchers: seconds under an FSEvents backlog.
+  }, IN_PROCESS_SERVER_HOOK_TIMEOUT_MS);
 
   afterAll(async () => {
     await started?.fastify.close();
     await fs.rm(appDataDir, { recursive: true, force: true });
-  });
+  }, IN_PROCESS_SERVER_HOOK_TIMEOUT_MS);
 
   it("serves GraphQL at POST /graphql and no GraphiQL page", async () => {
     const graphql = await http("/graphql", {

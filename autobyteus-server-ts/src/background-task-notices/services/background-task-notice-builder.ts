@@ -53,20 +53,22 @@ export const buildBackgroundTaskNoticeText = (
  * message, so it never carries another notice and memory records it as one system notice; the service publishes
  * the run's system notice once it is forwarded.
  */
-export const buildBackgroundTaskNoticeMessage = (text: string): AgentInputUserMessage =>
+export const buildBackgroundTaskNoticeMessage = (text: string, noticeId: string): AgentInputUserMessage =>
   new AgentInputUserMessage(text, SenderType.SYSTEM, null, {
     sender_id: BACKGROUND_TASK_NOTICE_SENDER_ID,
     [SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY]: true,
-    ...platformInputPrefaceMetadata({ content: text, senderId: BACKGROUND_TASK_NOTICE_SENDER_ID, originalContent: null }),
+    ...platformInputPrefaceMetadata({ content: text, senderId: BACKGROUND_TASK_NOTICE_SENDER_ID, originalContent: null, noticeId }),
   });
 
 /** The run's system notice event (web presentation and history). */
-export const buildBackgroundTaskNoticeEvent = (runId: string, text: string, turnId: string | null): AgentRunEvent => ({
+/** `noticeId`: the notice's one id, the same as on its message (autobyteus-526). */
+export const buildBackgroundTaskNoticeEvent = (runId: string, text: string, turnId: string | null, noticeId: string): AgentRunEvent => ({
   eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION,
   runId,
   payload: {
     sender_id: BACKGROUND_TASK_NOTICE_SENDER_ID,
     content: text,
+    message_id: noticeId,
     ...(turnId ? { turn_id: turnId } : {}),
   },
   statusHint: null,

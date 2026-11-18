@@ -1,0 +1,6 @@
+[typecheck] server tests (tsconfig.tests.json): 1012 errors, exit 2, 31.4s
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS

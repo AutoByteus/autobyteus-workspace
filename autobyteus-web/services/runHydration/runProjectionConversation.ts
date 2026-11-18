@@ -278,6 +278,7 @@ const buildAssistantSideSegments = (
       type: 'system_task_notification',
       senderId: entry.senderId ?? 'system',
       content: entry.content,
+      messageId: typeof entry.messageId === 'string' && entry.messageId ? entry.messageId : null,
     }];
   }
 

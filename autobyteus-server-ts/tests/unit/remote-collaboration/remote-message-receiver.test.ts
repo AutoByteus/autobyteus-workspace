@@ -25,9 +25,18 @@ const setup = (stored: StoredRemoteLinkCheck = "proceed") => {
     standalone: vi.fn(async () => roots.standalone),
     team: vi.fn(async () => roots.team),
     org: vi.fn(async () => roots.org),
+    pairedAgents: vi.fn() as never,
+    liveRoot: vi.fn(() => liveRoot),
   } satisfies RemoteRootDirectory;
+  const liveRoot = { acceptPeerRunMessage: vi.fn(async () => ({ accepted: true as const })) };
   const titles = { recordFirstMessage: vi.fn(async () => undefined) }
-  return { receiver: new RemoteMessageReceiver(directory, titles, new PeerStartedRunDecisions()), directory, roots, titles };
+  // autobyteus-492: "pm_b" runs in the standalone root "pm_b"; the team "team_b" runs here with its coordinator "lead_b".
+  const running = {
+    rootOf: vi.fn((agentRunId: string) => agentRunId === "pm_b"
+      ? { root: { rootSubjectKind: "agent" as const, rootRunId: "pm_b" }, status: { agentRunId, status: "idle" as const, backgroundTasksRunning: 0 } } : null),
+    teamCoordinatorOf: vi.fn((teamRunId: string) => teamRunId === "team_b" ? "lead_b" : null),
+  };
+  return { receiver: new RemoteMessageReceiver(directory, titles, new PeerStartedRunDecisions(), running), directory, roots, titles, running, liveRoot };
 };
 
 describe("RemoteMessageReceiver resolves targetRoot by kind (G-2)", () => {
@@ -125,3 +134,32 @@ describe("an accepted work packet's content is the run's title (autobyteus-269)"
   });
 });
 
+describe("autobyteus-492 DS-004: a message by run ID only (acceptRunMessage)", () => {
+  const runMessage = (target: string) => ({ fromNodeId: PEER.nodeId, toNodeId: "srv_node_b", messageId: "collabmsg_9", sender: { agentRunId: "pm_a" },
+    target: { agentRunId: target }, content: "hello B", messageType: "agent_message", createdAt: "2026-11-18T10:00:00.000Z" });
+
+  it("a running agent: its active root (never restored) accepts it with the sender's node; no stored-link check, no restore", async () => {
+    const f = setup();
+    await expect(f.receiver.acceptRunMessage(runMessage("pm_b"), PEER)).resolves.toEqual({ accepted: true });
+    expect(f.directory.liveRoot).toHaveBeenCalledExactlyOnceWith({ rootSubjectKind: "agent", rootRunId: "pm_b" });
+    expect(f.liveRoot.acceptPeerRunMessage).toHaveBeenCalledExactlyOnceWith({ fromNodeId: PEER.nodeId, fromNodeName: "desktop", message: {
+      messageId: "collabmsg_9", senderAgentRunId: "pm_a", receiverAgentRunId: "pm_b", content: "hello B", messageType: "agent_message",
+      referenceFiles: [], createdAt: "2026-11-18T10:00:00.000Z" } });
+    expect(f.directory.storedLinkCheck).not.toHaveBeenCalled();
+    expect(f.directory.standalone).not.toHaveBeenCalled();
+  });
+
+  it("entry-form row 8: a run ID no running agent here has is refused not running; nothing is resolved or restored", async () => {
+    const f = setup();
+    await expect(f.receiver.acceptRunMessage(runMessage("stopped_b"), PEER)).resolves.toEqual({ accepted: false, code: "REMOTE_TARGET_NOT_RUNNING",
+      message: "No running agent has the run id 'stopped_b'." });
+    expect(f.directory.liveRoot).not.toHaveBeenCalled();
+    expect(f.directory.standalone).not.toHaveBeenCalled();
+  });
+
+  it("entry-form row 11 (BEH-006, AR-006): a team run's ID that runs here is refused with its coordinator's run ID", async () => {
+    const f = setup();
+    await expect(f.receiver.acceptRunMessage(runMessage("team_b"), PEER)).resolves.toEqual({ accepted: false, code: "TARGET_IS_TEAM_RUN",
+      message: "team_b is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: lead_b." });
+  });
+});

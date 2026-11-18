@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import {
   logger,
@@ -426,7 +427,8 @@ export class ClaudeSession {
       turnStarted: (turnId, origin) => this.handleTurnStarted(turnId, origin),
       notice: (turnId, content) => this.emitRuntimeEvent({
         method: ClaudeSessionEventName.SYSTEM_TASK_NOTIFICATION,
-        params: { turnId, sender_id: CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID, content },
+        // One id per notice (autobyteus-526): the published notice and its recorded trace share it.
+        params: { turnId, sender_id: CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID, content, message_id: randomUUID() },
       }),
       turnContent: (turnId, frame) => this.projectTurnFrame(turnId, frame),
       turnResult: (turnId, frame, isErrorResult) => {

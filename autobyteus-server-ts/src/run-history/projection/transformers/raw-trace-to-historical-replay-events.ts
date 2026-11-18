@@ -205,6 +205,7 @@ export const buildHistoricalReplayEvents = (
           kind: "system_task_notification",
           senderId: trace.senderId ?? null,
           content: trace.content,
+          messageId: trace.messageId ?? null,
           ts: trace.ts ?? null,
         });
       }

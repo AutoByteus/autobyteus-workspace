@@ -532,6 +532,7 @@ export declare const agentPresentationPayloadSchemas: {
         exit_code: z.ZodNullable<z.ZodNumber>;
         started_at: z.ZodString;
     }, z.core.$strict>;
+    /** `message_id`: the notice's one id, the same on every copy (autobyteus-526); null for a notice that has none. */
     readonly SYSTEM_TASK_NOTIFICATION: z.ZodObject<{
         sender: z.ZodUnion<readonly [z.ZodObject<{
             kind: z.ZodLiteral<"system">;
@@ -543,6 +544,7 @@ export declare const agentPresentationPayloadSchemas: {
             }, z.core.$strict>;
         }, z.core.$strict>]>;
         content: z.ZodString;
+        message_id: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
     readonly ARTIFACT_PERSISTED: z.ZodObject<{
         artifact_id: z.ZodString;

@@ -272,6 +272,8 @@ export class RuntimeMemoryEventAccumulator {
       turnId,
       content,
       senderId,
+      // The notice's one id (autobyteus-526), so the conversation shows it once beside its live copy.
+      messageId: asString(event.payload.message_id) ?? undefined,
       sourceEvent: event.eventType,
       ts: extractTimestamp(event.payload),
     });

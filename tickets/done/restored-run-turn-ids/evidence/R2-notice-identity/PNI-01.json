@@ -1,0 +1,23 @@
+{
+  "runId": "pni_b71fd296_bd9873c8e1884d53b524a1466de82936",
+  "live": [
+    {
+      "messageId": "c61f09f6-540b-4b3b-ae2f-4c3b5b8b5bd6",
+      "agentRunId": null,
+      "content": "[Platform notice — background tasks finished]\n\n- pid 91195 `sleep 3; echo built`: exit code 0 after 3s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/pni_b71fd296_bd9873c8e1884d53b524a1466de82936/call-1794991162038-91162.log. Last lines:\n    built",
+      "at": 1794991167074
+    }
+  ],
+  "stored": [
+    {
+      "messageId": "c61f09f6-540b-4b3b-ae2f-4c3b5b8b5bd6",
+      "content": "[Platform notice — background tasks finished]\n\n- pid 91195 `sleep 3; echo built`: exit code 0 after 3s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/pni_b71fd296_bd9873c8e1884d53b524a1466de82936/call-1794991162038-91162.log. Last lines:\n    built"
+    }
+  ],
+  "reconnect": [],
+  "reconnectTypes": [
+    "CONNECTED",
+    "AGENT_STATUS",
+    "AGENT_STREAM_SNAPSHOT"
+  ]
+}

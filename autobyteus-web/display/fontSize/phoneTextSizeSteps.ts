@@ -3,9 +3,10 @@ import type { ResolvedAppFontMetrics } from './appFontSizePresets';
 /**
  * The phone's Text size (autobyteus-506, autobyteus-525): the source of the app's font metrics on the phone page. Each
  * step's `px` is the conversation's text size; every other phone screen scales by `px / 17` (Standard = today's sizes).
+ * Three steps: Standard is the default and the smallest (autobyteus-534). Any other stored value, such as the earlier
+ * `small`, reads as Standard.
  */
 export const PHONE_TEXT_SIZE_STEPS = [
-  { step: 'small', px: 15 },
   { step: 'standard', px: 17 },
   { step: 'large', px: 19 },
   { step: 'largest', px: 21 },

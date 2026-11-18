@@ -60,6 +60,7 @@ export class ExternalRuntimeMemoryWriter {
     } else if (input.traceType === "system_task_notification") {
       options.senderId = input.senderId;
       options.correlationId = input.correlationId;
+      options.messageId = input.messageId;
     } else if (input.traceType === "provider_compaction_boundary") {
       if (input.toolResult !== undefined) options.toolResult = input.toolResult;
       options.correlationId = input.correlationId;

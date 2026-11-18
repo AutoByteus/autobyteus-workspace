@@ -226,6 +226,8 @@ export interface InterAgentMessagePayload {
 export interface SystemTaskNotificationPayload {
   sender_id: string;
   content: string;
+  /** The notice's one id (autobyteus-526); null when it has none. */
+  message_id: string | null;
 }
 
 export interface ArtifactPersistedPayload {

@@ -1,0 +1,7 @@
+# IMP-06 server typecheck (rerun after the (c) change)
+# command: pnpm -C autobyteus-server-ts typecheck
+# commit: e61300a086 + the (c) test change; 2026-11-18T12:04:29Z
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.8s
+[typecheck] server tests (tsconfig.tests.json): 1012 errors, exit 2, 30.2s
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS

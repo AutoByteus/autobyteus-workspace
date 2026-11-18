@@ -1,0 +1,4 @@
+# IMP-01b pnpm -C autobyteus-web test:nuxt --run stores/__tests__/applicationHostStore.spec.ts (alone, after it failed to load in IMP-01's batch with no test run; it imports none of the files this ticket changes); commit d4a14666a4; macOS, load average ~80; 2026-11-18
+ ✓ stores/__tests__/applicationHostStore.spec.ts (2 tests) 56ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
