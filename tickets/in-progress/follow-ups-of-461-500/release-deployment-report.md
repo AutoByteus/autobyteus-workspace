@@ -26,3 +26,11 @@ Deliver `codex/follow-ups-of-461-500` (Project Task `autobyteus-500`, follow-ups
 
 - Classification: `Local Fix` (integration of the latest base).
 - Recommended recipient: the implementation engineer, then the code reviewer's merge review (the reviewer asked for it), then the normal route.
+
+## Second pass (2026-11-17/18)
+
+- Integration: done by the implementation engineer (IR-004 merge `39325a1e50` of `ff13782f36`, IR-005 `eb741a097e`), merge review CRR-007/CRR-008 Pass. `origin/personal` still `ff13782f36`.
+- Build-only release run (RELEASE.md, rule 12): `pnpm release:test --ref codex/follow-ups-of-461-500`, run 44191474370: Build macOS ARM64, macOS Intel x64, Linux x64, Linux ARM64, Windows x64 all success; Publish skipped. Pass.
+- Post-integration check by delivery: server E2E folder on the merged state (`2dffa26760`, code `eb741a097e`, Node 22): stopped at the 2-hour background limit; 105 files reported, 21 with failures (48 tests), 12 of them not on API/E2E round 1's base-side list. Evidence `evidence/delivery/DEL-01-*`. **Delivery blocked**; routed to API/E2E (`Evidence Too Weak`: validate the merged state, separate branch / base / load).
+- Docs sync so far: `RELEASE.md` "Cutting The Release" now describes G-1 (the script records `released-migration-order.json`), replacing the manual step from 461; the data migration guideline's matching sentence (`9314d13f48`). Release notes written (`fa4ac92497`).
+- AC-008's user-only part (the migration on the user's own data) is not a finalization blocker: merging runs nothing on his data; it applies when a release carrying it reaches his machine (his decision), with M-5 backups.
