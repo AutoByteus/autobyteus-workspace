@@ -160,6 +160,9 @@
 //                  after the limits were raised with no reload, and a stale read of the limits gets the node's 413 as the same
 //                  line; cancel mid-upload leaves no message and no draft, a network drop shows the interrupted line and leaves
 //                  no draft: `mobile-context-file-size-cases.mjs` (its own node eta).
+//   MSP-75 autobyteus-526  A native run restarted twice (each time with a background build running), on the phone in
+//                  Europe/Berlin: live and after a reload, every input and reply once and one reminder card per restart, its
+//                  time in the viewer's zone; the agent got UTC: `mobile-restored-run-cases.mjs` (its own node delta).
 //   MSP-60…66, MSP-74 autobyteus-458/506/525  The readable phone conversation at 412 and 360 px (body width − 24, 17 px / 1.5, one
 //                  avatar and speaker line per turn, composer 8 px above the bottom; another agent's message keeps its arrow
 //                  and type line, as on the desktop); the run list's ⋮ → On this phone → Text size (the whole phone at
@@ -200,6 +203,8 @@ import { runFileOpenCases } from './mobile-file-open-cases.mjs';
 // base merge; those IDs are autobyteus-workspace-6's context-file size cases).
 import { runStoppedDelegatorCases } from './mobile-stopped-delegator-cases.mjs';
 import { runContextFileSizeCases } from './mobile-context-file-size-cases.mjs';
+// MSP-75 (autobyteus-526 AC-002, AC-003): a native run restarted twice on its own node, on the phone in Europe/Berlin.
+import { runRestoredRunCases } from './mobile-restored-run-cases.mjs';
 import { runFileZoomCases } from './mobile-file-zoom-cases.mjs';
 import { runLiveFileRefreshCases } from './mobile-live-file-refresh-cases.mjs';
 import { runBackgroundTaskCases } from './mobile-background-tasks-cases.mjs';
@@ -2603,6 +2608,7 @@ const runCases = async () => {
   await runHeadingLinksCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
   await runCodeWrapCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
   await runContextFileSizeCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
+  await runRestoredRunCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
 
   await runCase('MSP-32', async () => {
     // autobyteus-435 REQ-010 (c): MSP-13 revoked the open phone (label `phone`), whose Check took it to pairing; the page
