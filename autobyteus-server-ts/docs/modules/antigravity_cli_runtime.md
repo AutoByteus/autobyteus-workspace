@@ -324,6 +324,11 @@ running until AGY stops and never produces a false completion. AGY runs no clock
 on a long command: a 35-minute background command, daemon or not, ran to
 completion (`long-command-time-limits-live.e2e.test.ts`). Non-daemon
 background commands keep their turn open and never become background tasks.
+The monitor keeps every task of the run, running and ended, as its latest
+snapshot, so the view (`list()`) shows an ended task, with its exit code or
+`run_ended`, to a viewer that opens or reloads the run after it ended; a step AGY
+later reports open again is not brought back as running. The running count
+filters by status, so an ended task does not count.
 While the monitor holds a running task (its view counts one, `runningBackgroundTaskCount`), a delegated AGY
 copy is not idle-shut-down; its terminal snapshot re-arms the copy's grace
 period, because a daemon's exit starts no turn (see
