@@ -1,0 +1,73 @@
+{
+ "out": [
+  {
+   "width": 412,
+   "step": "standard",
+   "menu": {
+    "label": "本机设置",
+    "header": "文字大小",
+    "heading": false,
+    "text": "文字大小 A A A",
+    "buttons": [
+     {
+      "id": "mobile-text-size-standard",
+      "label": "标准",
+      "pressed": "true"
+     },
+     {
+      "id": "mobile-text-size-large",
+      "label": "大",
+      "pressed": "false"
+     },
+     {
+      "id": "mobile-text-size-largest",
+      "label": "特大",
+      "pressed": "false"
+     }
+    ],
+    "focused": "mobile-text-size-standard"
+   },
+   "box": {
+    "left": 120,
+    "right": 408,
+    "width": 412
+   },
+   "visibleOnThisPhone": false
+  },
+  {
+   "width": 360,
+   "step": "largest",
+   "menu": {
+    "label": "本机设置",
+    "header": "文字大小",
+    "heading": false,
+    "text": "文字大小 A A A",
+    "buttons": [
+     {
+      "id": "mobile-text-size-standard",
+      "label": "标准",
+      "pressed": "false"
+     },
+     {
+      "id": "mobile-text-size-large",
+      "label": "大",
+      "pressed": "false"
+     },
+     {
+      "id": "mobile-text-size-largest",
+      "label": "特大",
+      "pressed": "true"
+     }
+    ],
+    "focused": "mobile-text-size-largest"
+   },
+   "box": {
+    "left": 14.828125,
+    "right": 355.0625,
+    "width": 360
+   },
+   "visibleOnThisPhone": false
+  }
+ ],
+ "errors": []
+}

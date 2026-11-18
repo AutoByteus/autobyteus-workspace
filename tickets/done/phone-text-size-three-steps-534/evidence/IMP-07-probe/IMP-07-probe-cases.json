@@ -1,0 +1,306 @@
+{
+ "header": "IMP-07 phone probe; pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh> --cases=MSP-08,MSP-60,MSP-67; commit a8f2680e2a; bundle built on it; macOS headless Chrome; 2026-11-18",
+ "result": "Pass",
+ "cases": {
+  "MSP-08": {
+   "result": "Pass",
+   "seconds": 8,
+   "items": [
+    [
+     "mobile-run-menu-artifacts",
+     "Artifacts"
+    ],
+    [
+     "mobile-run-menu-files",
+     "Files"
+    ],
+    [
+     "mobile-run-menu-messages",
+     "Messages"
+    ],
+    [
+     "mobile-run-menu-activity",
+     "Activity"
+    ],
+    [
+     "mobile-run-menu-settings",
+     "Settings"
+    ]
+   ],
+   "artifacts": {
+    "direct": 1,
+    "list": 0,
+    "title": "Artifacts",
+    "text": true
+   },
+   "filesTop": [
+    "docs",
+    "src",
+    "notes.md",
+    "README.md"
+   ],
+   "filters": 0,
+   "pathLine": "workspace docs",
+   "attach": 0,
+   "searchRows": [
+    "app.ts src/app.ts"
+   ],
+   "messages": [
+    "To mate Nov 18, 10:47 AM Read the guide first. Marker TEAM-NOTE. guide.md"
+   ],
+   "referenceText": true,
+   "activity": [
+    "generate_image generate_image success"
+   ],
+   "plainItems": [
+    "Artifacts",
+    "Files",
+    "Activity",
+    "Settings"
+   ],
+   "artifactsEmpty": "No Artifacts yet Generated or edited files for this run will appear here as they become available.",
+   "activityEmpty": "No activity yet",
+   "remoteArtifacts": "The files this run wrote are on beta-node. Open it in that node's window to see them.",
+   "remoteFiles": "The files of this run are on beta-node. Open it in that node's window to see them."
+  },
+  "MSP-60": {
+   "result": "Pass",
+   "seconds": 4.5,
+   "before": {
+    "step": "standard",
+    "root": 16,
+    "runName": 15,
+    "feed": null,
+    "menuOpen": false,
+    "pressed": null
+   },
+   "menu": {
+    "label": "On this phone",
+    "title": false,
+    "visibleText": "Text size",
+    "header": "Text size",
+    "group": "Text size",
+    "steps": [
+     "mobile-text-size-standard",
+     "mobile-text-size-large",
+     "mobile-text-size-largest"
+    ]
+   },
+   "steps": {
+    "large": {
+     "step": "large",
+     "root": 17.8824,
+     "runName": 16.7647,
+     "feed": null,
+     "menuOpen": true,
+     "pressed": "mobile-text-size-large"
+    },
+    "largest": {
+     "step": "largest",
+     "root": 19.7647,
+     "runName": 18.5294,
+     "feed": null,
+     "menuOpen": true,
+     "pressed": "mobile-text-size-largest"
+    }
+   },
+   "focusBack": "mobile-on-this-phone-button",
+   "conversation": {
+    "step": "largest",
+    "root": 19.7647,
+    "runName": null,
+    "feed": 21,
+    "menuOpen": false,
+    "pressed": null
+   },
+   "runMenu": {
+    "entries": [
+     "Artifacts",
+     "Files",
+     "Messages",
+     "Activity",
+     "Settings"
+    ],
+    "textSize": 0
+   },
+   "afterReload": {
+    "step": "largest",
+    "root": 19.7647,
+    "runName": null,
+    "feed": 21,
+    "menuOpen": false,
+    "pressed": null,
+    "firstScreen": {
+     "root": "19.7647px",
+     "step": "largest"
+    }
+   },
+   "reopened": {
+    "step": "largest",
+    "root": 19.7647,
+    "runName": 18.5294,
+    "feed": null,
+    "menuOpen": true,
+    "pressed": "mobile-text-size-largest"
+   },
+   "savedSmall": {
+    "step": "standard",
+    "root": 16,
+    "runName": 15,
+    "feed": null,
+    "menuOpen": false,
+    "pressed": null,
+    "firstScreen": {
+     "root": "16px",
+     "step": "standard"
+    },
+    "stored": "small"
+   },
+   "savedSmallMenu": {
+    "step": "standard",
+    "root": 16,
+    "runName": 15,
+    "feed": null,
+    "menuOpen": true,
+    "pressed": "mobile-text-size-standard"
+   },
+   "standard": {
+    "step": "standard",
+    "root": 16,
+    "runName": 15,
+    "feed": null,
+    "menuOpen": true,
+    "pressed": "mobile-text-size-standard",
+    "stored": "standard"
+   }
+  },
+  "MSP-67": {
+   "result": "Pass",
+   "seconds": 8.3,
+   "entries": [
+    "artifacts",
+    "files",
+    "messages",
+    "activity",
+    "settings"
+   ],
+   "stop": {
+    "live": {
+     "open": true,
+     "subject": "reviewerIdle · in docs review team",
+     "status": "Idle · in docs review team",
+     "runtime": "Antigravity CLI",
+     "model": "Gemini test",
+     "rows": true,
+     "runtimeDisabled": true,
+     "save": true,
+     "saveDisabled": true,
+     "stop": true,
+     "remote": null,
+     "error": null
+    },
+    "stopped": {
+     "open": true,
+     "subject": "reviewerStopped · in docs review team",
+     "status": "Stopped · in docs review team",
+     "runtime": "Antigravity CLI",
+     "model": "Gemini test",
+     "rows": true,
+     "runtimeDisabled": false,
+     "save": true,
+     "saveDisabled": true,
+     "stop": false,
+     "remote": null,
+     "error": null
+    }
+   },
+   "before": {
+    "ptm": {
+     "isActive": true,
+     "runtimeKind": "antigravity_cli",
+     "model": "gemini-3.8-flash-low"
+    },
+    "team": {
+     "isActive": true,
+     "members": {
+      "/reviewer": {
+       "agentRunId": "release_notes_writer_4aed929a56ff40a98e1524cccf92a1f8",
+       "runtimeKind": "antigravity_cli",
+       "model": "gemini-3.8-flash-low"
+      },
+      "/editor": {
+       "agentRunId": "fact_checker_325021194c3a4ac2ac61ea1394aaaeaa",
+       "runtimeKind": "antigravity_cli",
+       "model": "gemini-3.8-flash-low"
+      }
+     }
+    }
+   },
+   "afterStop": {
+    "ptm": {
+     "isActive": true,
+     "runtimeKind": "antigravity_cli",
+     "model": "gemini-3.8-flash-low"
+    },
+    "team": false
+   },
+   "saved": {
+    "chosen": {
+     "open": true,
+     "subject": "reviewerStopped · in docs review team",
+     "status": "Stopped · in docs review team",
+     "runtime": "Grok Build",
+     "model": "Grok 4.7",
+     "rows": true,
+     "runtimeDisabled": false,
+     "save": true,
+     "saveDisabled": false,
+     "stop": false,
+     "remote": null,
+     "error": null
+    },
+    "back": true
+   },
+   "after": {
+    "/reviewer": {
+     "agentRunId": "release_notes_writer_4aed929a56ff40a98e1524cccf92a1f8",
+     "runtimeKind": "grok_build",
+     "model": "grok-4.7"
+    },
+    "/editor": {
+     "agentRunId": "fact_checker_325021194c3a4ac2ac61ea1394aaaeaa",
+     "runtimeKind": "antigravity_cli",
+     "model": "gemini-3.8-flash-low"
+    }
+   },
+   "again": {
+    "open": true,
+    "subject": "reviewerStopped · in docs review team",
+    "status": "Stopped · in docs review team",
+    "runtime": "Grok Build",
+    "model": "Grok 4.7",
+    "rows": true,
+    "runtimeDisabled": false,
+    "save": true,
+    "saveDisabled": true,
+    "stop": false,
+    "remote": null,
+    "error": null
+   },
+   "continued": {
+    "isActive": true,
+    "reviewer": {
+     "agentRunId": "release_notes_writer_4aed929a56ff40a98e1524cccf92a1f8",
+     "runtimeKind": "grok_build",
+     "model": "grok-4.7"
+    }
+   }
+  }
+ },
+ "browserErrors": [],
+ "cleanup": {
+  "frontendExited": true,
+  "serversLeft": 0,
+  "rootRemoved": true
+ }
+}

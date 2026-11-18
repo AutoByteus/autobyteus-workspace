@@ -1,0 +1,7 @@
+# API-02 full web unit suite; commit 6df3a5c12f (code a8f2680e2a); 2026-11-18T10:49:37Z; macOS, Node v22.23.1; load 93.75 129.94 134.45; command: pnpm -C autobyteus-web test:nuxt --run
+ Test Files  767 passed (767)
+      Tests  5772 passed | 2 skipped (5774)
+   Duration  829.72s (transform 74.29s, setup 5740.41s, collect 555.12s, tests 146.24s, environment 407.46s, prepare 262.88s)
+stderr | components/projects/__tests__/TaskParts.spec.ts > TaskPartOfPicker (UXJ-004; VIS-011a–e, QR-004) > removes the parent with its labelled ×, returning focus to the search (TR-007)
+stderr | components/projects/__tests__/TaskKeysAndDependencies.spec.ts > TaskDependencyPicker (UXJ-003, VIS-007–009, QR-004) > removes a chosen Task with its labelled ×, returning focus to the search
+HEAD before 6df3a5c12f, after 6df3a5c12f; worktree code changes during the run: 0
