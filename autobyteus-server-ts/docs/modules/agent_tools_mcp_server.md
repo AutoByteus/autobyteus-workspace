@@ -290,7 +290,7 @@ one canonical AutoByteus tool name. The default adapter set
 - media tools from `src/agent-tools/media`
 - `delegate_task` from `src/agent-tools/task-delegation`
 - `publish_artifacts` from `src/agent-tools/published-artifacts`
-- `list_available_agents` and `list_peer_nodes` from `src/agent-tools/agent-discovery`
+- `list_available_agents`, `list_peer_nodes` and `list_running_agents` from `src/agent-tools/agent-discovery`
 - `list_available_agent_runtimes` from `src/agent-tools/agent-runtimes`
 - `submit_launch_choices` (the Model Router's decision tool) from `src/agent-tools/model-routing`
 - `list_projects`, `list_project_tasks`, `search_project_tasks`, `get_project_task`, `create_project`, `update_project`,

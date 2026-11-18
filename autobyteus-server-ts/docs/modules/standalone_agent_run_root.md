@@ -96,8 +96,9 @@ operation gate: the host's own address (refused as yourself); when that misses, 
 Task continues in its `CollaborationTree` (`resolve`) with the standing agents of the runs that assigned
 its Tasks (contract §2.3 step 2); any other address is `COLLABORATION_TARGET_NOT_FOUND` and nothing is
 created. A message to another run goes by run ID
-through `CrossRunMessageDelivery` (allowed when both runs work on one open Task, or one is the other's
-assigner). `delegate_task(address)` refuses the sender's own address
+through `CrossRunMessageDelivery`: it may wake a stopped receiver when both runs work on one open Task or
+one is the other's assigner, and it reaches any other running agent without waking it (CM-13,
+autobyteus-492). `delegate_task(address)` refuses the sender's own address
 (`COLLABORATION_SELF_TARGET_REJECTED`, "you can't delegate to yourself", autobyteus-435), then
 delegates to a catalog Agent or Agent Team. `listAvailableAgents(sender)` serves
 `list_available_agents` and never writes, so a run that only lists has no `hasCollaboration` flag

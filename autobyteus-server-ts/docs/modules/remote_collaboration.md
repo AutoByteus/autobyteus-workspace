@@ -23,7 +23,9 @@ Slice 1 (autobyteus-191) is text only, for Agents, on a trusted private network:
 authentication between nodes and no credential ever crosses them. autobyteus-245 removed publishing: with the
 switch on, every shared Agent is available to registered peers. autobyteus-247 added shared Agent Teams,
 autobyteus-261 discovery. autobyteus-278 shows remote runs in the delegator's run tree and lets the owner drive
-them (see [Remote runs in the run tree](#remote-runs-in-the-run-tree)). Attachments, a remote run's files, stop
+them (see [Remote runs in the run tree](#remote-runs-in-the-run-tree)). autobyteus-492 lets any agent list the
+running agents of a peer and message one by its run ID, linked or not (see
+[Messages by run ID and running agents](#messages-by-run-id-and-running-agents)). Attachments, a remote run's files, stop
 on Task closure and peer authentication come in later slices.
 
 ## Settings (per node)
