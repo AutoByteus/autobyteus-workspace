@@ -2,7 +2,7 @@
 
 - Result: `Architecture Design Complete`, `task_size=Large`, `architectural_risk=High` → independent architecture review.
 - Package: `list-running-agents`; Project Task `autobyteus-492` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`), delegated by `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`) for the founder.
-- Current revision: `SR-004` (was SR-003 at the first message).
+- Current revision: `SR-005` (was SR-003 at the first message).
 - Worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents`, `codex/list-running-agents`; base `origin/personal` at `bd2053ee51`; finalization target `origin/personal`. Release only on the founder's word.
 - Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/tickets/in-progress/list-running-agents/`
 
@@ -15,6 +15,7 @@ The founder wants a tool "list running agents", the pair of `list_available_agen
 1. "As long as you know the target's agent run ID you should be able to send a message to it … doesn't matter if you're a task agent, a member in a task agent team, or from a remote node." (DEC-001, DEC-002)
 2. "send_message_to also adds this node ID, then the target agent run ID … the same for delegate_task." (DEC-007)
 3. "… list_running_agents should only return the standalone ones [started by the user]." (REQ-001)
+5. "At least for now we don't have to return that information [user-started organizations] … I don't see much usage for messaging an organization." (DEC-004, SR-005: Org runs are not listed)
 4. Asked whether a team run ID should reach the coordinator: "I think it's better to message the coordinator directly instead of messaging the team." (DEC-012, SR-004: today's rule kept; the list gives `coordinator_agent_run_id`)
 
 Decided by the Solution Designer within that direction (founder informed): a stopped run is not woken by a sender no Task relates to (DEC-003); a closed Task's run stays closed (DEC-011); entry shapes and fields (DEC-004/005/008/009/010).

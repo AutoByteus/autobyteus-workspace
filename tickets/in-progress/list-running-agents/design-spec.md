@@ -2,8 +2,8 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-004`
-- Approved requirements baseline: `requirements-doc.md` at SR-004, approved by the founder (DEC-001, DEC-002, DEC-012; his answers of 2026-11-18 in the Solution Designer's conversation) and by the Solution Designer within his direction (DEC-003 … DEC-011, founder informed).
+- Current solution revision ID: `SR-005`
+- Approved requirements baseline: `requirements-doc.md` at SR-005, approved by the founder (DEC-001, DEC-002, DEC-004, DEC-012; his answers of 2026-11-18 in the Solution Designer's conversation) and by the Solution Designer within his direction (DEC-003 … DEC-011, founder informed).
 - Behavior-defining supplements: None.
 - User approval of the design: `Not required` (the Task asks for investigation and design, then build; it does not ask for design approval).
 - Design status: `Ready`
@@ -148,7 +148,7 @@ None.
 
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
-| DS-001 | The listing reads the live roots, keeps those a person started, other than the caller's, whose entry agent (Org: any unit) is running, and builds one entry each from the run's own file, the live statuses, the catalog and the Project. | live root, entry | `RunningAgentsListing` | filters; definition name; catalog address; Project name |
+| DS-001 | The listing reads the live roots, keeps those a person started, other than the caller's, of kind Agent or Team (Org runs are not listed, DEC-004) whose entry agent (an Agent's host, a Team's coordinator) is running, and builds one entry each from the run's own file, the live statuses, the catalog and the Project. | live root, entry | `RunningAgentsListing` | filters; definition name; catalog address; Project name |
 | DS-002 | The same listing on the peer, asked through the signed peer channel; A reads the answer strictly and adds the peer's name as `node`. | peer, entry | `PeerNodeDiscovery` | strict reader; refusal texts shared with discovery |
 | DS-003 | A target that no Task relates to the sender is admitted as `unrelated`; it is delivered only when `RunningAgents` finds it running, through the same prepare/accept/commit as a related message, but the receiver's root is the live one and nothing is restored. | message, receiver run | `CrossRunMessageDelivery` | running check; not-running refusal |
 | DS-004 | With `node`, the router resolves the peer and hands the message to the sender's root. `RemoteMessageSend` uses the root's link when the sender is paired with that run, else a one-message `unlinked_run` endpoint; the peer receives a `run_message`, finds the running agent's root, and the root accepts it like a linked message, without waking anything. | message, peer, endpoint | `RemoteMessageSend` / `RemoteMessageReceiver` | peer resolution; strict answer |
@@ -202,7 +202,7 @@ DS-005 (above). No events are added; delivered messages publish as today (the re
 
 | Concern | Spine | Serves | Responsibility | Why | Risk If On Main Line |
 | --- | --- | --- | --- | --- | --- |
-| Listing facts of a run's own file | DS-001 | `RunningAgentsListing` | `RunOwnAgentsReader.listingFactsOf(run)`: started by a person?, definition ref, start time, Org units | One reader of run files | Listing parsing files itself |
+| Listing facts of a run's own file | DS-001 | `RunningAgentsListing` | `RunOwnAgentsReader.listingFactsOf(run)`: started by a person?, definition ref, start time, a Team's coordinator | One reader of run files | Listing parsing files itself |
 | Definition name and catalog address | DS-001 | `RunningAgentsListing` | From the definition services and `CatalogAddressMap` of this node | Name/address as `list_available_agents` shows | A second address rule |
 | Project of a run | DS-001 | `RunningAgentsListing` | `ProjectRunService` (in-memory view of `project_runs.json`) + Project name | Tells PMs apart | — |
 | Peer answer reading | DS-002 | `PeerClient` | Strict: only the entry fields; anything else = malformed (QR-002) | Privacy | — |
@@ -236,7 +236,7 @@ DS-005 (above). No events are added; delivered messages publish as today (the re
 | Interface | Subject | Responsibility | Identity Shape | Notes |
 | --- | --- | --- | --- | --- |
 | `list_running_agents({node?, address?, state?})` | running runs started by a person | Discovery for messaging | peer name; catalog address; `running`/`idle` | Opt-in; same availability as `list_available_agents` |
-| Result `{ agents: Entry[] }` | entry | — | Agent `{run_id, kind:"agent", name, address?, state, started_at, project?, node?}`; Team `{run_id, kind:"agent_team", name, address?, coordinator_agent_run_id, state, started_at, project?, node?}` (`state` = its coordinator's); Org `{run_id, kind:"agent_org", name, units:[Unit], started_at, node?}`; Unit `{kind:"agent", address, run_id, state}` or `{kind:"agent_team", address, run_id, coordinator_agent_run_id, state}` | `state`: `running` (running or initializing), `idle`, `error`; absent fields are left out (autobyteus-260 rule) |
+| Result `{ agents: Entry[] }` | entry | — | Agent `{run_id, kind:"agent", name, address?, state, started_at, project?, node?}`; Team `{run_id, kind:"agent_team", name, address?, coordinator_agent_run_id, state, started_at, project?, node?}` (`state` = its coordinator's) | `state`: `running` (running or initializing), `idle`, `error`; absent fields are left out (autobyteus-260 rule) |
 | `send_message_to({..., node?})` | message | `node` only with `target_agent_run_id` | peer name + agent run ID | `node` with `recipient_address` → `INVALID_TOOL_ARGUMENTS` |
 | `RunningAgents.rootOf(agentRunId)` | running agent | `{root, status} \| null` | agent run ID | Read-only |
 | `RunningAgents.statusesOf(root)` | a live root's running agents | statuses | `RootExecutionIdentity` | Read-only |
@@ -308,7 +308,7 @@ See Final File Responsibility Mapping (no extraction changed the draft).
 
 | Structure | One Meaning Per Field | Redundant Removed | Overlap Risk | Action |
 | --- | --- | --- | --- | --- |
-| `RunningAgentEntry` (kind union) | Yes | Yes: `run_id` names the run; `coordinator_agent_run_id` only on Team entries and team units (the ID messages take) | Low | Union by `kind`, not optional-field soup |
+| `RunningAgentEntry` (kind union) | Yes | Yes: `run_id` names the run; `coordinator_agent_run_id` only on Team entries (the ID messages take) | Low | Union by `kind`, not optional-field soup |
 
 ## Final File Responsibility Mapping
 
@@ -428,4 +428,4 @@ All other changes extend existing files (table above).
 
 - Reproduction to start from: PRB-002 as a server test — two user-started standalone roots on one node; `send_message_to` from one to the other must be delivered and logged in both runs (it is refused `TASK_AGENT_RESOURCE_CONFLICT` today).
 - Keep agent-facing texts in the wording authority (`agent-team-collaboration-llm-contract.ts`, `domain/remote-refusals.ts`); refusal codes in `remote-refusal-codes.ts`.
-- The tool description of `list_running_agents` says: for messages only (start work with `delegate_task`); message an Agent by `run_id`, a Team by `coordinator_agent_run_id`, an Org through one of its units (`run_id`, or a team unit's `coordinator_agent_run_id`); on another node pass `node` to `send_message_to`; stopped runs are not listed and are not woken.
+- The tool description of `list_running_agents` says: for messages only (start work with `delegate_task`); message an Agent by `run_id`, a Team by `coordinator_agent_run_id`; on another node pass `node` to `send_message_to`; stopped runs are not listed and are not woken.

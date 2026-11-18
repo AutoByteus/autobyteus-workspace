@@ -8,6 +8,7 @@
 | SR-002 | Requirements | The founder's two answers in the Solution Designer's conversation, 2026-11-18 | DEC-001, DEC-002 | Ready for Approval | Approved | BEH-003…005, UC-003/004, REQ-008…011, AC-005…008, SCN-003…006, DEC-001…004, DEC-011 | "The run ID is the address"; approved |
 | SR-003 | Mixed | The founder's third and fourth messages, 2026-11-18 (clarifications 5, 6); design draft | DEC-012 | Approved (SR-002) → Ready for Approval (clarification 5) | Approved; design Ready | BEH-006, REQ-002, REQ-011, REQ-013, AC-002, AC-010, DEC-004, DEC-006, DEC-012 | Team run ID reaches its coordinator; list only user-started; design complete |
 | SR-004 | Mixed | The founder's question, 2026-11-18: team run ID or coordinator's run ID? | DEC-012 | Approved (SR-003) | Approved; design Ready | BEH-006, REQ-002, REQ-011, REQ-012, REQ-013 (withdrawn), AC-002, AC-010 (withdrawn), DEC-004, DEC-006, DEC-012 | Today's rule kept: message a team through its coordinator's run ID; the list gives it |
+| SR-005 | Mixed | The founder, 2026-11-18: no Org runs in the list for now | DEC-004 | Approved (SR-004) | Approved; design Ready | REQ-002, REQ-003, AC-002, DEC-004 | Org entries removed from the list; messaging unchanged |
 
 ## Revision Entries
 
@@ -66,3 +67,13 @@
 - Approval: the founder (`User`), his words above.
 - Design: team-run-ID resolution removed from the router and the removal plan; `RunningAgents.teamCoordinatorOf` gives the peer's refusal its guidance. Classification unchanged (`Large` / `High`).
 - Review impact: the architecture review in progress reviews SR-004 (the reviewer was told).
+
+### SR-005 — Org runs are not listed for now
+
+- Phase and classification: Mixed (`Refinement`, user change; design revision).
+- Trigger: the founder, 2026-11-18 (voice): "do you think it makes sense to list the user-started organization as well? I feel like at least for now we don't have to return that information, because I don't see much usage for messaging an organization." The Solution Designer agreed (DEC-004).
+- IDs affected: REQ-002 (`kind` is `agent` or `agent_team`), REQ-003, AC-002, DEC-004. The message rule is unchanged: an agent inside an Org stays reachable by its run ID.
+- Intended behavior changed: `Yes` (smaller list).
+- Approval: the founder (`User`), his words above.
+- Design: Org entry and units removed from the entry union, the listing rule and the run-file facts. Classification unchanged (`Large` / `High`).
+- Review impact: the architecture review in progress reviews SR-005 (the reviewer was told).
