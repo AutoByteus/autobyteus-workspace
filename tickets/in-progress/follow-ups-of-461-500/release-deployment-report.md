@@ -100,3 +100,18 @@ Deliver `codex/follow-ups-of-461-500` (Project Task `autobyteus-500`, follow-ups
   - `released-migration-order.json` must become beta.1's 46.
 - Merge attempt: 1 git conflict (`app-data-migration-registry-order.test.ts`: this ticket's JSON-reading test against the base's hand-updated `RELEASED`); aborted, branch clean.
 - Classification: **Design Impact** (migration IDs, registry place and predecessor classification) → the Solution Designer.
+
+## Final pass (2026-11-18)
+
+- SR-017 / D-15 (the Solution Designer): the migrations renamed to `20261119_delegated_run_own_attachment_links` and `20261119_…_after_task_agent_own_run`, appended after 491's released `20261118_…`; 491's classified "none" (agent-definition folders under `agents/` against traces under `memory/`); `released-migration-order.json` = v1.5.14-beta.1's 46 IDs. Architecture review, IR-010 (which also merged `origin/personal` `7984543255`), CRR-019 Pass, API/E2E round 8 (API-REV-008) Pass at 95%: both upgrade paths on a built server (from before beta.1: 491's, then both of this ticket's; from beta.1: only this ticket's two, 491's record untouched; backups, links open, a second start changes nothing); CRR-020 Pass.
+- `origin/personal` `7984543255` is contained in the branch: no further integration.
+- Build-only release run: run 44354909653 on `179a63dfe6` passed (all five builds). Since then no build input of this ticket changed (`scripts/desktop-release.sh`, the web build scan); the one build-input path changed, `autobyteus-web/package.json`, is the base's (beta.1's version bump, another ticket's probe script). The rest is TypeScript source under round 8's type gates. Not rerun; reason recorded.
+
+## Verification
+
+- Evidence judged: `Sufficient`. API-REV-008 and its rounds' proof table (AC-001 … AC-012; AC-007 out of the package), final confidence 95%. Spot-checked: round 3's full-folder triage of every failing file (alone on branch and base), round 5's stop and restart-resume lines, round 7's MO-1 and RC 49/49, round 8's both upgrade paths (code reviewer and API/E2E report).
+- User check: `No` for finalization. AC-008's user-only part (the migration on the user's own data) applies when a release carrying it reaches his machine; never run on his data without his approval (D-8); backups per M-5.
+
+## Release Decision
+
+- `No release` (not requested; RELEASE.md default). `release-notes.md` is ready. A release only on the user's word.
