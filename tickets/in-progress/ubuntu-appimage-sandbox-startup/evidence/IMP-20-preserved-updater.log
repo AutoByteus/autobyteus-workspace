@@ -1,0 +1,21 @@
+IMP-20 2026-11-18T14:09:50Z, 058b7d2da4; focused preserved native policy and lifecycle regressions; previously passed AppUpdater/record/session cases reused, not repeated
+
+> autobyteus@1.5.13 test:electron /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web
+> vitest --config ./electron/vitest.config.ts run electron/updater/__tests__/appUpdaterAutomatic.spec.ts electron/updater/__tests__/appUpdaterAutomaticMac.spec.ts electron/updater/__tests__/appUpdaterAutoCheck.spec.ts electron/updater/__tests__/disabledAppUpdater.spec.ts electron/updater/__tests__/electronUpdaterCachedDownload.spec.ts electron/application/__tests__/ElectronAutomaticUpdateWiring.spec.ts electron/application/__tests__/ElectronInstallPreparation.spec.ts electron/application/__tests__/ApplicationShutdown.spec.ts
+
+
+ RUN  v3.2.7 /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/electron
+
+ ✓ application/__tests__/ApplicationShutdown.spec.ts (5 tests) 21ms
+ ✓ updater/__tests__/disabledAppUpdater.spec.ts (3 tests) 7ms
+ ✓ updater/__tests__/appUpdaterAutoCheck.spec.ts (9 tests) 38ms
+ ✓ updater/__tests__/appUpdaterAutomaticMac.spec.ts (17 tests) 69ms
+ ✓ application/__tests__/ElectronInstallPreparation.spec.ts (3 tests) 11ms
+ ✓ application/__tests__/ElectronAutomaticUpdateWiring.spec.ts (7 tests) 19ms
+ ✓ updater/__tests__/appUpdaterAutomatic.spec.ts (23 tests) 82ms
+ ✓ updater/__tests__/electronUpdaterCachedDownload.spec.ts (1 test) 12ms
+
+ Test Files  8 passed (8)
+      Tests  68 passed (68)
+   Start at  15:09:50
+   Duration  1.01s (transform 733ms, setup 0ms, collect 2.07s, tests 258ms, environment 2ms, prepare 1.10s)

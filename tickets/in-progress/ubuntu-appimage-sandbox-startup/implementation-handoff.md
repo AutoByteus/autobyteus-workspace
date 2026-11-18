@@ -77,6 +77,8 @@ All evidence paths below are under this ticket's `evidence/`. Reuse unchanged re
 
 | IMP-19 | Static YAML assertions, 4c6950c757 + final signer scope clarification | Release graph/trust isolation | Pass; `IMP-19-workflow-boundaries.txt`: only protected signer references private key; no fixture tests or AppImage execution in key-bearing step. Not live CI. |
 
+| IMP-20 | Eight focused preserved updater/lifecycle suites (exact paths in log), 058b7d2da4 | Native automatic/Mac/check/cache/disabled and application shutdown/wiring preservation | Pass **68 tests / 8 files**; `IMP-20-preserved-updater.log`. Previously passed 67 managed/updater/record cases were reused, not repeated. |
+
 Initial missing `.nuxt` test setup was repaired using project setup commands. An initial Go invocation from the monorepo root (not module) failed setup; correct module invocation passed. These are not concealed successful executions.
 
 ## Frontend rendered-result check
