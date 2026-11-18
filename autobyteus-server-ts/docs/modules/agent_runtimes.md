@@ -198,7 +198,7 @@ error's own text is never shown. Subjects: "<Runtime> usage limits",
 `cause` of a helper's own time-out diagnostic). A command's bound is
 `commandBound(deadline, usualMs)`: its usual time-out cut to the time left,
 `byDeadline` when the time left set it. Only then is its time-out the step's;
-an ordinary per-command time-out (e.g. Antigravity's 3 s `--help` probe) is an
+an ordinary per-command time-out (e.g. Antigravity's 10 s `--help` probe) is an
 ordinary failure ("could not be read"). The rule is never decided by reading
 the clock afterwards (timers and `Date.now()` can disagree by a millisecond).
 
