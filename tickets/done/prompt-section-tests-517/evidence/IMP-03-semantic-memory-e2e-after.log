@@ -1,0 +1,12 @@
+# IMP-03 semantic-memory e2e with the scripted AGY CLI, after the composedOf fix
+# command: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts --no-watch
+# commit: 2e9ac1e65b + working-tree test changes; node v22.23.1; 2026-11-18T05:19:39Z
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts (9 tests) 32929ms
+       ✓ SM-03 (AC-005): a run of an agent without the setting has no section and creates no semantic folder  3757ms
+       ✓ SM-04 (AC-001): a run under Project A is told its folder after the Project section; the folder exists outside the workspace and the package  323ms
+       ✓ SM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder  2251ms
+       ✓ SM-06 (AC-006): a team-local agent with the same local name, enabled in its package file, has its own folder  359ms
+       ✓ SM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again  631ms
+       ✓ SM-08 (REQ-007): deleting the agent leaves its semantic memory folder  3579ms
+ Test Files  1 passed (1)
+      Tests  9 passed (9)

@@ -128,11 +128,19 @@ describe("Agent semantic memory at the real server boundary", () => {
    * The instructions the composer gave a run: the AGY capsule's main agent file is the composed prompt followed by the
    * capsule's own `## Working Environment` block (agy-run-capsule.ts), which is cut here.
    */
+  /**
+   * The composed prompt up to the runtime's Long-Running Commands section, which ends every composed prompt
+   * (autobyteus-483); the capsule's Working Environment block follows it. The cases assert what comes before it.
+   */
   const composedOf = async (agentRunId: string) => {
     const prompt = await h.promptOf(agentRunId);
     const capsuleBlock = prompt.lastIndexOf("\n\n## Working Environment\n- Agent workspace: `");
     expect(capsuleBlock, `capsule block of ${agentRunId}`).toBeGreaterThan(0);
-    return prompt.slice(0, capsuleBlock);
+    const composed = prompt.slice(0, capsuleBlock);
+    const longRunning = composed.lastIndexOf("\n\n## Long-Running Commands\n");
+    expect(longRunning, `Long-Running Commands section of ${agentRunId}`).toBeGreaterThan(0);
+    expect(composed.indexOf("\n## ", longRunning + 2), `nothing after the Long-Running Commands section of ${agentRunId}`).toBe(-1);
+    return composed.slice(0, longRunning);
   };
   const update = async (input: Rec) => (await h.graphql(docs.UpdateAgentDefinition!, { input })).updateAgentDefinition as Rec;
 

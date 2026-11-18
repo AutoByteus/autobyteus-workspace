@@ -1,0 +1,38 @@
+{
+  "runId": "sm_live_keeper_codex_1cb92211_1369a0b5a1d943d1b92a792642ee748c",
+  "model": "gpt-6.1-terra",
+  "reply": "SAVED",
+  "tools": [
+    "run_bash {\"command\":\"/bin/bash -lc \\\"printf '%s\\\\\\\\n' '# Deploy codeword' '' 'The deploy codeword is SMCODE-CODEX-1cb92211.' > /Users/normy/.autobyteus-e2e/semantic-memory-live-X2RdWg/app-data/memory/semantic/sm-live-keeper-codex-1cb92211/deploy-codeword.md\\\"\",\"cwd\":\"/Users/normy/.autobyteus-e2e/semantic-mem"
+  ],
+  "failures": [],
+  "approvals": [],
+  "errors": [],
+  "folder": "/Users/normy/.autobyteus-e2e/semantic-memory-live-X2RdWg/app-data/memory/semantic/sm-live-keeper-codex-1cb92211",
+  "files": {
+    "deploy-codeword.md": "# Deploy codeword\n\nThe deploy codeword is SMCODE-CODEX-1cb92211.\n"
+  },
+  "workspaceFiles": {},
+  "instructionsHaveSection": [
+    true
+  ],
+  "instructionsExcerpt": "## Project\n\nYou work in the Project SM live A 1cb92211 (Project ID project_7138bc04-81a2-48aa-8440-b177c3f7f25f). Use this Project ID with the Project tools; ask the user before working on another Project.\n\n## Semantic Memory\n\nYour semantic memory is the folder `/Users/normy/.autobyteus-e2e/semantic-memory-live-X2RdWg/app-data/memory/semantic/sm-live-keeper-codex-1cb92211`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.\n\n## Long-Running Commands\n\n- Start a long build or test suite once with `exec_command`. When it outlasts its wait, it keeps running in its session.\n- To wait for it, call `write_stdin` on that same s",
+  "wire": [
+    {
+      "method": "thread/start",
+      "sandbox": "workspace-write",
+      "approvalPolicy": "on-request",
+      "cwd": "/Users/normy/.autobyteus-e2e/semantic-memory-live-X2RdWg/ws-codex-a",
+      "configKeys": [
+        "mcp_servers",
+        "sandbox_workspace_write"
+      ],
+      "sandbox_workspace_write": {
+        "writable_roots": [
+          "/Users/normy/.autobyteus-e2e/semantic-memory-live-X2RdWg/app-data/memory/semantic/sm-live-keeper-codex-1cb92211"
+        ]
+      },
+      "semanticSection": "## Semantic Memory\n\nYour semantic memory is the folder `/Users/normy/.autobyteus-e2e/semantic-memory-live-X2RdWg/app-data/memory/semantic/sm-live-keeper-codex-1cb92211`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.\n\n## Long-Running Commands\n\n- Start a long build or test suite once with `exec_command`. When it outlasts its wait, it keeps running in its session.\n- To wait for it, call `write_stdin` on that same session with empty input and a long `yield_time_ms`, as often as needed, instead of starting it again.\n- Do not wait with loops of `sleep` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+    }
+  ]
+}
