@@ -25,6 +25,7 @@ interface AppUpdateStoreState extends AppUpdateStatePayload {
 }
 
 const DEFAULT_STATE: AppUpdateStatePayload = {
+  activationMode: 'native',
   status: 'idle',
   currentVersion: '',
   currentVersionIsPrerelease: false,
@@ -106,6 +107,7 @@ export const useAppUpdateStore = defineStore('appUpdate', {
           currentVersion: this.currentVersion,
           // A failed IPC call says nothing about the main-process channel facts; keep them.
           currentVersionIsPrerelease: this.currentVersionIsPrerelease,
+          activationMode: this.activationMode,
           updateChannel: this.updateChannel,
           updateStaged: this.updateStaged,
           message: t('settings.updates.store.errors.unknown'),
@@ -266,6 +268,7 @@ export const useAppUpdateStore = defineStore('appUpdate', {
       this.checkedAt = payload.checkedAt ?? this.checkedAt;
       this.notification = payload.notification !== undefined ? payload.notification : this.notification;
       this.autoCheck = payload.autoCheck !== undefined ? payload.autoCheck : this.autoCheck;
+      this.activationMode = payload.activationMode ?? this.activationMode;
       this.automaticUpdate = payload.automaticUpdate ?? this.automaticUpdate;
       this.automaticInstallPreparing = payload.automaticInstallPreparing ?? this.automaticInstallPreparing;
 

@@ -1,0 +1,106 @@
+IMP-09 source: 73c7e24c24 + UI activation-mode and lifecycle evidence edits
+
+> autobyteus@1.5.13 test:electron /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web
+> vitest --config ./electron/vitest.config.ts run electron/updater/__tests__/appUpdater.spec.ts electron/updater/__tests__/appUpdateNotificationRecord.spec.ts electron/application/__tests__/managedUpdateSession.spec.ts
+
+
+ RUN  v3.2.7 /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/electron
+
+ ✓ updater/__tests__/appUpdateNotificationRecord.spec.ts (18 tests) 24ms
+ ✓ updater/__tests__/appUpdater.spec.ts (37 tests) 184ms
+ ✓ application/__tests__/managedUpdateSession.spec.ts (8 tests) 419ms
+
+ Test Files  3 passed (3)
+      Tests  63 passed (63)
+   Start at  14:46:42
+   Duration  897ms (transform 313ms, setup 0ms, collect 468ms, tests 626ms, environment 1ms, prepare 303ms)
+
+
+> autobyteus@1.5.13 test:nuxt /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web
+> cross-env NUXT_TEST=true vitest run components/notifications/__tests__/NotificationCenter.appAutomatic.spec.ts stores/__tests__/appUpdateStore.automatic.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web
+
+Duplicated imports "getters", the one from "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/stores/serverStore.ts" is used
+stderr | components/notifications/__tests__/NotificationCenter.appAutomatic.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/appUpdateStore.automatic.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/appUpdateStore.automatic.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/notifications/__tests__/NotificationCenter.appAutomatic.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/appUpdateStore.automatic.spec.ts (6 tests) 16ms
+ ❯ components/notifications/__tests__/NotificationCenter.appAutomatic.spec.ts (10 tests | 1 failed) 184ms
+   ✓ Notification Center: the app automatic update > the software section has the app switch, off by default; turning it on asks nothing (REQ-001) 58ms
+   ✓ Notification Center: the app automatic update > managed readiness explains independent quit, without promising a self-restart 17ms
+   × Notification Center: the app automatic update > manual refusal has a localized failure and no automatic not-retried claim 19ms
+     → Cannot read properties of null (reading 'textContent')
+   ✓ Notification Center: the app automatic update > says the switch has no effect while the app's own checks are off 11ms
+   ✓ Notification Center: the app automatic update > an automatic update says "Updated automatically to <version>", new until seen, and keeps the entry visible (REQ-005) 24ms
+   ✓ Notification Center: the app automatic update > the entry counts an unread automatic app update, and keeps counting it while the panel is open (F-API-001) 11ms
+   ✓ Notification Center: the app automatic update > a manual update (no outcome) does not keep the entry visible, even unread 4ms
+   ✓ Notification Center: the app automatic update > a refused update still downloaded: the failure, that it is not retried, and the Install click (SR-004) 11ms
+   ✓ Notification Center: the app automatic update > a failed download says nothing about not retrying; during the wait the row says it is preparing, with the Install click 17ms
+   ✓ Notification Center: the app automatic update > a failed automatic update says nothing was changed, with the reason, and still offers Download (REQ-004) 10ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/notifications/__tests__/NotificationCenter.appAutomatic.spec.ts > Notification Center: the app automatic update > manual refusal has a localized failure and no automatic not-retried claim
+TypeError: Cannot read properties of null (reading 'textContent')
+ ❯ components/notifications/__tests__/NotificationCenter.appAutomatic.spec.ts:103:20
+    101|     await openPanel()
+    102|     const failure = $('[data-testid="notification-row-manual-failed"]'…
+    103|     expect(failure.textContent).toContain('Update failed')
+       |                    ^
+    104|     expect(failure.textContent).not.toContain('Automatic update failed…
+    105|     expect($('[data-testid="notification-row-not-retried"]')).toBeNull…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 15 passed (16)
+   Start at  14:46:48
+   Duration  14.12s (transform 7.33s, setup 24.89s, collect 620ms, tests 200ms, environment 923ms, prepare 524ms)
+
+ ELIFECYCLE  Command failed with exit code 1.
+IMP-09 rerun: corrected test selector only; manual refusal row
+
+> autobyteus@1.5.13 test:nuxt /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web
+> cross-env NUXT_TEST=true vitest run components/notifications/__tests__/NotificationCenter.appAutomatic.spec.ts -t 'manual refusal'
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web
+
+Duplicated imports "getters", the one from "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/stores/serverStore.ts" is used
+stderr | components/notifications/__tests__/NotificationCenter.appAutomatic.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/notifications/__tests__/NotificationCenter.appAutomatic.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/notifications/__tests__/NotificationCenter.appAutomatic.spec.ts (10 tests | 9 skipped) 66ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 9 skipped (10)
+   Start at  14:47:53
+   Duration  12.15s (transform 7.83s, setup 10.70s, collect 675ms, tests 66ms, environment 198ms, prepare 170ms)

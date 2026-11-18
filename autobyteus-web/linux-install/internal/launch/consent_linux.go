@@ -39,7 +39,7 @@ func Consent(destination, authorizationPath string) error {
 
 func Explain(message string) {
 	fmt.Fprintln(os.Stderr, message)
-	if graphical() {
+	if os.Geteuid() != 0 && graphical() {
 		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 		defer cancel()
 		exec.CommandContext(ctx, "/usr/bin/zenity", "--error", "--title=AutoByteus installation", "--text="+message).Run()

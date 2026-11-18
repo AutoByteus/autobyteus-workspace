@@ -3,9 +3,11 @@ package sealed
 import (
 	"bytes"
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
+	"syscall"
 	"testing"
 )
 
@@ -16,6 +18,9 @@ func TestSnapshotCustody(t *testing.T) {
 		t.Fatal(err)
 	}
 	f, err := Snapshot(bytes.NewReader(payload), fmt.Sprintf("%x", sha256.Sum256(payload)))
+	if errors.Is(err, syscall.EINVAL) || errors.Is(err, syscall.ENOSYS) {
+		t.Skip("kernel lacks executable memfd flags; enrollment refuses on this kernel")
+	}
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -253,6 +253,8 @@ export class AppUpdateNotificationRecord {
       }
     } catch (error) {
       logger.error('[updater] Failed to save the app update notification.', error);
+      // A managed activation follows shutdown; its file logger can already be closed.
+      process.stderr.write('[updater] Failed to persist the update notification; recovery will continue.\n');
     }
     return true;
   }

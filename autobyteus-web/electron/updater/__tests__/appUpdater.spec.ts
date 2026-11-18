@@ -3,6 +3,8 @@ import * as os from 'os';
 import * as path from 'path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppUpdater } from '../appUpdater';
+import { ManagedUpdateSession } from '../../application/managedUpdateSession';
+import { ApplicationShutdown } from '../../application/applicationShutdown';
 import { APP_UPDATE_STATE_CHANNEL } from '../appUpdateController';
 
 const {
@@ -147,6 +149,37 @@ describe('AppUpdater', () => {
 
   afterEach(() => {
     fs.rmSync(userDataDir, { recursive: true, force: true });
+  });
+
+  it('managed verification is the only readiness authority; automatic download never invokes native install', async () => {
+    let receipt!: (value: any) => void;
+    const writer = { canonicalImage: '/opt/autobyteus-desktop/1000/app/AutoByteus.AppImage',
+      stage: vi.fn(() => new Promise<any>(resolve => { receipt = resolve; })),
+      activate: vi.fn(async () => ({ version: '1.1.10', sha256: 'new' })),
+      status: vi.fn(), discard: vi.fn(async () => {}) };
+    const stop = vi.fn(async () => {}), quit = vi.fn(), relaunch = vi.fn();
+    const session = new ManagedUpdateSession({ writer, shutdown: new ApplicationShutdown(stop, vi.fn()),
+      initialSettings: { automaticUpdate: false, updateChannel: 'stable' }, serverGone: () => true,
+      quit, relaunch, notifyQuit: vi.fn(), exit: vi.fn(), report: vi.fn() });
+    const updater = new AppUpdater({ managedSession: session }); updater.initialize();
+    updater.setAutomaticUpdate(true);
+    expect(updater.getState().activationMode).toBe('managed-quit');
+    expect(autoUpdaterMock.autoInstallOnAppQuit).toBe(false);
+    autoUpdaterMock.emit('update-available', { version: '1.1.10' });
+    autoUpdaterMock.emit('update-downloaded', { version: '1.1.10', downloadedFile: '/cache/image' });
+    expect(updater.getState()).toMatchObject({ status: 'downloading', updateStaged: false });
+    expect(updater.installUpdateAndRestart()).toEqual({ accepted: false });
+    receipt({ id: 'stage', baseline: 'old', channel: 'stable', identity: { version: '1.1.10', sha256: 'new' } });
+    await vi.waitFor(() => expect(updater.getState()).toMatchObject({ status: 'downloaded', updateStaged: true }));
+    expect(stop).not.toHaveBeenCalled(); expect(quit).not.toHaveBeenCalled(); expect(autoUpdaterMock.quitAndInstall).not.toHaveBeenCalled();
+    // Repeated found/ready events and toggling on are not immediate-ready bypasses.
+    autoUpdaterMock.emit('update-available', { version: '1.1.10' });
+    updater.setAutomaticUpdate(true);
+    expect(stop).not.toHaveBeenCalled();
+    session.willQuit({ preventDefault() {} });
+    await vi.waitFor(() => expect(quit).toHaveBeenCalledOnce());
+    expect(writer.activate).toHaveBeenCalledOnce(); expect(relaunch).not.toHaveBeenCalled();
+    expect(autoUpdaterMock.quitAndInstall).not.toHaveBeenCalled();
   });
 
   it('registers IPC handlers and broadcasts initial state on initialize', async () => {

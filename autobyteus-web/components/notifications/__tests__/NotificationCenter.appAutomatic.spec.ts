@@ -87,6 +87,25 @@ describe('Notification Center: the app automatic update', () => {
     expect($('[data-testid="auto-update-app-explanation"]')!.textContent).toContain('restarts by itself. Switch off to update by hand.')
   })
 
+  it('managed readiness explains independent quit, without promising a self-restart', async () => {
+    await mountWith({ activationMode: 'managed-quit', status: 'downloaded', automaticUpdate: true, notification: record() })
+    await openPanel()
+    expect($('[data-testid="auto-update-app-explanation"]')!.textContent).toContain('when you next quit')
+    expect($('[data-testid="auto-update-app-explanation"]')!.textContent).toContain('will not close or reopen by itself')
+    expect($('[data-testid="notification-row-downloaded"]')!.textContent).toContain('Ready for your next quit')
+    expect($('[data-testid="notification-row-install"]')).not.toBeNull()
+  })
+
+  it('manual refusal has a localized failure and no automatic not-retried claim', async () => {
+    await mountWith({ activationMode: 'managed-quit', notification: record({ outcome: 'MANUAL_INSTALL_FAILED', outcomeReason: 'refused' }) })
+    await openPanel()
+    const failure = $('[data-testid="notification-row-manual-install-failed"]')!
+    expect(failure.textContent).toContain('Update failed')
+    expect(failure.textContent).not.toContain('Automatic update failed')
+    expect($('[data-testid="notification-row-not-retried"]')).toBeNull()
+    expect($('[data-testid="notification-row-update"]')).not.toBeNull()
+  })
+
   it('says the switch has no effect while the app\'s own checks are off', async () => {
     await mountWith({ notification: record(), automaticUpdate: true, autoCheck: { enabled: false, intervalMinutes: 60 } })
     await openPanel()

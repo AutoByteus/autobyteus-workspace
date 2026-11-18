@@ -82,6 +82,7 @@ export class AppUpdater implements AppUpdateController {
       : process.resourcesPath ? path.join(process.resourcesPath, 'app-update.yml') : null;
     const currentVersion = app.getVersion();
     this.state = {
+      activationMode: options.managedSession ? 'managed-quit' : 'native',
       status: 'idle',
       currentVersion,
       currentVersionIsPrerelease: isPrereleaseVersion(currentVersion),
@@ -202,7 +203,7 @@ export class AppUpdater implements AppUpdateController {
       return this.getState();
     }
 
-    if (this.state.status === 'checking' || this.state.status === 'downloading' || this.automatic?.waiting) {
+    if (this.state.status === 'checking' || this.state.status === 'downloading' || this.automatic?.waiting || (this.options.managedSession && this.state.updateStaged)) {
       return this.getState();
     }
 
@@ -403,6 +404,7 @@ export class AppUpdater implements AppUpdateController {
     });
 
     autoUpdater.on('update-available', (updateInfo: UpdateInfo) => {
+      const retainedManagedStage = this.options.managedSession && this.state.updateStaged && this.state.availableVersion === updateInfo.version;
       if (updateInfo.version) this.notificationRecord?.recordFound(updateInfo.version);
       this.applyState({
         notification: this.currentNotification(),
@@ -419,6 +421,9 @@ export class AppUpdater implements AppUpdateController {
         downloadTransferredBytes: null,
         downloadTotalBytes: null,
       });
+      if (retainedManagedStage) {
+        this.applyState({ status: 'downloaded', message: 'Ready for your next quit.' });
+      }
       if (updateInfo.version) this.automatic?.found(updateInfo.version);
     });
 

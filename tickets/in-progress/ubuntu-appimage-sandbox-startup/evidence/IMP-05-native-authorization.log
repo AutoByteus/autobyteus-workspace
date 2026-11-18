@@ -13,7 +13,7 @@ Ubuntu will request one-shot authorization for /proc/2043/fd/10 (program path, n
 [1;31m==== AUTHENTICATING FOR org.freedesktop.policykit.exec ====
 [0mAuthentication is needed to run `/proc/2043/fd/10' as the super user
 Authenticating as: Disposable implementation account (witness)
-Password: 
+Password:
 [1;31m==== AUTHENTICATION COMPLETE ====
 [0mCreated symlink /etc/systemd/system/sockets.target.wants/autobyteus-desktop-1000.socket → /etc/systemd/system/autobyteus-desktop-1000.socket.
 
@@ -23,4 +23,3 @@ managed sandbox permission failed; administrator repair required, no reenrollmen
 
 FIXTURE_EXIT=133
 Connection to 127.0.0.1 closed.
-

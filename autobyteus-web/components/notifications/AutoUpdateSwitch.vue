@@ -29,7 +29,7 @@
         />
       </button>
     </div>
-    <p :id="explainId" class="mt-0.5 text-xs leading-5" :class="variant === 'panel' ? 'text-gray-500' : 'text-gray-600 sm:text-[0.8125rem] sm:leading-5'" :data-testid="`auto-update-${kind}-explanation`">{{ $t(`settings.notifications.auto.${enabled ? 'explainOn' : 'explain'}.${kind}`) }}</p>
+    <p :id="explainId" class="mt-0.5 text-xs leading-5" :class="variant === 'panel' ? 'text-gray-500' : 'text-gray-600 sm:text-[0.8125rem] sm:leading-5'" :data-testid="`auto-update-${kind}-explanation`">{{ explanation }}</p>
     <p v-if="enabled && checksOff" :id="noEffectId" class="mt-1.5 flex items-start gap-1.5 text-xs leading-5 text-amber-800" :data-testid="`auto-update-${kind}-no-effect`">
       <Icon icon="heroicons:pause-circle-20-solid" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-600" aria-hidden="true" />{{ $t(kind === 'app' ? 'settings.notifications.auto.noEffectApp' : 'settings.notifications.auto.noEffect') }}
     </p>
@@ -88,6 +88,7 @@ const explainId = `auto-update-explain-${useId()}`
 const noEffectId = `auto-update-note-${useId()}`
 
 const isApp = computed(() => props.kind === 'app')
+const explanation = computed(() => t(`settings.notifications.auto.${enabled.value ? 'explainOn' : 'explain'}.${isApp.value && appUpdate.activationMode === 'managed-quit' ? 'managedApp' : props.kind}`))
 const enabled = computed(() => props.kind === 'app'
   ? appUpdate.automaticUpdate
   : settings.resolved?.automaticUpdates[SETTINGS_FIELD_OF[props.kind]] === true)

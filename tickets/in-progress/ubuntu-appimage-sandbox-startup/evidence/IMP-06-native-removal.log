@@ -9,11 +9,10 @@ Ubuntu will request one-shot authorization for /opt/autobyteus-desktop/1000/supp
 [1;31m==== AUTHENTICATING FOR org.freedesktop.policykit.exec ====
 [0mAuthentication is needed to run `/opt/autobyteus-desktop/1000/support/provision' as the super user
 Authenticating as: Disposable implementation account (witness)
-Password: 
+Password:
 [1;31m==== AUTHENTICATION COMPLETE ====
 [0mRemoved "/etc/systemd/system/sockets.target.wants/autobyteus-desktop-1000.socket".
 
 
 REMOVE_EXIT=0
 Connection to 127.0.0.1 closed.
-

@@ -65,7 +65,7 @@ export interface AppNotificationRow {
   handledVersion: string | null
   releasePageUrl: string | null
   error: string | null
-  /** What the app's automatic update did (autobyteus-356): AUTO_UPDATED when handled, AUTO_FAILED while waiting. */
+  /** App update outcome, including a managed manual refusal independent of automatic retry policy. */
   outcome: AppUpdateOutcome | null
   outcomeReason: string | null
   /** `install`: the version is not tried again automatically. */

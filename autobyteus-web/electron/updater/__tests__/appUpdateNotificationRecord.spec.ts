@@ -39,6 +39,18 @@ describe('AppUpdateNotificationRecord', () => {
     expect(new AppUpdateNotificationRecord(dir, '1.5.14').toNotification(noLink)).toMatchObject({ state: 'handled', outcome: null });
   });
 
+  it('reports failed manual evidence persistence but does not block recovery', () => {
+    const record = new AppUpdateNotificationRecord(dir, '1.5.13');
+    fs.mkdirSync(file());
+    const stderr = vi.spyOn(process.stderr, 'write').mockReturnValue(true);
+    try {
+      expect(() => record.recordManualInstallFailure('1.5.14')).not.toThrow();
+      expect(stderr).toHaveBeenCalledWith(expect.stringContaining('Failed to persist'));
+      expect(loggerMock.error).toHaveBeenCalled();
+      expect(record.toNotification(noLink)?.outcome).toBe('MANUAL_INSTALL_FAILED');
+    } finally { stderr.mockRestore(); }
+  });
+
   it('manual failure does not create an automatic block and a newer release clears its display', () => {
     const record = new AppUpdateNotificationRecord(dir, '1.5.13');
     record.recordManualInstallFailure('1.5.14');
