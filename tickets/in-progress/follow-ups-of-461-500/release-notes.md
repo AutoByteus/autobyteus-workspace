@@ -8,4 +8,4 @@
 ## Upgrade Notes
 
 - On first start, the app converts the stored links of files attached to delegated runs, once. Before it rewrites a file it keeps a copy under the app data folder (`app-data-migration-backups`). On a large data folder this takes about half a minute; later starts are not slowed.
-- Going back to the previous beta after this update is possible: it reads the converted links.
+- Going back to the previous release (1.5.13) after this update is possible: it reads the converted links.
