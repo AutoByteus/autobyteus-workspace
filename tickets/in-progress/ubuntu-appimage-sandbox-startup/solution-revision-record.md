@@ -136,3 +136,8 @@ Prior Draft → Approved for design/implementation subject to independent archit
 
 ## SR-013 — DS-002 / ARCH-REV-001 recovery
 Design-only revision from Fail to ready for independent re-review, not a claimed reviewer pass. SR-012 intended behavior and approval unchanged. AR-001 bounded Noble VM witness and explicit one-shot credential/resource custody; AR-002 verified-stage vs manual restart vs normal quit including opt-out, stop and recovery ownership; AR-003 signed record and same-inode committed identity, two successive upgrades/refusal. REQ-001/003/005/007; AC-001/003/004/006/008. Investigation, inventory, historical labels refreshed. Large/High unchanged. No implementation/release.
+
+Informational receipt: ARCH-REV-002 passed SR-013 / DS-002; reviewer delivered primary handoff to implementation. No duplicate route or release.
+
+## SR-014 — DS-003 exact-release sidecars at initial enrollment
+Implementation intake: lone AppImage cannot embed its final-byte attestation. Bounded Design Impact on L2 / REQ-001/003, AC-001/003/004; SR-012 approval unchanged. DS-003 specifies build-pinned release identity, normal-user bounded GET, refusal before auth, filename-independent matching and independent root re-verification. ARCH-REV-002 covers DS-002; re-review this delta before implementing it. Large/High unchanged.
