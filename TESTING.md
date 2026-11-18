@@ -186,7 +186,12 @@ or because Gradle's cache already holds a dependency the runner must download.
   its event, and how long `close()` of that watcher blocks. A built server's process shutdown no
   longer pays that close: it ends the package and skill folder watchers and lets the exit release
   their OS watches, so a slow built-server stop is not explained by this rule. An in-process server
-  that a test closes still closes them.
+  that a test closes still closes them. A test that waits for such an event, or starts or closes
+  such a server, takes its wait limit and its vitest timeouts from
+  `autobyteus-server-ts/tests/helpers/os-latency-under-load.ts` (a wait ends as soon as its
+  condition holds, so a long limit does not slow a passing run) and never compares an event's
+  elapsed time with a fixed bound; a test that proves an event does *not* happen keeps its own
+  short quiet window.
 - **Green server suites.** Server `test:unit`, `test:integration` and `typecheck` are kept
   passing. Every failure there is a real failure: find its cause and fix or report it
   (Rule 9). Run `test:integration:prepare` once per worktree and after changing server or
