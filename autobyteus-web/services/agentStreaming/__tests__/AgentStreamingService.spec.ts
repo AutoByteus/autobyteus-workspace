@@ -165,6 +165,7 @@ describe('AgentStreamingService', () => {
                 payload: {
                     sender_id: 'system.other_producer',
                     content: 'Another producer finished its work for this run.',
+                    message_id: 'notice-1',
                 },
             },
             mockAgentContext,
@@ -175,6 +176,7 @@ describe('AgentStreamingService', () => {
             type: 'system_task_notification',
             senderId: 'system.other_producer',
             content: 'Another producer finished its work for this run.',
+            messageId: 'notice-1',
         });
     });
 

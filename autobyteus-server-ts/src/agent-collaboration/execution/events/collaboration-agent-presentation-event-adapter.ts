@@ -59,6 +59,8 @@ export class CollaborationAgentPresentationEventAdapter {
         details: Object.freeze({
           sender: Object.freeze({ kind: "system" }),
           content: getTaskDelegationSystemTaskNotificationDisplayContent(rawEvent.message) ?? rawEvent.message.content,
+          // A task input shown as a notice: not a platform notice, it has no notice id (autobyteus-526 R-1).
+          messageId: null,
         }),
         statusHint: null,
       }));

@@ -4,6 +4,15 @@ import { ClaudeSessionEventConverter } from "../../../../../../src/agent-executi
 import { ClaudeSessionEventName } from "../../../../../../src/agent-execution/backends/claude/events/claude-session-event-name.js";
 
 describe("ClaudeSessionEventConverter", () => {
+  it("autobyteus-526: a Claude notice keeps its one id; a notice without one carries null", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+    const params = { turnId: "turn-1", sender_id: "system.claude_background_task", content: "Background task completed." };
+    expect(converter.convert({ method: ClaudeSessionEventName.SYSTEM_TASK_NOTIFICATION, params: { ...params, message_id: "notice-1" } })[0])
+      .toMatchObject({ eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION, payload: { message_id: "notice-1", turn_id: "turn-1" } });
+    expect(converter.convert({ method: ClaudeSessionEventName.SYSTEM_TASK_NOTIFICATION, params })[0])
+      .toMatchObject({ payload: { message_id: null } });
+  });
+
   it("maps a background-task snapshot to a non-activity BACKGROUND_TASK_UPDATED event and rejects invalid snapshots", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
     const params = {

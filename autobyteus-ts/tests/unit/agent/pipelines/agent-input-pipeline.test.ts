@@ -129,7 +129,8 @@ describe('AgentInputPipeline', () => {
     expect(notifier.notifyAgentDataSystemTaskNotificationReceived).toHaveBeenCalledOnce();
     expect(notifier.notifyAgentDataSystemTaskNotificationReceived).toHaveBeenCalledWith({
       sender_id: 'system_scheduler',
-      content: 'system task update'
+      content: 'system task update',
+      message_id: null
     });
     expect(String(result.llmUserMessage.content)).toContain('system task update');
   });

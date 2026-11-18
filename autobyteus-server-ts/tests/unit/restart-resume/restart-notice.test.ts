@@ -1,3 +1,4 @@
+import { platformInputPrefaceMetadata } from "autobyteus-ts/agent/message/platform-input-preface-metadata.js";
 /**
  * autobyteus-448 DEC-003 (restart reminder text per cause) and autobyteus-285 D4 (REQ-004, SR-005): the reminder is a
  * SYSTEM input from `system.restart_resume`; every place shows it as the run's own system notice, and the run's memory
@@ -70,27 +71,32 @@ describe("buildRestartNotice (the wake)", () => {
       dedupe_key: "agent_run_input:worker-1:restart-resume:2026-11-17T22:20:05.000Z:worker-1",
     });
     expect(shouldSuppressSystemTaskNotification(message.metadata)).toBe(true);
-    expect(readPlatformInputPreface(message.metadata)).toEqual({ content: message.content, senderId: RESTART_RESUME_NOTICE_SENDER_ID, originalContent: null });
+    // autobyteus-526: the wake's message id is its notice id too.
+    expect(readPlatformInputPreface(message.metadata)).toEqual({ content: message.content, senderId: RESTART_RESUME_NOTICE_SENDER_ID, originalContent: null,
+      noticeId: "restart-resume:2026-11-17T22:20:05.000Z:worker-1" });
   });
 });
 
 describe("restartNoticeLifecycleObserver (SR-005: one display for every place)", () => {
   it("publishes the run's own system notice once the input is forwarded, with its turn", async () => {
     const publishEvent = vi.fn(async () => undefined);
-    const observer = restartNoticeLifecycleObserver(() => ({ runId: "worker-1", publishEvent }), "notice text");
+    // autobyteus-526: the notice published for the wake carries the message's one notice id.
+    const message = { content: "notice text", metadata: platformInputPrefaceMetadata({ content: "notice text", senderId: RESTART_RESUME_NOTICE_SENDER_ID, originalContent: null, noticeId: "restart-resume:t:worker-1" }) };
+    const observer = restartNoticeLifecycleObserver(() => ({ runId: "worker-1", publishEvent }), message);
     observer({ kind: "admitted" });
     expect(publishEvent).not.toHaveBeenCalled();
     observer({ kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-7" });
     expect(publishEvent).toHaveBeenCalledExactlyOnceWith({ eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION, runId: "worker-1",
-      statusHint: null, payload: { sender_id: RESTART_RESUME_NOTICE_SENDER_ID, content: "notice text", turn_id: "turn-7" } });
+      statusHint: null, payload: { sender_id: RESTART_RESUME_NOTICE_SENDER_ID, content: "notice text", message_id: "restart-resume:t:worker-1", turn_id: "turn-7" } });
   });
 
   it("publishes nothing when the run is not there, and never throws for a failed publication", async () => {
-    expect(() => restartNoticeLifecycleObserver(() => null, "x")({ kind: "forwarded", dispatchKind: "start_turn", turnId: null })).not.toThrow();
+    const x = { content: "x", metadata: {} };
+    expect(() => restartNoticeLifecycleObserver(() => null, x)({ kind: "forwarded", dispatchKind: "start_turn", turnId: null })).not.toThrow();
     const failing = { runId: "r", publishEvent: vi.fn(async () => { throw new Error("closed"); }) };
-    expect(() => restartNoticeLifecycleObserver(() => failing, "x")({ kind: "forwarded", dispatchKind: "start_turn", turnId: null })).not.toThrow();
+    expect(() => restartNoticeLifecycleObserver(() => failing, x)({ kind: "forwarded", dispatchKind: "start_turn", turnId: null })).not.toThrow();
     await Promise.resolve();
-    expect(failing.publishEvent).toHaveBeenCalledWith(expect.objectContaining({ payload: { sender_id: RESTART_RESUME_NOTICE_SENDER_ID, content: "x" } }));
+    expect(failing.publishEvent).toHaveBeenCalledWith(expect.objectContaining({ payload: { sender_id: RESTART_RESUME_NOTICE_SENDER_ID, content: "x", message_id: null } }));
   });
 });
 

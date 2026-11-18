@@ -1,0 +1,11 @@
+# R2 platform-notice-identity.e2e.test.ts (in-process studio server at ee5e87495f)
+## PNI-01..03 (scripted model): env -i … RUN_PLATFORM_NOTICE_IDENTITY_E2E=1
+ ✓ tests/e2e/runtime/platform-notice-identity.e2e.test.ts (4 tests | 1 skipped) 44631ms
+     ✓ PNI-01: native agent: the live frame's message_id is the stored notice's messageId; a reconnect gives it at most once  13240ms
+     ✓ PNI-02: a Team member: the team stream's frame carries its message_id; the member's stored conversation has it once  7638ms
+     ✓ PNI-03: an Org member: the Org view's presentation of the notice carries its message_id; the member's stored conversation has it once  7543ms
+      Tests  3 passed | 1 skipped (4)
+## PNI-04 (live Claude, real HOME): + RUN_CLAUDE_E2E=1
+ ✓ tests/e2e/runtime/platform-notice-identity.e2e.test.ts (4 tests | 3 skipped) 27783ms
+     ✓ PNI-04 (live): Claude: the background notice's message_id is the stored notice's messageId  21482ms
+      Tests  1 passed | 3 skipped (4)

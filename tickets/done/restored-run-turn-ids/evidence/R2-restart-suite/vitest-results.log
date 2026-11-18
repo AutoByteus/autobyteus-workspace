@@ -1,0 +1,11 @@
+# R2 restart suite RR-01..06, RR-10, RR-11 (base 2e9ac1e65b for RR-11), dist of ee5e87495f
+ ✓ tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts (11 tests | 3 skipped) 340268ms
+     ✓ RR-01: graceful restart: recorded live, reminded once with the next input as 'a restart', nothing woken; an idle run without a task gets nothing  49336ms
+     ✓ RR-02: forced kill: no shutdownAt; the next input carries 'an unexpected stop'  24747ms
+     ✓ RR-03: update: the idle run is woken with 'an update to' this release, and its next input carries nothing  52722ms
+     ✓ RR-04: update with a run mid-turn that also has a background task: one reminder with the interrupted-turn line  43764ms
+     ✓ RR-05: update with input sent the moment the node answers: exactly one reminder between the wake and the input  52060ms
+     ✓ RR-06: Antigravity idle with an open daemon step is recorded and reminded with its next input  32296ms
+     ✓ RR-10: a native run restarted twice keeps one id per turn; each reminder and each reply has its own turn in the conversation (autobyteus-526)  37008ms
+     ✓ RR-11: a run restored twice before the fix keeps its stored ids; its next turn continues after the highest (autobyteus-526 DEC-003)  46925ms
+      Tests  8 passed | 3 skipped (11)

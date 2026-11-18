@@ -286,6 +286,14 @@ safe message. Repeated repair converges; an abandoned tool is not assumed to
 have succeeded. Archived raw history is not replayed as new conversation work.
 New-run initialization remains a separate path.
 
+Turn ids are `turn_NNNN`, numbered by the run's `TurnTracker`. A `MemoryManager`
+built over a run's stored memory (a restore) continues after the highest stored
+`turn_NNNN` in its complete raw-trace corpus, archived segments included
+(`TurnTracker.continuingAfter`); a new run starts at `turn_0001`. So a turn id
+names one turn of a run across any number of restores, which replay turn
+groups, stream buffers and the web's segment identity rely on (autobyteus-526).
+Runs restored before this keep the duplicate ids already stored.
+
 A tool called through tool search (`call_tool`; see
 `tool_schema_and_configuration.md` §4.8) has two records. The raw `tool_call`
 trace holds the real tool: `tool_name`, `tool_args` and `called_through`
@@ -476,13 +484,14 @@ keep the user presentation (see the server `run_history.md`).
 A **platform input preface** combines a platform notice with the next input in
 one dispatch. The server uses it for skill update notices. Such an input carries
 the generic metadata tag
-`platform_input_preface { content, sender_id, original_content }`
+`platform_input_preface { content, sender_id, original_content, notice_id }`
 (`agent/message/platform-input-preface-metadata.ts`; `readPlatformInputPreface`
-validates it). The core holds no feature knowledge about it.
+validates it; a message stored before `notice_id` reads `noticeId: null`). The core holds no feature knowledge about it.
 
 - **Traces.** `MemoryIngestInputProcessor` writes two traces through
   `MemoryManager.appendRawTrace`: a `system_task_notification` raw trace with
-  the preface `content` and `sender_id`, then the `user` trace with
+  the preface `content`, `sender_id` and `notice_id` as its `message_id` (the
+  notice's one id, the same as on its published notice; autobyteus-526), then the `user` trace with
   `original_content` (attachments unchanged). A notice-only input
   (`original_content: null`) writes only the system trace.
 - **Turn linkage.** Both trace IDs are recorded on the `AgentTurn`

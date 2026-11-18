@@ -79,6 +79,8 @@ export interface SystemTaskNotificationSegment {
   type: 'system_task_notification';
   senderId: string;
   content: string;
+  /** The notice's one id, the same on every copy (autobyteus-526); null for a notice that has none (older history). */
+  messageId: string | null;
 }
 
 export interface InterAgentMessageSegment {
