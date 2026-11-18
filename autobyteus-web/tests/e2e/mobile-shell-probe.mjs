@@ -174,7 +174,7 @@
 //                  the run continues on it), a refused Save (the run woken before Save: the node's words in the red card), a
 //                  live idle and a working run (the red stop icon, one tap, the rows open): `mobile-run-settings-cases.mjs`
 //                  (on the paired phone, before MSP-13).
-//   MSP-75…79 autobyteus-533  Stop generation on the phone for every run kind (a standalone run, a Team member, an Org
+//   MSP-80…84 autobyteus-533  Stop generation on the phone for every run kind (a standalone run, a Team member, an Org
 //                  member and an Org Team member, a delegated agent and a delegated Team member, a run on beta): a double
 //                  tap sends one Stop and shows "Stopping…" with no toast; Stop after the turn ended is quiet; a refusal
 //                  and "not connected" show one plain message naming the agent; beta stopping under an open run:

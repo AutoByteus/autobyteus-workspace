@@ -1,8 +1,8 @@
 // Stop generation on the phone, for every run kind (autobyteus-533 AC-003, AC-004, AC-006, AC-007, AC-009, AC-010,
 // QR-001, QR-003). Cases of `pnpm -C autobyteus-web test:e2e:mobile-shell`, run by `mobile-shell-probe.mjs` on its
-// paired phone page (`--cases=MSP-75,MSP-76,MSP-77,MSP-78,MSP-79` runs only these). Every run here is the cases' own, on
+// paired phone page (`--cases=MSP-80,MSP-81,MSP-82,MSP-83,MSP-84` runs only these). Every run here is the cases' own, on
 // alpha's scripted Antigravity runtime (`HOLD_TURN` keeps a turn running; a Stop takes the AGY run offline and the next
-// message restores it), except MSP-79's run on beta. The phone's sockets pass through the probe's wire
+// message restores it), except MSP-84's run on beta. The phone's sockets pass through the probe's wire
 // (`fixtures/stop-generation-wire.mjs`), which logs the Stops the phone sends and the node's answers, and can slow the
 // phone's downlink, drop its path or turn the node's answer into a refusal (no scripted runtime refuses a Stop).
 //
@@ -13,14 +13,14 @@
 //     Running; the phone's Stop finds nothing to stop: `accepted`, no toast, "Stopping…" until the status arrives;
 //   - a refusal: one message "Could not stop <name>. Please try again.", the name as the phone shows the agent, no run id
 //     or internal words; Stop offered again;
-//   - (MSP-75, MSP-76, MSP-77, MSP-79) not connected: the phone's path drops while the run works; where the screen still
+//   - (MSP-80, MSP-81, MSP-82, MSP-84) not connected: the phone's path drops while the run works; where the screen still
 //     offers Stop, the tap sends nothing and shows one message "Stop was not sent: not connected to the node. …" (an Org
 //     member's Stop is disabled while its Org stream is not ready: nothing to tap, nothing shown).
-//   MSP-75 AC-010  A standalone agent run.
-//   MSP-76 AC-010  A Team member (a Team run's coordinator, which the Team row opens).
-//   MSP-77 AC-004  An Org member (the Org's first member, an agent) and a member of the Org's own Team (squad's reviewer).
-//   MSP-78 AC-004  A delegated agent (a task agent of an agent run) and a delegated Team's member.
-//   MSP-79 AC-004  A run on beta (a peer run, delegated by an alpha run); then beta stops while the run works: if the phone
+//   MSP-80 AC-010  A standalone agent run.
+//   MSP-81 AC-010  A Team member (a Team run's coordinator, which the Team row opens).
+//   MSP-82 AC-004  An Org member (the Org's first member, an agent) and a member of the Org's own Team (squad's reviewer).
+//   MSP-83 AC-004  A delegated agent (a task agent of an agent run) and a delegated Team's member.
+//   MSP-84 AC-004  A run on beta (a peer run, delegated by an alpha run); then beta stops while the run works: if the phone
 //                  still offers Stop, a tap shows at most one plain message (naming the agent when it names anyone); the
 //                  phone may instead show the run "Not reachable" with nothing to tap. Beta is started again.
 import { randomUUID } from 'node:crypto';
@@ -40,7 +40,7 @@ const couldNotStop = (name) => `Could not stop ${name}. Please try again.`;
  */
 export const runStopGenerationCases = async (probe) => {
   const { runCase, page, stack, alpha, beta, sel, toList, openRow, ensureUnfolded, rowsOf, runScreen, shot, waitFor, sleep, assert, phoneWire: wire } = probe;
-  const ids = ['MSP-75', 'MSP-76', 'MSP-77', 'MSP-78', 'MSP-79'];
+  const ids = ['MSP-80', 'MSP-81', 'MSP-82', 'MSP-83', 'MSP-84'];
   if (probe.selected && !ids.some((id) => probe.selected.has(id))) return;
   const gql = (query, variables) => alpha.gql(query, variables);
   const pickId = (text, key) => new RegExp(`${key}\\\\*"\\s*:\\s*\\\\*"([^"\\\\]+)`).exec(text ?? '')?.[1] ?? null;
@@ -272,16 +272,16 @@ export const runStopGenerationCases = async (probe) => {
     } finally { wire.reset(); }
   };
 
-  await runCase('MSP-75', stopCase(async () => {
+  await runCase('MSP-80', stopCase(async () => {
     const runId = await createAgentRun(stack.ids.checker);
     await openOnPhone(`agent:${runId}`);
-    const details = await journey('MSP-75-standalone', { runIds: [runId], notConnected: true,
+    const details = await journey('MSP-80-standalone', { runIds: [runId], notConnected: true,
       other: () => otherWindowStop(alpha, `agent/${runId}`, {}) });
     await terminate.agent(runId);
     return { runId, ...details };
   }));
 
-  await runCase('MSP-76', stopCase(async () => {
+  await runCase('MSP-81', stopCase(async () => {
     const created = (await gql('mutation($i:CreateAgentTeamRunInput!){createAgentTeamRun(input:$i){success message teamRunId}}', { i: {
       teamDefinitionId: stack.ids.delivery, teamConfigs: [{ teamAddress: '/', ...stack.runConfig }],
       memberConfigs: [{ memberAddress: '/lead', agentDefinitionId: stack.ids.checker, ...stack.runConfig },
@@ -290,13 +290,13 @@ export const runStopGenerationCases = async (probe) => {
     const teamRunId = created.teamRunId;
     const lead = (await teamMembers(teamRunId))['/lead'];
     await openOnPhone(`team:${teamRunId}`);
-    const details = await journey('MSP-76-team-member', { runIds: [teamRunId, lead], notConnected: true,
+    const details = await journey('MSP-81-team-member', { runIds: [teamRunId, lead], notConnected: true,
       other: () => otherWindowStop(alpha, `agent-team/${teamRunId}`, { agent_run_id: lead }) });
     await terminate.team(teamRunId);
     return { teamRunId, lead, ...details };
   }));
 
-  await runCase('MSP-77', stopCase(async () => {
+  await runCase('MSP-82', stopCase(async () => {
     const r = (await gql('mutation($i:CreateAgentOrgRunInput!){createAgentOrgRun(input:$i){success message agentOrgRunId}}',
       { i: { agentOrgDefinitionId: stack.ids.org, rootConfiguration: stack.runConfig, agentOverrides: [], teamOverrides: [] } })).createAgentOrgRun;
     assert(r.success, r.message);
@@ -306,14 +306,14 @@ export const runStopGenerationCases = async (probe) => {
     const squadReviewer = Object.entries(members).find(([address]) => /\/reviewer$/.test(address) && address !== '/reviewer')?.[1];
     const orgStop = (agentRunId) => () => otherWindowStop(alpha, `agent-org/${orgRunId}`, { root_subject_kind: 'agent_org', root_run_id: orgRunId, target_agent_run_id: agentRunId });
     await openOnPhone(`org:${orgRunId}`);
-    const member = await journey('MSP-77-org-member', { runIds: [orgRunId, planner], notConnected: true, other: orgStop(planner) });
+    const member = await journey('MSP-82-org-member', { runIds: [orgRunId, planner], notConnected: true, other: orgStop(planner) });
     await openOnPhone(`org:${orgRunId}`, [/squad/i, /^reviewer$/i]);
-    const orgTeamMember = await journey('MSP-77-org-team-member', { runIds: [orgRunId, squadReviewer], other: orgStop(squadReviewer) });
+    const orgTeamMember = await journey('MSP-82-org-team-member', { runIds: [orgRunId, squadReviewer], other: orgStop(squadReviewer) });
     await terminate.org(orgRunId);
     return { orgRunId, planner, squadReviewer, member, orgTeamMember };
   }));
 
-  // An agent run that delegates: a task agent, a task team and (MSP-79) a run on beta.
+  // An agent run that delegates: a task agent, a task team and (MSP-84) a run on beta.
   const delegator = { runId: null };
   const delegatorRun = async () => {
     if (delegator.runId) return delegator;
@@ -325,26 +325,26 @@ export const runStopGenerationCases = async (probe) => {
     return delegator;
   };
 
-  await runCase('MSP-78', stopCase(async () => {
+  await runCase('MSP-83', stopCase(async () => {
     const { runId, agent, team } = await delegatorRun();
     await waitFor('the delegated runs in the tree', async () => ((await readRunTree(gql, 'agent', runId)).rows ?? []).length >= 2, 60_000).catch(() => undefined);
     const reviewer = (await teamMembers(team))['/reviewer'];
     await openOnPhone(`agent:${runId}`, [/release notes writer/i]);
-    const taskAgent = await journey('MSP-78-task-agent', { runIds: [runId, agent], other: () => otherWindowStop(alpha, `agent/${agent}`, {}) });
+    const taskAgent = await journey('MSP-83-task-agent', { runIds: [runId, agent], other: () => otherWindowStop(alpha, `agent/${agent}`, {}) });
     await openOnPhone(`agent:${runId}`, [/docs review team/i, /^reviewer$/i]);
-    const taskTeamMember = await journey('MSP-78-task-team-member', { runIds: [runId, team, reviewer], other: () => otherWindowStop(alpha, `agent-team/${team}`, { agent_run_id: reviewer }) });
+    const taskTeamMember = await journey('MSP-83-task-team-member', { runIds: [runId, team, reviewer], other: () => otherWindowStop(alpha, `agent-team/${team}`, { agent_run_id: reviewer }) });
     await terminate.team(team);
     await terminate.agent(agent);
     return { delegator: runId, agent, team, reviewer, taskAgent, taskTeamMember };
   }));
 
-  await runCase('MSP-79', stopCase(async () => {
+  await runCase('MSP-84', stopCase(async () => {
     const { runId, remote } = await delegatorRun();
     await openOnPhone(`agent:${runId}`, [/publisher/i]);
-    const peer = await journey('MSP-79-peer-run', { runIds: [runId, remote], notConnected: true, other: () => otherWindowStop(beta, `agent/${remote}`, {}) });
+    const peer = await journey('MSP-84-peer-run', { runIds: [runId, remote], notConnected: true, other: () => otherWindowStop(beta, `agent/${remote}`, {}) });
 
     // Beta stops while the phone shows the run working: a real failure path.
-    await holdTurn('MSP-79-beta-down');
+    await holdTurn('MSP-84-beta-down');
     const from = wire.log.length; const since = Date.now();
     await beta.stop();
     const afterStop = { label: await label(), enabled: await button().isEnabled().catch(() => false) };
@@ -354,7 +354,7 @@ export const runStopGenerationCases = async (probe) => {
     await sleep(6_000);
     const betaDown = { afterStop, tapped, stopPressableAfterBetaStopped: tapped, ...(await observed(from, since)), screen: await runScreen(page),
       frames: wire.since(from).map((f) => `${f.at - since} ${f.dir} ${f.url} ${f.type}${f.state ? ` ${f.state}` : ''}${f.code ? ` ${f.code}` : ''}${f.message ? ` "${f.message}"` : ''}`) };
-    await shot(page, 'MSP-79-beta-down');
+    await shot(page, 'MSP-84-beta-down');
     await beta.start();
     await probe.waitPeerBack?.();
     await terminate.agent(runId);
