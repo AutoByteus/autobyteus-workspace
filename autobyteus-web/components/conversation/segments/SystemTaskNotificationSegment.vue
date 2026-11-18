@@ -26,6 +26,11 @@ import type { SystemTaskNotificationSegment } from '~/types/segments';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
 import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 import { useLocalization } from '~/composables/useLocalization';
+import {
+  RESTART_REMINDER_NOTICE_HEADER,
+  RESTART_REMINDER_NOTICE_SENDER_ID,
+  restartReminderInLocalTime,
+} from '~/utils/restartReminderLocalTime';
 
 /** The platform's skill update notice: its sender, or its header (replayed history, Team streams). */
 const SKILL_UPDATE_NOTICE_SENDER_ID = 'system.skill_update_notifier';
@@ -46,7 +51,7 @@ const emit = defineEmits<{
   (event: 'file-path-action', action: AbsoluteFilePathAction): void;
 }>();
 
-const { t } = useLocalization();
+const { t, resolvedLocale } = useLocalization();
 
 const isSkillUpdate = computed(() =>
   props.segment.senderId === SKILL_UPDATE_NOTICE_SENDER_ID
@@ -58,6 +63,10 @@ const isToolsUpdate = computed(() =>
 
 const isRuntimeChange = computed(() => props.segment.senderId === RUNTIME_HANDOVER_NOTICE_SENDER_ID);
 
+const isRestartReminder = computed(() =>
+  props.segment.senderId === RESTART_REMINDER_NOTICE_SENDER_ID
+  || props.segment.content.startsWith(RESTART_REMINDER_NOTICE_HEADER));
+
 const label = computed(() => {
   if (isRuntimeChange.value) return t('workspace.components.conversation.segments.SystemTaskNotificationSegment.runtimeChanged');
   if (isSkillUpdate.value) return t('workspace.components.conversation.segments.SystemTaskNotificationSegment.skillUpdated');
@@ -65,8 +74,12 @@ const label = computed(() => {
   return '';
 });
 
-/** A tool list notice shows only what changed: "Now available: a, b. No longer available: c." */
+/**
+ * A tool list notice shows only what changed: "Now available: a, b. No longer available: c." The restart reminder shows
+ * its restart time in the viewer's time zone (autobyteus-526); the agent's text keeps UTC.
+ */
 const body = computed(() => {
+  if (isRestartReminder.value) return restartReminderInLocalTime(props.segment.content, resolvedLocale.value);
   if (!isToolsUpdate.value) return props.segment.content;
   let text = props.segment.content;
   if (text.startsWith(TOOL_LIST_UPDATE_NOTICE_HEADER)) text = text.slice(TOOL_LIST_UPDATE_NOTICE_HEADER.length);

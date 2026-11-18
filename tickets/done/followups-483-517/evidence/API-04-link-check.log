@@ -1,0 +1,11 @@
+# API-04: python3 tickets/in-progress/followups-483-517/evidence/check-doc-anchors.py . ; HEAD 2a553b5473; 2026-11-18T12:12:24Z
+checked 50 links into settings.md / agent_execution_architecture.md
+RESULT PASS
+## settings.md: title and Level headings
+# Settings
+0
+868:## Existing Run Configuration
+1388:#### Run Workspace Choice On Start Surfaces
+1456:retired configuration-form stack. See [Run Workspace Choice On Start Surfaces](#run-workspace-choice-on-start-surfaces)
+## other docs naming settings.md as the architecture doc:
+autobyteus-web/AGENTS.md:33:*   **[Settings](./docs/settings.md)**: Application configuration, API key management, and system monitoring.

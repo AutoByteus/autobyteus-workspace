@@ -1,0 +1,308 @@
+{
+ "mode": "same",
+ "a": "base-standard",
+ "b": "head-standard",
+ "skipped": {
+  "a": {
+   "messages": "locator.click: Timeout 30000ms exceeded."
+  },
+  "b": {
+   "messages": "locator.click: Timeout 30000ms exceeded."
+  }
+ },
+ "errors": {
+  "a": [
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+  ],
+  "b": [
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "console: Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+  ]
+ },
+ "screens": {
+  "run-list": {
+   "rootA": "16px",
+   "rootB": "16px",
+   "stepA": "standard",
+   "stepB": "standard",
+   "sidewaysB": false,
+   "matched": 34,
+   "onlyA": [
+    "mobile-run-age|span|1m#1 12px",
+    "mobile-run-age|span|1m#2 12px",
+    "mobile-run-age|span|1m#3 12px",
+    "mobile-run-age|span|2m#1 12px",
+    "mobile-run-age|span|2m#2 12px"
+   ],
+   "onlyB": [
+    "mobile-run-age|span|3m#1 12px",
+    "mobile-run-age|span|3m#2 12px",
+    "mobile-run-age|span|3m#3 12px",
+    "mobile-run-age|span|3m#4 12px",
+    "mobile-run-age|span|3m#5 12px"
+   ],
+   "diffs": [
+    "mobile-run-name|span|Project Task Manager#1: w 271.98→270.03",
+    "mobile-run-title|span|CALL_TOOL:{\"name\":\"delegate_task\",\"argum#1: w 271.98→270.03",
+    "mobile-run-name|span|Approver#1: w 303.98→302.03",
+    "mobile-run-title|span|Untitled task#1: w 303.98→302.03",
+    "mobile-run-name|span|Delivery Team#1: w 271.98→270.03",
+    "mobile-run-title|span|GENERATE_IMAGE:/private/var/folders/7w/9#1: w 271.98→270.03"
+   ]
+  },
+  "on-this-phone-menu": {
+   "rootA": "16px",
+   "rootB": "16px",
+   "stepA": "standard",
+   "stepB": "standard",
+   "sidewaysB": false,
+   "matched": 37,
+   "onlyA": [
+    "mobile-on-this-phone-title|p|On this phone#1 14px",
+    "mobile-text-size|p|Text size#1 12px",
+    "mobile-text-size-small|button|A#1 13px",
+    "mobile-run-age|span|1m#1 12px",
+    "mobile-run-age|span|1m#2 12px",
+    "mobile-run-age|span|1m#3 12px",
+    "mobile-run-age|span|2m#1 12px",
+    "mobile-run-age|span|2m#2 12px"
+   ],
+   "onlyB": [
+    "mobile-text-size-header|p|Text size#1 14px",
+    "mobile-run-age|span|3m#1 12px",
+    "mobile-run-age|span|3m#2 12px",
+    "mobile-run-age|span|3m#3 12px",
+    "mobile-run-age|span|3m#4 12px",
+    "mobile-run-age|span|3m#5 12px"
+   ],
+   "diffs": [
+    "mobile-text-size-standard|button|A#1: x 202→137, y 124.5→96.5, w 59→80.66",
+    "mobile-text-size-large|button|A#1: x 267→223.66, y 124.5→96.5, w 59→80.67",
+    "mobile-text-size-largest|button|A#1: x 332→310.33, y 124.5→96.5, w 59→80.66",
+    "mobile-run-name|span|Project Task Manager#1: w 271.98→270.03",
+    "mobile-run-title|span|CALL_TOOL:{\"name\":\"delegate_task\",\"argum#1: w 271.98→270.03",
+    "mobile-run-name|span|Approver#1: w 303.98→302.03",
+    "mobile-run-title|span|Untitled task#1: w 303.98→302.03",
+    "mobile-run-name|span|Delivery Team#1: w 271.98→270.03",
+    "mobile-run-title|span|GENERATE_IMAGE:/private/var/folders/7w/9#1: w 271.98→270.03"
+   ]
+  },
+  "connection-sheet": {
+   "rootA": "16px",
+   "rootB": "16px",
+   "stepA": "standard",
+   "stepB": "standard",
+   "sidewaysB": false,
+   "matched": 37,
+   "onlyA": [
+    "mobile-run-age|span|1m#1 12px",
+    "mobile-run-age|span|1m#2 12px",
+    "mobile-run-age|span|2m#1 12px",
+    "mobile-run-age|span|2m#2 12px",
+    "mobile-run-age|span|2m#3 12px"
+   ],
+   "onlyB": [
+    "mobile-run-age|span|3m#1 12px",
+    "mobile-run-age|span|3m#2 12px",
+    "mobile-run-age|span|3m#3 12px",
+    "mobile-run-age|span|3m#4 12px",
+    "mobile-run-age|span|3m#5 12px"
+   ],
+   "diffs": [
+    "mobile-run-name|span|Project Task Manager#1: w 271.98→270.03",
+    "mobile-run-title|span|CALL_TOOL:{\"name\":\"delegate_task\",\"argum#1: w 271.98→270.03",
+    "mobile-run-name|span|Approver#1: w 303.98→302.03",
+    "mobile-run-title|span|Untitled task#1: w 303.98→302.03"
+   ]
+  },
+  "unpair-confirm": {
+   "rootA": "16px",
+   "rootB": "16px",
+   "stepA": "standard",
+   "stepB": "standard",
+   "sidewaysB": false,
+   "matched": 38,
+   "onlyA": [
+    "mobile-run-age|span|1m#1 12px",
+    "mobile-run-age|span|1m#2 12px",
+    "mobile-run-age|span|2m#1 12px",
+    "mobile-run-age|span|2m#2 12px",
+    "mobile-run-age|span|2m#3 12px"
+   ],
+   "onlyB": [
+    "mobile-run-age|span|3m#1 12px",
+    "mobile-run-age|span|3m#2 12px",
+    "mobile-run-age|span|3m#3 12px",
+    "mobile-run-age|span|3m#4 12px",
+    "mobile-run-age|span|3m#5 12px"
+   ],
+   "diffs": [
+    "mobile-run-name|span|Project Task Manager#1: w 271.98→270.03",
+    "mobile-run-title|span|CALL_TOOL:{\"name\":\"delegate_task\",\"argum#1: w 271.98→270.03",
+    "mobile-run-name|span|Approver#1: w 303.98→302.03",
+    "mobile-run-title|span|Untitled task#1: w 303.98→302.03"
+   ]
+  },
+  "new-run": {
+   "rootA": "16px",
+   "rootB": "16px",
+   "stepA": "standard",
+   "stepB": "standard",
+   "sidewaysB": false,
+   "matched": 11,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  },
+  "new-run-agent-sheet": {
+   "rootA": "16px",
+   "rootB": "16px",
+   "stepA": "standard",
+   "stepB": "standard",
+   "sidewaysB": false,
+   "matched": 24,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  },
+  "conversation": {
+   "rootA": "16px",
+   "rootB": "16px",
+   "stepA": "standard",
+   "stepB": "standard",
+   "sidewaysB": false,
+   "matched": 14,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  },
+  "run-menu": {
+   "rootA": "16px",
+   "rootB": "16px",
+   "stepA": "standard",
+   "stepB": "standard",
+   "sidewaysB": false,
+   "matched": 18,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  },
+  "artifacts": {
+   "rootA": "16px",
+   "rootB": "16px",
+   "stepA": "standard",
+   "stepB": "standard",
+   "sidewaysB": false,
+   "matched": 3,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  },
+  "files": {
+   "rootA": "16px",
+   "rootB": "16px",
+   "stepA": "standard",
+   "stepB": "standard",
+   "sidewaysB": false,
+   "matched": 6,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  },
+  "file-name": {
+   "rootA": null,
+   "rootB": null,
+   "stepA": null,
+   "stepB": null,
+   "sidewaysB": false,
+   "matched": 0,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  },
+  "file-viewer": {
+   "rootA": "16px",
+   "rootB": "16px",
+   "stepA": "standard",
+   "stepB": "standard",
+   "sidewaysB": false,
+   "matched": 15,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  },
+  "activity": {
+   "rootA": "16px",
+   "rootB": "16px",
+   "stepA": "standard",
+   "stepB": "standard",
+   "sidewaysB": false,
+   "matched": 2,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  },
+  "settings": {
+   "rootA": "16px",
+   "rootB": "16px",
+   "stepA": "standard",
+   "stepB": "standard",
+   "sidewaysB": false,
+   "matched": 8,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  },
+  "setup": {
+   "rootA": "16px",
+   "rootB": "16px",
+   "stepA": "standard",
+   "stepB": "standard",
+   "sidewaysB": false,
+   "matched": 7,
+   "onlyA": [],
+   "onlyB": [],
+   "diffs": []
+  }
+ },
+ "onlyInA": [],
+ "onlyInB": [],
+ "totals": {
+  "screens": 15,
+  "matched": 254,
+  "diffs": 23
+ }
+}

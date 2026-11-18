@@ -1,0 +1,219 @@
+{
+  "startedAt": "2026-11-18T12:42:09.452Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 49840,
+      "nodeId": "srv_NHOUYacNcL0mj7xpHzE2O6TBDuEHJg7r",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 49842,
+      "nodeId": "srv_wAWtkBNp1vp3U1EuezMsDRk3pNqo3ILn",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_456f56b715b349debba5aa81aca6010a",
+    "writerRun": "release_notes_writer_d29961b8145446849af834a6872143aa",
+    "squadRun": "docs_review_team_37833c1ef3ce48599d18ef5cadd2a502",
+    "reviewer": "release_notes_writer_6272aa6968da4696a31c3c6cadebd110",
+    "memberDelegated": "fact_checker_03c526573ee9412cae3b5d8f1651e1e9",
+    "remoteAgentRun": "publisher_0f3d6586d07d4f99ad66e0cddcf6b656",
+    "remoteTeamRun": "studio_team_96123a577db541a688aa5ad4a83f274e",
+    "plain": [
+      "fact_checker_6cc141c99f9d42e49d83e644fb1d0caa",
+      "fact_checker_004ac95ab695467e825eb0a852fe3c90",
+      "fact_checker_d5140b8e8b7e4a76a074d4f69827275a"
+    ],
+    "org": "delivery_org_a92866c61f784bfb9cf30426f21e3591",
+    "orgPlanner": "release_notes_writer_c387a2d50a3941648a8729bd0f8e0d52",
+    "reviewOrg": "review_org_aeb1a0e76d3745da9c850994bad698f0",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_517923c4f72d423793677dcaca3cd038",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_8cff488d222a42ad831553cb5ca2d540",
+    "deliveryLead": "fact_checker_3bb31eb73454406fa361124693a663dd",
+    "deliveryMate": "release_notes_writer_7014fd4840264b4593b17551f38b1d5e",
+    "leadDelegated": "changelog_helper_fc12b7c3eff84fe2a313a61ce66ec9b5",
+    "approver": "approver_28904c72a1524698abeef46c825f9175",
+    "taskA": "launch-c24550-1",
+    "taskB": "launch-c24550-2"
+  },
+  "cases": {
+    "MSP-47": {
+      "result": "Pass",
+      "seconds": 26.9,
+      "run": "fact_checker_1c2408492ef44e0989cc44d43c256145",
+      "firstTask": {
+        "taskId": "560aefe2-9c20-4269-b9a6-28055a9ff917/task-11",
+        "status": "running",
+        "command": "sleep 25 # background step 11",
+        "summary": null,
+        "startedAt": "2026-11-18T12:43:15.619Z"
+      },
+      "listed": [
+        {
+          "status": "running",
+          "text": "sleep 25 # background step 11RunningStarted 12:43 PM",
+          "end": null
+        }
+      ],
+      "ended": [
+        {
+          "status": "failed",
+          "text": "sleep 25 # background step 11Failedexit code 1Started 12:43 PM",
+          "end": "exit code 1"
+        }
+      ],
+      "section": "BACKGROUND TASKS 1 ended sleep 25 # background step 11 Failed exit code 1 Started 12:43 PM"
+    },
+    "MSP-48": {
+      "result": "Pass",
+      "seconds": 8.5,
+      "before": [
+        {
+          "status": "failed",
+          "text": "sleep 25 # background step 11Failedexit code 1Started 12:43 PM",
+          "end": "exit code 1"
+        }
+      ],
+      "live": [
+        {
+          "status": "running",
+          "text": "sleep 8 # background step 21RunningStarted 12:43 PM",
+          "end": null
+        },
+        {
+          "status": "failed",
+          "text": "sleep 25 # background step 11Failedexit code 1Started 12:43 PM",
+          "end": "exit code 1"
+        }
+      ],
+      "completed": [
+        {
+          "status": "completed",
+          "text": "sleep 8 # background step 21Completedexit code 0Started 12:43 PM",
+          "end": "exit code 0"
+        },
+        {
+          "status": "failed",
+          "text": "sleep 25 # background step 11Failedexit code 1Started 12:43 PM",
+          "end": "exit code 1"
+        }
+      ]
+    },
+    "MSP-49": {
+      "result": "Pass",
+      "seconds": 22,
+      "deskRun": "fact_checker_c70bde456a2a47e5a4de81cc5ebeac79",
+      "task": {
+        "taskId": "062489ad-818a-490e-af53-c46dc964e8ff/task-11",
+        "status": "running",
+        "command": "sleep 60 # background step 11",
+        "summary": null,
+        "startedAt": "2026-11-18T12:43:51.117Z"
+      },
+      "beforeReload": [
+        {
+          "status": "running",
+          "text": "sleep 60 # background step 11RunningShell"
+        }
+      ],
+      "afterReload": [
+        {
+          "status": "running",
+          "text": "sleep 60 # background step 11RunningShell"
+        }
+      ]
+    },
+    "MSP-59": {
+      "result": "Pass",
+      "seconds": 2.8,
+      "endRun": "fact_checker_0ca8dda090d34c90ae69e18cc9d77d41",
+      "task": {
+        "taskId": "322075bb-0b5f-4ebe-93d3-d13e981ee25f/task-11",
+        "status": "running",
+        "command": "sleep 120 # background step 11",
+        "summary": null,
+        "startedAt": "2026-11-18T12:44:13.048Z"
+      },
+      "terminated": {
+        "success": true
+      },
+      "listed": [
+        {
+          "status": "running",
+          "text": "sleep 120 # background step 11RunningStarted 12:44 PM",
+          "end": null
+        }
+      ],
+      "ended": [
+        {
+          "status": "stopped",
+          "text": "sleep 120 # background step 11StoppedStopped: the run endedStarted 12:44 PM",
+          "end": "Stopped: the run ended"
+        }
+      ]
+    },
+    "MSP-78": {
+      "result": "Pass",
+      "seconds": 8.1,
+      "lateRun": "fact_checker_281840f911d44a5d9c4861b06558091a",
+      "task": {
+        "taskId": "250beb11-58af-47c8-baac-42a6a38cb1f2/task-11",
+        "status": "running",
+        "command": "sleep 5 # background step 11",
+        "summary": null,
+        "startedAt": "2026-11-18T12:44:15.855Z"
+      },
+      "nodeAfterEnd": [
+        {
+          "taskId": "250beb11-58af-47c8-baac-42a6a38cb1f2/task-11",
+          "status": "failed",
+          "command": "sleep 5 # background step 11",
+          "summary": "Command exited with code 1",
+          "startedAt": "2026-11-18T12:44:15.855Z"
+        }
+      ],
+      "listed": [
+        {
+          "status": "failed",
+          "text": "sleep 5 # background step 11Failedexit code 1Started 12:44 PM",
+          "end": "exit code 1"
+        }
+      ]
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-47": "Pass",
+      "MSP-48": "Pass",
+      "MSP-49": "Pass",
+      "MSP-59": "Pass",
+      "MSP-78": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-18T12:44:54.733Z"
+}

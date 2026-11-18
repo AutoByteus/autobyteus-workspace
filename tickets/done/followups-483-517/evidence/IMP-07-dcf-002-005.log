@@ -1,0 +1,36 @@
+# IMP-07 (c) of SR-002: DCF-E2E-002 waits for the final diagnostic; DCF-E2E-005 budget = its 60 s + two file-event waits
+# command: env -u AUTOBYTEUS_AGENT_PACKAGE_ROOTS -u AUTOBYTEUS_SKILLS_PATHS -u AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS pnpm exec vitest run tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts -t "DCF-E2E-00(2|5)" --no-watch
+# commit: e61300a086 + the (c) test change; node v22.23.1; 2026-11-18T12:00:32Z
+load before: 25.88 49.70 68.64; fseventsd CPU %: 160.5
+      Tests  2 passed | 8 skipped (10)
+   Duration  69.49s (transform 9.74s, setup 68ms, import 12.92s, tests 55.77s, environment 0ms)
+load after: 47.29 50.02 67.19; fseventsd CPU %: 168.5
+
+## the whole live-refresh suite (ungated cases), same change
+load before: 48.54 50.24 67.16
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Error: ENOTEMPTY: directory not empty, rmdir '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-mGt56a/server-data/update-notifications'
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and reports it; restore resumes; removal releases it
+Error: WATCHING again: not met within 30000 ms; last value: {"packageId":"local:%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fagent-package-definitions-e2e-mGt56a%2Fmovable-package-bb0548","path":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-mGt56a/movable-package-bb0548","sourceKind":"LOCAL_PATH","autoRefresh":{"state":"FOLDER_MISSING","message":"Its definitions keep their last loaded version until the folder returns."},"updateInfo":{"status":"RELOAD_AVAILABLE","installedRevision":null,"latestRevision":null}}
+    159|       if (Date.now() - started > timeoutMs) throw new Error(`${label}:…
+      Tests  1 failed | 7 passed | 2 skipped (10)
+   Duration  156.69s (transform 10.23s, setup 98ms, import 13.78s, tests 142.14s, environment 0ms)
+load after: 49.63 49.65 63.99
+
+## DCF-E2E-003 alone (it failed in the whole-suite run above)
+load before: 43.25 48.34 62.56; fseventsd CPU %: 166.2
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-003 (AC-011, AC-012, REQ-015):
+Error: WATCHING again: not met within 30000 ms; last value: {"packageId":"local:%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fagent-package-definitions-e2e-Fp5xJJ%2Fmovable-pa
+    159|       if (Date.now() - started > timeoutMs) throw new Error(`${label}:…
+      Tests  1 failed | 9 skipped (10)
+   Duration  62.43s (transform 6.76s, setup 54ms, import 9.17s, tests 52.66s, environment 0ms)
+load after: 48.87 48.46 61.52
+
+## DCF-E2E-003 alone, BASE revision of the test file (24d438fa31), same machine, right after
+load before: 50.04 48.73 61.46
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-003 (AC-011, AC-012, REQ-015):
+Error: FOLDER_MISSING: not met within 5000 ms; last value: {"packageId":"local:%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fagent-package-definitions-e2e-IhuzPB%2Fmovable-pac
+    155|       if (Date.now() - started > timeoutMs) throw new Error(`${label}:…
+      Tests  1 failed | 9 skipped (10)
+   Duration  31.46s (transform 7.32s, setup 61ms, import 9.84s, tests 20.99s, environment 0ms)
+load after: 48.26 48.36 60.88

@@ -1,0 +1,359 @@
+{
+  "startedAt": "2026-11-18T06:56:56.334Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 58522,
+      "nodeId": "srv_7kL5Mvhuq-leWww4oDW2a1mqzhYtjLig",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 58523,
+      "nodeId": "srv_Sanwa0qMXyA-iWgz0OBE4-5a7228jBCR",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "delta": {
+      "port": 58803,
+      "nodeId": "srv_Gjhbvo6O8zQsWLOKFrg4dx7kyu93VSV7",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_a1b989e9420141afb0b4b565d061544a",
+    "writerRun": "release_notes_writer_7569be0858ce4862b45a4ede1c0a6108",
+    "squadRun": "docs_review_team_0088fef42bce43abb6227a0ae27e3302",
+    "reviewer": "release_notes_writer_5dec2ba2b8244b4a8b8adb42b181ee83",
+    "memberDelegated": "fact_checker_4c101585c35b4375acb39d7d258c4ea2",
+    "remoteAgentRun": "publisher_2048a074f17c4da5a74018e1a10591ba",
+    "remoteTeamRun": "studio_team_f2378361ae8244c98113dd6d2f61cb26",
+    "plain": [
+      "fact_checker_fee36ffa432446a585244d5bc53b7a57",
+      "fact_checker_4b493ad293df4c81bcfdb15f3bafc910",
+      "fact_checker_e097b906979147c696c4319eca0d1739"
+    ],
+    "org": "delivery_org_c9d4e9b4f8034aec917a37724ed91db5",
+    "orgPlanner": "release_notes_writer_6a54581c2ef241eeba692afb4da78921",
+    "reviewOrg": "review_org_3ff20c20519346ea9fa9d5b5c943e2bf",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_c0b495a5fbd44aada3ac4addd9cc8be6",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_ea983b08121d4573968a0fd71f219705",
+    "deliveryLead": "fact_checker_9bebc5b4b700483cb8499298f71f8db5",
+    "deliveryMate": "release_notes_writer_1080f9a0b3d24753b106e99a026d3309",
+    "leadDelegated": "changelog_helper_5b38afcd8daf4fb9bc15c02e5b29217d",
+    "approver": "approver_1d3175d37ebb47b5b2bad50d196e430e",
+    "taskA": "launch-953085-1",
+    "taskB": "launch-953085-2"
+  },
+  "cases": {
+    "MSP-75": {
+      "result": "Fail",
+      "seconds": 47.4,
+      "error": "live after the first restart: one card in the viewer's time, every input and reply once",
+      "details": {
+        "runId": "build_runner_da3e1c7811d446c0996e36dca7137305",
+        "agentTimes": [
+          "2026-11-18 06:58 UTC",
+          "2026-11-18 06:58 UTC"
+        ],
+        "expectedCards": [
+          "18 Nov 2026, 07:58 CET",
+          "18 Nov 2026, 07:58 CET"
+        ],
+        "afterFirst": {
+          "cards": [
+            "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 07:58 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+            "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 07:58 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+          ],
+          "inputs": [
+            1,
+            1,
+            0
+          ],
+          "replies": [
+            1,
+            1,
+            0
+          ]
+        },
+        "live": {
+          "cards": [
+            "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 07:58 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+            "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 07:58 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+            "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 07:58 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+          ],
+          "inputs": [
+            1,
+            1,
+            1
+          ],
+          "replies": [
+            1,
+            1,
+            1
+          ]
+        },
+        "reloaded": {
+          "cards": [
+            "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 07:58 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+            "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 07:58 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+          ],
+          "inputs": [
+            1,
+            1,
+            1
+          ],
+          "replies": [
+            1,
+            1,
+            1
+          ]
+        },
+        "requests": 5
+      }
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:58803/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:58803/ws/agent/build_runner_da3e1c7811d446c0996e36dca7137305?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.21:58803/mobile/_nuxt/C6PB-kF-.js:1167:5901)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:58803/ws/agent-collaboration/build_runner_da3e1c7811d446c0996e36dca7137305?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:58803/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:58803/ws/agent/build_runner_da3e1c7811d446c0996e36dca7137305?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.21:58803/mobile/_nuxt/C6PB-kF-.js:1167:5901)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:58803/ws/agent-collaboration/build_runner_da3e1c7811d446c0996e36dca7137305?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:58803/ws/agent/build_runner_da3e1c7811d446c0996e36dca7137305?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.21:58803/mobile/_nuxt/C6PB-kF-.js:1167:5901)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:58803/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:58803/ws/agent-collaboration/build_runner_da3e1c7811d446c0996e36dca7137305?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:58803/ws/agent/build_runner_da3e1c7811d446c0996e36dca7137305?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.21:58803/mobile/_nuxt/C6PB-kF-.js:1167:5901)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:58803/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:58803/ws/agent-collaboration/build_runner_da3e1c7811d446c0996e36dca7137305?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:58803/ws/agent/build_runner_da3e1c7811d446c0996e36dca7137305?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.21:58803/mobile/_nuxt/C6PB-kF-.js:1167:5901)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:58803/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:58803/ws/agent-collaboration/build_runner_da3e1c7811d446c0996e36dca7137305?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    }
+  ],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "restoredRun": {
+    "runId": "build_runner_da3e1c7811d446c0996e36dca7137305",
+    "agentTimes": [
+      "2026-11-18 06:58 UTC",
+      "2026-11-18 06:58 UTC"
+    ],
+    "expectedCards": [
+      "18 Nov 2026, 07:58 CET",
+      "18 Nov 2026, 07:58 CET"
+    ],
+    "afterFirst": {
+      "cards": [
+        "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 07:58 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+        "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 07:58 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+      ],
+      "inputs": [
+        1,
+        1,
+        0
+      ],
+      "replies": [
+        1,
+        1,
+        0
+      ]
+    },
+    "live": {
+      "cards": [
+        "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 07:58 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+        "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 07:58 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+        "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 07:58 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+      ],
+      "inputs": [
+        1,
+        1,
+        1
+      ],
+      "replies": [
+        1,
+        1,
+        1
+      ]
+    },
+    "reloaded": {
+      "cards": [
+        "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 07:58 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+        "[Platform notice — application restarted] The application restarted at 18 Nov 2026, 07:58 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+      ],
+      "inputs": [
+        1,
+        1,
+        1
+      ],
+      "replies": [
+        1,
+        1,
+        1
+      ]
+    },
+    "requests": 5
+  },
+  "summary": {
+    "cases": {
+      "MSP-75": "Fail"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-18T06:59:41.162Z"
+}

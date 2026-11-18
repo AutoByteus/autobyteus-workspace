@@ -1,0 +1,6 @@
+2026-11-18T11:04:03.766Z # autobyteus-525 API-11 node; commit 6df3a5c12f; Node v22.23.1
+2026-11-18T11:04:17.027Z node up on http://127.0.0.1:59591 (phone: http://10.0.2.2:59591)
+2026-11-18T11:04:21.599Z team run desk_team_f15d9c59cb194b79bf73e7fcaff9b287, lead desktop_helper_784b04604fa04c3883b7ceb8a750d164
+2026-11-18T11:04:21.625Z run desktop_helper_eb268075cf034982a37fcf831852242f; status fields nodeId,pairingAvailable,phoneAccessEnabled
+2026-11-18T11:04:21.643Z pairing session 201 (link in /tmp/abtest534v/pairing-link.txt, not evidence)
+2026-11-18T11:05:21.303Z node done; stopped 0; temp root removed: true

@@ -134,7 +134,11 @@ export class AgentRunEventMessageMapper {
       case AgentRunEventType.TEAM_COMMUNICATION_MESSAGE:
         return new ServerMessage(ServerMessageType.TEAM_COMMUNICATION_MESSAGE, payload);
       case AgentRunEventType.SYSTEM_TASK_NOTIFICATION:
-        return new ServerMessage(ServerMessageType.SYSTEM_TASK_NOTIFICATION, payload);
+        // The notice's one id on every copy (autobyteus-526); null for a notice that has none.
+        return new ServerMessage(ServerMessageType.SYSTEM_TASK_NOTIFICATION, {
+          ...payload,
+          message_id: typeof payload.message_id === "string" && payload.message_id.trim() ? payload.message_id : null,
+        });
       case AgentRunEventType.ARTIFACT_PERSISTED:
         return new ServerMessage(ServerMessageType.ARTIFACT_PERSISTED, payload);
       case AgentRunEventType.FILE_CHANGE:

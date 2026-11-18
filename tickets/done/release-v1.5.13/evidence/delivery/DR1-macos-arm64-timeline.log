@@ -1,0 +1,6 @@
+2026-11-18T12:51:38.6479410Z   • executing custom sign  file=electron-dist/mac-arm64/AutoByteus.app platform=darwin type=distribution identity=37C9698B12C2CE90D9B9E9F882B67C65C9F5B4FA provisioningProfile=none
+2026-11-18T12:23:30.0803100Z   if grep -Eq 'Failed to notarize via notarytool|The Internet connection appears to be offline|NSURLErrorDomain Code=-1009|No network route|timed out' "$log_file" && [[ "$
+2026-11-18T12:23:30.0806550Z     echo "Transient Apple notarization/network failure detected on attempt $attempt/$max_attempts. Retrying..."
+2026-11-18T12:52:49.5663360Z [macSign] AutoByteus macOS signing policy completed
+2026-11-18T13:01:28.5612670Z   • notarization successful
+2026-11-18T12:49:58.6639810Z   • electron-builder  version=25.1.8 os=24.6.0

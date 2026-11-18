@@ -594,11 +594,21 @@ the agent runtime hand-over first).
     already are or carry a preface never take one.
   - The provider message becomes the preface text, a blank line, then the
     input unchanged (sender, context files, recording attachments, metadata),
-    tagged `platform_input_preface { content, sender_id, original_content }`.
+    tagged `platform_input_preface { content, sender_id, original_content, notice_id }`.
     It is one dispatch, so one turn.
+  - Every platform notice has one id (autobyteus-526): the preface's `id` here,
+    the in-flight id for a notice-only input (tool list, skill, background
+    task), the wake's `message_id` for the restart reminder, one per request for
+    the Model Router and one per Claude background notice. The same id is the
+    message's `notice_id`, the stored notice trace's `message_id`, the
+    projection entry's `messageId` and the published notice's `message_id` on
+    the agent, collaboration and team streams, so the web shows the notice once
+    (its live copy and a snapshot's stored copy). A notice without one carries
+    `message_id: null` (traces stored before, a native unsuppressed SYSTEM
+    input, a task input shown as a notice).
   - The preface is settled `delivered` only when the dispatch is forwarded. On
     delivery, `AgentRun` publishes `SYSTEM_TASK_NOTIFICATION` with the
-    preface's sender and the turn ID. Every other outcome (not forwarded,
+    preface's sender, its id as `message_id` and the turn ID. Every other outcome (not forwarded,
     failed, uncertain, `undeliveredRetryAsStart`) returns it.
   - A failing port never affects the input.
   - Admission state and the backend dispatch contract are unchanged.
@@ -1121,8 +1131,9 @@ now, and `AgentBackgroundTaskEventStream.tasks` carries them
 started therefore sees it at once; later changes still arrive as
 `BACKGROUND_TASK_UPDATED`. Claude lists its registry's view (running and ended
 tasks until the process ends), AutoByteus its `BackgroundProcessManager.list()`
-(none while the run has no manager), Antigravity the tasks running now (its
-monitor keeps no ended ones). The web client seeds its store from the answer:
+(none while the run has no manager), Antigravity its monitor's tasks (running
+and ended, each as its latest snapshot with its exit code or `run_ended`, for the
+life of the run; autobyteus-517). The web client seeds its store from the answer:
 an unknown task is added, a running one takes an end the answer shows, and an
 ended one is never replaced, so an older answer cannot undo a newer event.
 
