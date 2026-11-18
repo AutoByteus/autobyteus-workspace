@@ -132,8 +132,12 @@ export class AppUpdateNotificationRecord {
 
   /** `version`'s automatic install failed before: it is not installed automatically again (REQ-004). */
   blocksAutomatic(version: string): boolean {
+    return this.automaticInstallBlockedVersion === version;
+  }
+
+  get automaticInstallBlockedVersion(): string | null {
     const failure = this.record?.automaticFailure;
-    return failure?.version === version && failure.step === 'install';
+    return failure?.step === 'install' ? failure.version : null;
   }
 
   /**

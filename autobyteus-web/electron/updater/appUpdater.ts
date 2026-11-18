@@ -159,6 +159,7 @@ export class AppUpdater implements AppUpdateController {
     };
     this.applyChannelPolicy();
     this.options.managedSession?.settingsChanged(this.state);
+    this.options.managedSession?.automaticInstallBlockChanged(this.notificationRecord.automaticInstallBlockedVersion);
     this.options.managedSession?.onChange(event => this.managedEvent(event));
 
     this.registerAutoUpdaterListeners();
@@ -528,6 +529,7 @@ export class AppUpdater implements AppUpdateController {
     }
 
     this.state = nextState;
+    this.options.managedSession?.automaticInstallBlockChanged(this.notificationRecord?.automaticInstallBlockedVersion ?? null);
     this.broadcastState();
   }
 

@@ -25,7 +25,8 @@ export type ManagedUpdateEvent =
 export class ManagedUpdateSession {
   private generation = 0
   private pending: ManagedStage | null = null
-  private intent: 'quit' | 'restart' | null = null
+  private intent: 'quit' | 'restart' | 'failed-restart' | null = null
+  private automaticInstallBlockedVersion: string | null = null
   private passQuit = false
   private listeners = new Set<(event: ManagedUpdateEvent) => void>()
   private lastSettings: Settings
@@ -33,7 +34,10 @@ export class ManagedUpdateSession {
   onChange(listener: (event: ManagedUpdateEvent) => void): void { this.listeners.add(listener) }
   private emit(event: ManagedUpdateEvent): void { for (const listener of this.listeners) listener(event) }
   private discard(stage: ManagedStage): void { void this.options.writer.discard(stage).catch(this.options.report) }
+  /** Updater-owned failure policy, independent of the visible notification outcome. */
+  automaticInstallBlockChanged(version: string | null): void { this.automaticInstallBlockedVersion = version }
   async stageDownloaded(file: string, version: string): Promise<void> {
+    if (this.intent !== null) return
     const generation = ++this.generation
     const channel = this.lastSettings.updateChannel
     if (this.pending) this.discard(this.pending)
@@ -69,10 +73,12 @@ export class ManagedUpdateSession {
   willQuit(event: { preventDefault(): void }): void {
     if (this.passQuit) return
     event.preventDefault()
-    if (this.intent !== null) return
+    if (this.intent === 'quit' || this.intent === 'restart') return
+    // A settled manual failure allows exit, but no further update transaction in this process.
+    const canActivate = this.intent === null
     this.intent = 'quit'
     // A late download cannot make this quit an install; capture readiness at this boundary.
-    const stage = this.lastSettings.automaticUpdate ? this.pending : null
+    const stage = canActivate && this.lastSettings.automaticUpdate ? this.pending : null
     this.options.notifyQuit()
     void this.finish(stage, this.generation, true)
   }
@@ -87,7 +93,7 @@ export class ManagedUpdateSession {
       // No await separates preference/generation checks from activation dispatch.
       const settings = this.lastSettings
       if (stage && generation === this.generation && this.pending === stage && stage.channel === settings.updateChannel
-        && (!automatic || settings.automaticUpdate)) {
+        && (!automatic || (settings.automaticUpdate && stage.identity.version !== this.automaticInstallBlockedVersion))) {
         this.emit({ type: 'activating', version: stage.identity.version, automatic })
         try {
           const identity = await this.options.writer.activate(stage)
@@ -113,6 +119,10 @@ export class ManagedUpdateSession {
       // Existing ordinary shutdown failure behavior is terminal. An unknown manual
       // activation outcome must not create a second server or claim a successful restart.
       if (automatic) this.options.exit(1)
+      else {
+        this.pending = null; ++this.generation
+        this.intent = 'failed-restart'
+      }
     }
   }
 }
