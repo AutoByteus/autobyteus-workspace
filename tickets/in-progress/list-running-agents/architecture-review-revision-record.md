@@ -8,6 +8,8 @@ The latest `design-review-report.md` is authoritative.
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / Architecture Design Complete (Large, High); basis replaced by SR-005 during the review | SR-001 … SR-005 | N/A | Fail | AR-001, AR-003, AR-004, AR-005, AR-006 |
 | ARCH-REV-002 | Round 2 / SR-006 (fixes for ARCH-REV-001; DEC-013 entry fields) | SR-006 | Fail | Fail | AR-001, AR-003, AR-004, AR-005, AR-006 resolved; AR-007 new |
+| ARCH-REV-003 | Round 3 / SR-007 (fix for AR-007) | SR-007 | Fail | Pass | AR-007 resolved |
+| ARCH-REV-004 | Round 4 / SR-008 (Solution Designer's walkthrough: G-1, G-2) | SR-008 | Pass | Pass | AR-008 new (non-blocking) |
 
 ## Revision Entries
 
@@ -55,3 +57,45 @@ None.
 - Material classification changes: None (`Large`/`High`).
 - Recommended recipient: Solution Designer.
 - Remaining risks or uncertainty: two-node behavior until the two-server E2E runs (UNK-001); `workspace` is a filesystem path sent to peers (requested by the founder).
+
+### ARCH-REV-003 — SR-007: CLOSED without `node` too; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/tickets/in-progress/list-running-agents/design-review-report.md`
+- Review round and trigger: round 3. SR-007 at `bd52ef4e15` (Solution Designer's message, 2026-11-18).
+- Triggering role, report path, and finding IDs: Solution Designer; `solution-revision-record.md` § SR-007; AR-007.
+- Relevant solution revision IDs: SR-007.
+- Prior authoritative decision: `Fail` (ARCH-REV-002).
+- Current authoritative decision: `Pass`.
+- What changed in the review result: I redrew the bounded spine of `CrossRunMessageDelivery.route`: the peer-run branch now returns `closedPeerRunRefusal(its nodeId, target) ?? null`. I checked the rest of SR-007 against SR-006: only that point changed (design-spec bounded spine, Ownership Map, row 13, step 6 tests; requirements unchanged apart from the revision ID). The delegator's own reopen still goes by the router's own-root step (link path), before `route`, so it is unaffected.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-007 | Open (Low) | Resolved | SR-007 | `design-spec.md` § Bounded Local Spines (peer-run branch calls `closedPeerRunRefusal`); Ownership Map "two callers, one rule"; entry-form row 13 "P, or none"; sequence step 6 covers with and without `node` |
+
+- New or remaining finding IDs: None.
+- Material classification changes: None (`Large`/`High`).
+- Recommended recipient: implementation engineer (primary); Solution Designer (informational).
+- Remaining risks or uncertainty: see the report's Residual Risks. The main ones: two-node behavior until the two-server E2E runs (UNK-001), and `workspace` paths sent to peers (the founder asked for them).
+
+### ARCH-REV-004 — SR-008 delta: unrelated messages stay out of run views; the receiver's active root
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/tickets/in-progress/list-running-agents/design-review-report.md`
+- Review round and trigger: round 4. SR-008 at `111ebbc096`: the Solution Designer's per-use-case walkthrough (G-1, G-2), after ARCH-REV-003's Pass, with implementation already under way.
+- Triggering role, report path, and finding IDs: Solution Designer; `solution-revision-record.md` § SR-008; G-1, G-2 (its own).
+- Relevant solution revision IDs: SR-008.
+- Prior authoritative decision: `Pass` (ARCH-REV-003).
+- Current authoritative decision: `Pass`.
+- What changed in the review result: I checked G-1 at HEAD. The live feed would publish an unrelated message to both views, while the Team-tab read drops it. The fix (`publishToViews` on `CrossRunAcceptInput`, false for unrelated) reaches the engine through all three roots' spread, unchanged, and DEC-014/REQ-011 state it. G-2's target is right, but its citation names `resolveActive` as existing code, while at HEAD it is uncommitted implementation work (AR-008, non-blocking). I spot-checked four more walkthrough rows; they hold. The report gained § SR-008 Delta Review.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001, AR-003 … AR-007 | Resolved | Resolved (unchanged) | SR-006, SR-007 | SR-008 changes none of their sections except DS-003's receiver lookup (G-2), which does not touch the closed-Task paths |
+
+- New or remaining finding IDs: AR-008 (Design Impact, Low, non-blocking): the `resolveActive` citation and the missing `collaboration-root-resolver.ts` in the file mapping.
+- Material classification changes: None (`Large`/`High`).
+- Recommended recipient: implementation engineer (primary, the SR-008 delta); Solution Designer (informational, with AR-008).
+- Remaining risks or uncertainty: see the report's Residual Risks; the G-1 test is the new item.

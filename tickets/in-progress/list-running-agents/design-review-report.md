@@ -2,19 +2,19 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `tickets/in-progress/list-running-agents/requirements-doc.md` (Approved, SR-006)
+- Upstream Requirements Doc: `tickets/in-progress/list-running-agents/requirements-doc.md` (Approved, SR-006 basis with DEC-014 added at SR-008; status SR-008)
 - Upstream Investigation Notes: `tickets/in-progress/list-running-agents/investigation-notes.md` (SR-006)
-- Upstream Solution Revision Record: `tickets/in-progress/list-running-agents/solution-revision-record.md` (SR-001 … SR-006)
-- Reviewed Design Spec: `tickets/in-progress/list-running-agents/design-spec.md` (Ready, SR-006)
+- Upstream Solution Revision Record: `tickets/in-progress/list-running-agents/solution-revision-record.md` (SR-001 … SR-008)
+- Reviewed Design Spec: `tickets/in-progress/list-running-agents/design-spec.md` (Ready, SR-008)
 - Supplemental Task Artifacts Reviewed: None (no supplements); `handoff-architecture-review.md`, `follow-ups.md` (empty)
-- Relevant Solution Revision IDs: SR-001 … SR-006
+- Relevant Solution Revision IDs: SR-001 … SR-008
 - Architecture Review Revision Record: `tickets/in-progress/list-running-agents/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: 2
-- Trigger: SR-006 (commit `159298e8a4`), which revises the design for ARCH-REV-001 and adds the founder's entry fields (DEC-013).
-- Prior Review Round Reviewed: 1 (ARCH-REV-001, `Fail`, on SR-005)
-- Latest Authoritative Round: 2
-- Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents`, branch `codex/list-running-agents` at `159298e8a4` (base `origin/personal` `bd2053ee51`; only ticket documents changed since the base). Round 2 also checked the workspace sources: Agent `run_metadata.json` `workspaceRootPath` (required, `agent-run-metadata-types.ts:9`); Team member `workspaceRootPath` (optional, `team-run-config.ts:22,37`). I opened the cited lines in `global-agent-run-message-router.ts`, `cross-run-message-delivery.ts`, `remote-message-send.ts`, `remote-endpoint.ts`, `remote-message-receiver.ts`, `root-communication-engine.ts:150-230`, `standalone-agent-run-root.ts:131,153-156,294-301`, `root-team-run.ts:128,424-431`, `agent-org-run.ts:107`, `active-collaboration-root-directory.ts:101-137`, `delegation-index.ts:371-422`, `closed-task-fence.ts`, `paired-agent-access.ts`, `standalone-paired-agent-access.ts:95-100`, `collaboration-composition.ts:190-265`, and the sources of `run-status-service.ts`.
+- Current Architecture Review Revision ID: `ARCH-REV-004`
+- Current Review Round: 4
+- Trigger: SR-008 (commit `111ebbc096`): the Solution Designer's own walkthrough of each use case along its spine (§ Design Validation Walkthrough), with fixes G-1 (run views, DEC-014) and G-2 (the receiver's active root). Round 3 reviewed SR-007 (`bd52ef4e15`), which fixed ARCH-REV-002's AR-007. Round 2 reviewed SR-006 (`159298e8a4`): the fixes for ARCH-REV-001 and the founder's entry fields (DEC-013).
+- Prior Review Round Reviewed: 3 (ARCH-REV-003, `Pass`, on SR-007); round 2 (ARCH-REV-002, `Fail`, on SR-006); round 1 (ARCH-REV-001, `Fail`, on SR-005)
+- Latest Authoritative Round: 4
+- Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents`, branch `codex/list-running-agents` at `111ebbc096` (base `origin/personal` `bd2053ee51`; only ticket documents changed since the base). Round 2 also checked the workspace sources: Agent `run_metadata.json` `workspaceRootPath` (required, `agent-run-metadata-types.ts:9`); Team member `workspaceRootPath` (optional, `team-run-config.ts:22,37`). I opened the cited lines in `global-agent-run-message-router.ts`, `cross-run-message-delivery.ts`, `remote-message-send.ts`, `remote-endpoint.ts`, `remote-message-receiver.ts`, `root-communication-engine.ts:150-230`, `standalone-agent-run-root.ts:131,153-156,294-301`, `root-team-run.ts:128,424-431`, `agent-org-run.ts:107`, `active-collaboration-root-directory.ts:101-137`, `delegation-index.ts:371-422`, `closed-task-fence.ts`, `paired-agent-access.ts`, `standalone-paired-agent-access.ts:95-100`, `collaboration-composition.ts:190-265`, and the sources of `run-status-service.ts`.
 
 ## Routing Classification Review
 
@@ -26,7 +26,7 @@
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Round 2: AR-001, AR-003, AR-004, AR-005 and AR-006 are resolved; the table in the revision record (ARCH-REV-002) gives the evidence for each. One new inconsistency remains: AR-007. The rest of this section records the round-1 basis, and it still holds except where noted.
+- Round 4: SR-008's G-1 and G-2 are checked against HEAD (ARCH-REV-004). G-1 holds and its fix is sound. G-2's target is right, but it cites as existing code a method that is uncommitted implementation work (AR-008, non-blocking). Round 3: AR-007 is resolved (ARCH-REV-003). Round 2: AR-001, AR-003, AR-004, AR-005 and AR-006 are resolved (ARCH-REV-002). No finding is open. The rest of this section records the round-1 basis, and it still holds except where noted.
 - Overall Basis Status: `Confirmed` (round 2). AR-005 is settled in REQ-011/DEC-011; AR-003's texts are corrected.
 - Approved requirements / intended behavior understood: "the run ID is the address": any agent messages any running agent by run ID, here or with `node` on a paired node (DEC-001/002/007). A team is messaged through its coordinator's run ID as today; the `TARGET_IS_TEAM_RUN` refusal stays, also from a peer (DEC-012, SR-004). `list_running_agents` lists only the live Agent and Team runs a person started; Team entries carry `coordinator_agent_run_id`; Org runs are not listed, and their agents stay reachable by run ID (DEC-004, SR-005). Wake, reopen and the closed-Task rule stay (DEC-003, DEC-011). `delegate_task` is unchanged.
 - Relevant existing behavior and evidence confirmed: PRB-002's refusal comes from `CrossRunMessageDelivery.admit` (`cross-run-message-delivery.ts:163`) or R-9 (`global-agent-run-message-router.ts:130`). The team guidance is `:92-102`. Across nodes: the outbound pair refusal (`remote-message-send.ts:35`) and the inbound `not_linked` refusal (`remote-message-receiver.ts:73`).
@@ -45,7 +45,7 @@
 | BEH-002 | Contract | Pass | Pass | Pass | Confirmed | — |
 | BEH-003 | Contract | Pass | Pass | Pass | Confirmed | — |
 | BEH-004 | Contract | Pass | Pass | Pass | Confirmed | AR-001 resolved (DS-004, row 13) |
-| BEH-005 | Contract | Pass | Pass | Fail | Needs Correction | AR-007 (a fenced peer run messaged without `node` from a root that does not link it) |
+| BEH-005 | Contract | Pass | Pass | Pass | Confirmed | AR-007 resolved (round 3: `route`'s peer-run branch calls `closedPeerRunRefusal`) |
 | BEH-006 | Contract | Pass | Pass | Pass | Confirmed | AR-006 resolved |
 | BEH-007 | Contract | Pass | Pass | Pass | Confirmed | — |
 | BEH-008 | Contract | Pass | Pass | Pass | Confirmed | — |
@@ -73,7 +73,7 @@ None.
 | DS-004 | Message with `node` | Pass | Pass | Pass | Pass | Pass | Pass | Pass (round 2: `closedPeerRunRefusal` comes before the sender's root; `teamCoordinatorOf` comes after `rootOf` returns `null`) |
 | DS-005 | Answer | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | DS-006 | Linked run, unpaired sender | Pass | Pass | N/A | Pass | Pass | Pass | Pass (the closed check holds through the same root's links, `standalone-agent-run-root.ts:131,294-301`) |
-| Bounded: `CrossRunMessageDelivery.route` | Local | Pass | Pass | N/A | Pass | Fail | Pass | Fail (AR-007: "peer run? null" returns before any Task admission, so a fenced peer run named without `node` gets "not running", not CLOSED) |
+| Bounded: `CrossRunMessageDelivery.route` | Local | Pass | Pass | N/A | Pass | Pass | Pass | Pass (round 3: peer run → `closedPeerRunRefusal(its nodeId, target) ?? null`) |
 
 ## Boundary Encapsulation Verdict
 
@@ -81,7 +81,7 @@ None.
 | --- | --- | --- | --- | --- | --- |
 | `RunningAgents` | Pass | Pass | Pass | Pass | Callers never combine directory and statuses themselves |
 | Root `deliverToPeerRun` / `acceptPeerRunMessage` | Pass | Pass | Pass | Pass | The router and the receiver never touch an engine |
-| `CrossRunMessageDelivery` (Task admission) | Pass | Pass | Pass | Pass | Round 2: `closedPeerRunRefusal` is the one owner of the rule on the `node` path. AR-007 asks that the same owner also answer on its own route's peer-run branch |
+| `CrossRunMessageDelivery` (Task admission) | Pass | Pass | Pass | Pass | Round 2: `closedPeerRunRefusal` is the one owner of the rule on the `node` path. round 3: the same owner also answers on its own route's peer-run branch (two callers, one rule) |
 | `RemoteRunChannel` / `PeerClient` | Pass | Pass | Pass | Pass | HTTP stays in `remote-collaboration` |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
@@ -126,7 +126,7 @@ Empty indirection check: `Pass`. `RunningAgents` combines two owners for three c
 | Subsystem / Capability Area | Ownership Allocation Is Clear? | Reuse / Extend / Create-New Decision Is Sound? | Supports The Right Spine Owners? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `agent-collaboration/running/` | Pass | Pass | Pass | Pass | Three small files, one concern |
-| `agent-collaboration/communication/` | Pass | Pass | Pass | Pass | AR-001 resolved; AR-007 is a one-step addition in the same owner |
+| `agent-collaboration/communication/` | Pass | Pass | Pass | Pass | AR-001 and AR-007 resolved |
 | `agent-collaboration/execution/remote/` | Pass | Pass | Pass | Pass | — |
 | `agent-communication/` | Pass | Pass | Pass | Pass | Team step unchanged |
 | Root kinds | Pass | Pass | Pass | Pass | — |
@@ -203,7 +203,7 @@ Vocabulary (Principle 15): `Pass`. "Running agent", "started by a person", `unli
 
 | Topic / Area | Example Was Needed? | Example Is Present And Clear? | Bad / Avoided Shape Is Explained When Helpful? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Entry forms (14 rows) | Yes | Fail | N/A | Fail | Rows 13 and 14 added (AR-001, AR-005). Row 13's "or none: the root's link if it has one" leaves out a non-linking root without `node`, the case that REQ-011/AC-008 cover (AR-007) |
+| Entry forms (14 rows) | Yes | Pass | N/A | Pass | Rows 13 and 14 cover AR-001 and AR-005; in round 3, row 13 covers sending with and without `node` (AR-007) |
 | Unlinked endpoint (data, not callback) | Yes | Pass | Pass | Pass | — |
 | List result | Yes | Pass | N/A | Pass | — |
 
@@ -254,7 +254,7 @@ MP-001 and MP-002 are now handled by the design (round 2: DS-004 `closedPeerRunR
   3. The router's team step does not match. `getActiveRun(T)` finds no active run, so the result is `TARGET_AGENT_RUN_NOT_ACTIVE` with the new hint "also pass node".
 - Consequence: X is told the run is not running, while REQ-011 and AC-008 require `TASK_AGENT_RESOURCE_CLOSED`. Nothing is delivered. A test written from AC-008 fails against the design, or the implementation departs from the design.
 - Reachability: `Reachable`.
-- Review consequence: AR-007.
+- Review consequence: AR-007, resolved in round 3 (SR-007).
 
 ### `MP-003` — An agent stops between the running check and the reservation (design § Risks)
 
@@ -266,51 +266,60 @@ MP-001 and MP-002 are now handled by the design (round 2: DS-004 `closedPeerRunR
 | --- | --- | --- | --- |
 | Which senders REQ-011's "fenced remote run" covers | Only the node that owns the Task knows it is closed; B (N-11) and a third node do not | AR-005 | Resolved (SR-006: REQ-011, DEC-011, row 14) |
 
+## SR-008 Delta Review (Round 4)
+
+Checked against committed code at `111ebbc096`, not the worktree. The worktree holds the implementation engineer's uncommitted changes.
+
+| Item | Claim | Evidence at HEAD | Verdict |
+| --- | --- | --- | --- |
+| G-1 live feed | An unrelated message would be published live to both runs' views | `RunMessagesFeed.publish` (`run-messages-feed.ts:26-43`) publishes to `chainOf(sender) ∪ chainOf(receiver)`, and `inViewOf` is true when X is either side. The engine's `acceptFromRun` passes `input.senderIdentity.root` as `publishFrom` (`root-communication-engine.ts:291-293`) | Holds |
+| G-1 stored read | The Team-tab read drops it | `readCollaborationParticipantMessages` keeps `isPublicMessage` (both agents in X's tree, `public-message-scope.ts:10-13`) or a past participant (`forAgentRunIds`, delegated runs) (`collaboration-participant-messages.ts:81-88`) | Holds: live and reload would disagree |
+| G-1 fix | `publishToViews` set by CrossRun (related `true`, unrelated `false`); `acceptFromRun` publishes only when `true` | The three roots spread `CrossRunAcceptInput` into the engine's `RunAcceptInput` (standalone `standalone-root-message-delivery.ts:129-132`, Team `team-run-message-delivery.ts:76-79`, Org `agent-org-run-message-delivery.ts:72-75`), so one field on `CrossRunAcceptInput` reaches the engine with no root change. One rule with remote messages (`acceptFromRemote` publishes nothing, `:226`) | Pass. DEC-014 is the Solution Designer's call within the direction (UI out of scope); REQ-011 states it |
+| G-2 target | The receiver's root comes from a never-restoring active lookup that returns the root (with `acceptFromRun`), not the directory's message boundary | `ActiveRootMessageBoundary` has no `acceptFromRun` (`active-collaboration-root-directory.ts:18-27`). The managers' active getters exist: `StandaloneAgentRunRootManager.getActive` (`:123`), `TeamRunService.getActiveTeamRun`, `AgentOrgRunService.getActive` | Pass |
+| G-2 citation | "`CollaborationRootResolver.resolveActive` (`collaboration-root-resolver.ts:32,82`) returns the root and never restores" | At HEAD the resolver has only `resolveOrRestore`; line 32 is `isNotFound`, and the file has 77 lines. `resolveActive` exists only in the worktree's uncommitted diff (the implementation engineer's) | AR-008 (non-blocking) |
+| Walkthrough rows spot-checked | `contextOfRun` (`project-run-service.ts:67`), `/rest/remote` → PEER (`node-route-permissions.ts:86`), `stepTwo` null with no entries (`collaboration-tree.ts:148-149`), `acceptFromRun` on all three roots | All at the cited lines | Holds |
+
 ## Review Decision
 
-`Fail` (round 2). One Low-severity finding is left (AR-007). The design is otherwise ready for implementation.
+`Pass` (round 4). The upstream behavior basis is confirmed (REQ-011 now includes DEC-014), the SR-008 delta is sound and ready for implementation, and no in-scope machinery or finding depends on an unsupported material premise.
 
 ## Findings
 
-Round 1's findings AR-001, AR-003, AR-004, AR-005 and AR-006 are resolved (see the ARCH-REV-002 table in the revision record). AR-002 was never used.
+No blocking finding. Every earlier finding stays resolved (AR-001, AR-003 … AR-007). AR-002 was never used.
 
-### AR-007 — A fenced peer run messaged without `node` from a root that does not link it: the design answers "not running", but REQ-011 and AC-008 require CLOSED
+### AR-008 — The design cites `CollaborationRootResolver.resolveActive` as existing code; it is new, and the change inventory omits it
 
-- Type: `Design Impact`; severity: Low (nothing is delivered either way, but the approved outcome and its test disagree with the design).
-- Protects: REQ-011 ("every sender on this node gets that refusal, with or without `node`"), AC-008 (alternate outcome), DEC-011.
+- Type: `Design Impact`; severity: Low; blocking: No.
+- Protects: Principle 1 (statements about existing code carry true citations) and Principle 14 (complete change inventory). No behavior changes.
 - Scope status: `Within Approved Scope`. Changes approved behavior: No.
-- Problem:
-  - In the bounded spine of `CrossRunMessageDelivery.route`, the step "peer run? null" returns before any Task admission.
-  - `closedPeerRunRefusal` runs only on the router's `node` path, and row 13 covers "none" only through a root that links the run.
-  - So X (MP-004), replying with the run ID from its header, gets `TARGET_AGENT_RUN_NOT_ACTIVE` "… also pass node". Only after a second call with `node` does it get CLOSED.
-  - REQ-011 and AC-008 promise CLOSED without `node`, so the AC-008 test fails against the design, or the implementer departs from it.
-- Evidence: MP-004; `design-spec.md` § Bounded Local Spines and entry-form row 13; `cross-run-message-delivery.ts:92-94`.
-- Required update, one of:
-  - (a) In `CrossRunMessageDelivery.route`'s peer-run branch, call `closedPeerRunRefusal` (same owner, same rule) and return its refusal when there is one, before returning `null`. Update the bounded spine and row 13 to "with or without `node`", and add the case to the tests in the sequence.
-  - (b) If the "not running, pass node" answer is intended, narrow REQ-011 and AC-008 to "with `node`, and without `node` from the root that links it".
-  - (a) matches the approved text and costs one call.
-- Why proportionate: one call in an existing owner, or one sentence in the requirements.
-- Recipient: Solution Designer.
+- Problem: § Dependency Rules and the walkthrough row "Receiver root without restore" say `resolveActive` exists at `compositions/collaboration-root-resolver.ts:32,82`. At HEAD (and the base `bd2053ee51`) the resolver has only `resolveOrRestore`; line 32 is `isNotFound`. The method and the resolver's new `standaloneRoots.getActive` dependency are in the implementation engineer's uncommitted diff. The Final File Responsibility Mapping does not list `collaboration-root-resolver.ts`, so a code reviewer comparing code with the design finds an unlisted file and a citation that does not hold at the base.
+- Why not blocking: the target shape is right (a never-restoring active lookup next to `resolveOrRestore`, from the managers' existing active getters), and the implementation already builds it. Only the document is wrong.
+- Required update: at its next revision, the Solution Designer adds `src/compositions/collaboration-root-resolver.ts` (Modify: `resolveActive`; `standaloneRoots` gains `getActive`) to the file mapping and rewords the citation as a target. Until then, the implementation handoff lists the file.
+- Recipient: Solution Designer (correction); implementation engineer (list it in the handoff).
 
 ## Classification
 
-`Design Impact` (AR-007). Route: Solution Designer.
+N/A (Pass). AR-008 is a non-blocking `Design Impact`.
 
 ## Recommended Recipient
 
-Solution Designer.
+Implementation engineer (primary; the SR-008 delta). Solution Designer (informational, with AR-008's correction).
 
 ## Residual Risks
 
+These are for implementation and validation; none blocks.
+
+- G-1: a test should cover an unrelated message (no event on either run's view stream; the Team tab hides it; both logs and both conversations hold it) next to a related one (published as today).
 - `workspace` sends a filesystem path of this node to a paired peer. The founder asked for it (DEC-013), and REQ-007's exclusions do not name it. The strict peer reader must accept it (QR-002, AC-004).
-- `RunningAgents.rootOf` must decide "running here" from the root's own statuses (now stated in the Ownership Map and tested in the sequence).
-- Peer `TARGET_IS_TEAM_RUN` text: on a peer the guidance should also tell the agent to keep `node` (REQ-012 wording). This is a text detail for implementation.
+- `RunningAgents.rootOf` must decide "running here" from the root's own statuses. A root that only links the run ID must answer "not running".
+- `closedPeerRunRefusal` has two callers. Keep it one method of one owner.
+- The standalone root's `acceptFromRun` makes the host ready (`whenReady`). The running check comes first; a race in between is not a supported scenario (MP-003).
+- Peer `TARGET_IS_TEAM_RUN` text: on a peer the guidance should also tell the agent to keep `node` (REQ-012).
 - Inbound messages from any agent of a paired node (accepted by the founder); at-most-once delivery across nodes (FU-002 of autobyteus-191).
 - Two-node behavior stays unverified until the two-server E2E runs (UNK-001).
-- Ordering nit: in `investigation-notes.md`, clarification 7 sits before clarification 6.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (ARCH-REV-002)
-- Material-Premise Gate: `Pass`. MP-004 is reachable, with a forward witness; MP-001 and MP-002 are handled; MP-003 is not a supported scenario.
-- Notes: AR-007 is the only open finding, and its fix is a single call or a single sentence. Everything else in SR-006 passes, including the DEC-013 entry fields.
+- Review Decision: `Pass` (ARCH-REV-004)
+- Material-Premise Gate: `Pass`. G-1's live-vs-stored premise is reachable (an unrelated message under the new rule, a person viewing either run's Team tab) and handled. MP-001, MP-002 and MP-004 are handled; MP-003 is not a supported scenario.
+- Notes: `task_size=Large`, `architectural_risk=High`. The package is ready for implementation at SR-008 (`111ebbc096`). AR-008 is a non-blocking document correction.
