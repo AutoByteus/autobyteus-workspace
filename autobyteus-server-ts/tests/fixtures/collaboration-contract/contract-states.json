@@ -22311,7 +22311,7 @@
         "createdAt": "2026-11-01T13:00:00.000Z"
        },
        {
-        "messageId": "x",
+        "messageId": "collabmsg_U9",
         "senderAgentRunId": "research_agent_8f80",
         "receiverAgentRunId": "image_maker_44a1",
         "content": "…",
@@ -22409,7 +22409,7 @@
       "A:memory/agents/research_agent_8f80/ (memory)": "created",
       "A:memory/agents/research_agent_8f80/communication_messages_active.jsonl": [
        {
-        "messageId": "x",
+        "messageId": "collabmsg_U9",
         "senderAgentRunId": "research_agent_8f80",
         "receiverAgentRunId": "image_maker_44a1",
         "content": "…",
@@ -22832,7 +22832,7 @@
         "createdAt": "2026-11-01T13:00:00.000Z"
        },
        {
-        "messageId": "x",
+        "messageId": "collabmsg_U9",
         "senderAgentRunId": "research_agent_8f80",
         "receiverAgentRunId": "image_maker_44a1",
         "content": "…",
@@ -22930,7 +22930,7 @@
       "A:memory/agents/research_agent_8f80/ (memory)": "created",
       "A:memory/agents/research_agent_8f80/communication_messages_active.jsonl": [
        {
-        "messageId": "x",
+        "messageId": "collabmsg_U9",
         "senderAgentRunId": "research_agent_8f80",
         "receiverAgentRunId": "image_maker_44a1",
         "content": "…",
@@ -23311,7 +23311,7 @@
         "createdAt": "2026-11-01T13:00:00.000Z"
        },
        {
-        "messageId": "x",
+        "messageId": "collabmsg_U9",
         "senderAgentRunId": "research_agent_8f80",
         "receiverAgentRunId": "image_maker_44a1",
         "content": "…",
@@ -23418,7 +23418,7 @@
       "A:memory/agents/research_agent_8f80/ (memory)": "created",
       "A:memory/agents/research_agent_8f80/communication_messages_active.jsonl": [
        {
-        "messageId": "x",
+        "messageId": "collabmsg_U9",
         "senderAgentRunId": "research_agent_8f80",
         "receiverAgentRunId": "image_maker_44a1",
         "content": "…",

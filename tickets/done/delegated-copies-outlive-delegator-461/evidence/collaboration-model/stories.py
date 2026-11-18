@@ -238,7 +238,7 @@ def team():
           today="The same.", checked="16 description-only entries."),
      dict(id="U9", title="Delivered: runs of different open Tasks (autobyteus-492, CM-13)", cases="R-7",
           call='`send_message_to(target_agent_run_id: "image_maker_44a1", content: "…")`, by `research_agent_8f80`',
-          op=lambda: w.send_by_run_id("research_agent_8f80", "image_maker_44a1", "…", "x", "2026-11-01T14:50:00.000Z"),
+          op=lambda: w.send_by_run_id("research_agent_8f80", "image_maker_44a1", "…", "collabmsg_U9", "2026-11-01T14:50:00.000Z"),
           found="The research agent works on its Task with no Project (U8), and the image agent on T3 (U3). Both Tasks are open, U assigned both, and neither run assigned the other's Task. Since autobyteus-492 the run ID is the address: the image agent runs, so it is delivered and logged in both runs; nothing is woken.",
           today="The same.", checked="—"),
      dict(id="U10", title="Refused: a team run's ID, answered with its coordinator's", cases="R-12",
