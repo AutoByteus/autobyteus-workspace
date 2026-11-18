@@ -1,0 +1,668 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/retired-memory-items-and-stale-built-ins/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/retired-memory-items-and-stale-built-ins/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:39755) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts[2m > [22m[2mtask agent own run: the built server upgrades a faithful released install at startup[2m > [22m[2mTAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page attributes them, a second start changes nothing
+[22m[39mC27-02: first start after the upgrade 4063 ms (a fresh install's start 5913 ms); 461 and its follow-ups: [{"migrationId":"20261111_delegated_runs_own_runs_v1","status":"SUCCEEDED","attempts":1,"summary":"Scanned 30; migrated 30; skipped 0; failed 0."},{"migrationId":"20261114_preserved_items_after_task_agent_own_run_v1","status":"SUCCEEDED","attempts":1,"summary":"Scanned 0; migrated 0; skipped 0; failed 0."},{"migrationId":"20261114_preserved_items_after_own_file_complete_v1","status":"SUCCEEDED","attempts":1,"summary":"Scanned 0; migrated 0; skipped 0; failed 0."},{"migrationId":"20261114_preserved_items_after_append_only_logs_v1","status":"SUCCEEDED","attempts":1,"summary":"Scanned 0; migrated 0; skipped 0; failed 0."},{"migrationId":"20261114_preserved_items_after_team_run_execution_tree_v1","status":"SUCCEEDED","attempts":1,"summary":"Scanned 0; migrated 0; skipped 0; failed 0."},{"migrationId":"20261114_preserved_items_after_team_run_execution_tree_v2","status":"SUCCEEDED","attempts":1,"summary":"Scanned 0; migrated 0; skipped 0; failed 0."},{"migrationId":"20261114_preserved_items_after_org_flat_team_families_v1","status":"SUCCEEDED","attempts":1,"summary":"Scanned 0; migrated 0; skipped 0; failed 0."},{"migrationId":"20261114_preserved_items_after_collaborators_to_delegated_runs_v1","status":"SUCCEEDED","attempts":1,"summary":"Scanned 0; migrated 0; skipped 0; failed 0."},{"migrationId":"20261114_preserved_items_after_team_run_history_index_v2","status":"SUCCEEDED","attempts":1,"summary":"Scanned 0; migrated 0; skipped 0; failed 0."},{"migrationId":"20261114_preserved_items_after_remove_skill_improvement_data","status":"SUCCEEDED","attempts":1,"summary":"Scanned 0; migrated 0; skipped 0; failed 0."}]
+
+[90mstdout[2m | tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts[2m > [22m[2mtask agent own run: the built server upgrades a faithful released install at startup[2m > [22m[2mTAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page attributes them, a second start changes nothing
+[22m[39mTAU-1 hub context-file route for a delegated run: 200
+
+ [32m✓[39m tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts[2m > [22mtask agent own run: the built server upgrades a faithful released install at startup[2m > [22mTAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page attributes them, a second start changes nothing[33m 13004[2mms[22m[39m
+[90mstdout[2m | tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts[2m > [22m[2mtask agent own run: the built server upgrades a faithful released install at startup[2m > [22m[2mTAU-2 a run that cannot be moved leaves the app working; a copy preserved by the unfinished step is not editable yet and its follow-up waits (SR-077, SR-078); the next start converts it and the edit is saved; a later start changes nothing (needs POSIX mode bits that bind: not root, not Windows)
+[22m[39mTAU-2 first start: FAILED (5 task agent item(s) are not migrated yet; the next start continues.)
+
+ [32m✓[39m tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts[2m > [22mtask agent own run: the built server upgrades a faithful released install at startup[2m > [22mTAU-2 a run that cannot be moved leaves the app working; a copy preserved by the unfinished step is not editable yet and its follow-up waits (SR-077, SR-078); the next start converts it and the edit is saved; a later start changes nothing (needs POSIX mode bits that bind: not root, not Windows)[33m 27108[2mms[22m[39m
+ [31m×[39m tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts[2m > [22mtask agent own run: the built server upgrades a faithful released install at startup[2m > [22mTAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every file and are listed as runs of their own (461 REQ-007)[33m 24398[2mms[22m[39m
+[31m   → ENOENT: no such file or directory, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-agent-own-run-e2e-xnUglt/memory/episodic/index.md.3353af6b0373.tmp'[39m
+ [32m✓[39m tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts[2m > [22mRemoval of the Skill Improvement feature's data on startup (built Studio)[2m > [22mSID-1 starts on a fresh data folder: nothing to remove, and the improver is not bootstrapped[33m 11595[2mms[22m[39m
+ [32m✓[39m tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts[2m > [22mRemoval of the Skill Improvement feature's data on startup (built Studio)[2m > [22mSID-2 deletes exactly the feature's data once, keeps everything else byte-identical, and other runs list and open[33m 34790[2mms[22m[39m
+ [32m✓[39m tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts[2m > [22mRemoval of the Skill Improvement feature's data on startup (built Studio)[2m > [22mSID-3 a helper run that cannot be deleted leaves startup working; the next start finishes (needs POSIX mode bits that bind: not root, not Windows)[33m 20508[2mms[22m[39m
+ [32m✓[39m tests/e2e/app-data-migrations/remove-retired-built-in-agents-startup.e2e.test.ts[2m > [22mRemoval of the retired built-in agents on startup (built Studio)[2m > [22mRRB-1 deletes exactly the two installed copies once; other agents and every run, old item files included, stay byte-identical[33m 5465[2mms[22m[39m
+ [31m×[39m tests/e2e/app-data-migrations/remove-retired-built-in-agents-startup.e2e.test.ts[2m > [22mRemoval of the retired built-in agents on startup (built Studio)[2m > [22mRRB-3 after the upgrade start, an agent's list_available_agents answer names neither retired agent[33m 9863[2mms[22m[39m
+[31m   → AgyDiscoveryError: Antigravity model discovery timed out; check the CLI and retry.: expected false to be true // Object.is equality[39m
+ [32m✓[39m tests/e2e/app-data-migrations/remove-retired-built-in-agents-startup.e2e.test.ts[2m > [22mRemoval of the retired built-in agents on startup (built Studio)[2m > [22mRRB-2 starts on a data folder that never had them: both are skipped[33m 2288[2mms[22m[39m
+(node:44230) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/retired-memory-items-and-stale-built-ins/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/retired-memory-items-and-stale-built-ins/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/retired-memory-items-and-stale-built-ins/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/retired-memory-items-and-stale-built-ins/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mSuccessfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mRegistered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary
+[22m[39mAdded new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mSM-01 (AC-007): a user's own agent is switched on and off in its agent-config.json, other fields kept, and reads create no folder
+[22m[39mAgent Definition created successfully with ID: sm-scout-d55b53
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mSM-01 (AC-007): a user's own agent is switched on and off in its agent-config.json, other fields kept, and reads create no folder
+[22m[39mAgent Definition with ID sm-scout-d55b53 updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mSM-01 (AC-007): a user's own agent is switched on and off in its agent-config.json, other fields kept, and reads create no folder
+[22m[39mAgent Definition with ID sm-scout-d55b53 updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mSM-01 (AC-007): a user's own agent is switched on and off in its agent-config.json, other fields kept, and reads create no folder
+[22m[39mAgent Definition with ID sm-scout-d55b53 updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mSM-01 (AC-007): a user's own agent is switched on and off in its agent-config.json, other fields kept, and reads create no folder
+[22m[39mAgent Definition with ID sm-scout-d55b53 updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mSM-02 (AC-007, DEC-012): a package agent's switch is a personal setting with a reset; a package that declares it reads on
+[22m[39mAgent Definition with ID sm-packaged-d55b53 updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mSM-02 (AC-007, DEC-012): a package agent's switch is a personal setting with a reset; a package that declares it reads on
+[22m[39mAgent Definition with ID sm-declared-d55b53 updated successfully.
+
+ [32m✓[39m tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22mAgent semantic memory at the real server boundary[2m > [22mSM-01 (AC-007): a user's own agent is switched on and off in its agent-config.json, other fields kept, and reads create no folder[32m 138[2mms[22m[39m
+ [32m✓[39m tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22mAgent semantic memory at the real server boundary[2m > [22mSM-02 (AC-007, DEC-012): a package agent's switch is a personal setting with a reset; a package that declares it reads on[32m 65[2mms[22m[39m
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)
+[22m[39mAgent Definition created successfully with ID: sm-plain-d55b53
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)
+[22m[39mAgent Definition created successfully with ID: sm-manager-d55b53
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-03 (AC-005): a run of an agent without the setting has no section and creates no semantic folder
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-03 (AC-005): a run of an agent without the setting has no section and creates no semantic folder
+[22m[39mCreated and registered workspace ID: agent_ws_b66fa4b972dc0607be9239e5078d33249dcab5f1ba3690260285282c62a5af32
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-03 (AC-005): a run of an agent without the setting has no section and creates no semantic folder
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-03 (AC-005): a run of an agent without the setting has no section and creates no semantic folder
+[22m[39mReusing registered workspace ID: agent_ws_b66fa4b972dc0607be9239e5078d33249dcab5f1ba3690260285282c62a5af32
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-03 (AC-005): a run of an agent without the setting has no section and creates no semantic folder
+[22m[39mAGY compaction detection off for run sm_plain_d55b53_ddc9117e87df42b2811a9f7f6ab7f05a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-03 (AC-005): a run of an agent without the setting has no section and creates no semantic folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_plain_d55b53_ddc9117e87df42b2811a9f7f6ab7f05a/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-03 (AC-005): a run of an agent without the setting has no section and creates no semantic folder
+[22m[39mAgent websocket attached for run sm_plain_d55b53_ddc9117e87df42b2811a9f7f6ab7f05a
+Created agent session 4a659eef-a3dd-4df9-9969-6d53fb378d5c for run sm_plain_d55b53_ddc9117e87df42b2811a9f7f6ab7f05a
+Agent WebSocket connected: session=4a659eef-a3dd-4df9-9969-6d53fb378d5c, run=sm_plain_d55b53_ddc9117e87df42b2811a9f7f6ab7f05a
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-03 (AC-005): a run of an agent without the setting has no section and creates no semantic folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_plain_d55b53_ddc9117e87df42b2811a9f7f6ab7f05a/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-03 (AC-005): a run of an agent without the setting has no section and creates no semantic folder
+[22m[39mClosed agent session 4a659eef-a3dd-4df9-9969-6d53fb378d5c
+Agent WebSocket disconnected: 4a659eef-a3dd-4df9-9969-6d53fb378d5c
+
+ [32m✓[39m tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22mAgent semantic memory at the real server boundary[2m > [22mrun start paths (scripted AGY CLI)[2m > [22mSM-03 (AC-005): a run of an agent without the setting has no section and creates no semantic folder[33m 384[2mms[22m[39m
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-04 (AC-001): a run under Project A is told its folder after the Project section; the folder exists outside the workspace and the package
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-04 (AC-001): a run under Project A is told its folder after the Project section; the folder exists outside the workspace and the package
+[22m[39mReusing registered workspace ID: agent_ws_b66fa4b972dc0607be9239e5078d33249dcab5f1ba3690260285282c62a5af32
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-04 (AC-001): a run under Project A is told its folder after the Project section; the folder exists outside the workspace and the package
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-04 (AC-001): a run under Project A is told its folder after the Project section; the folder exists outside the workspace and the package
+[22m[39mReusing registered workspace ID: agent_ws_b66fa4b972dc0607be9239e5078d33249dcab5f1ba3690260285282c62a5af32
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-04 (AC-001): a run under Project A is told its folder after the Project section; the folder exists outside the workspace and the package
+[22m[39mAGY compaction detection off for run sm_scout_d55b53_2e85927187504c34946156289dd0a827: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-04 (AC-001): a run under Project A is told its folder after the Project section; the folder exists outside the workspace and the package
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_scout_d55b53_2e85927187504c34946156289dd0a827/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-04 (AC-001): a run under Project A is told its folder after the Project section; the folder exists outside the workspace and the package
+[22m[39mAgent websocket attached for run sm_scout_d55b53_2e85927187504c34946156289dd0a827
+Created agent session cb1dbee0-170e-448b-8a93-a0442854cc95 for run sm_scout_d55b53_2e85927187504c34946156289dd0a827
+Agent WebSocket connected: session=cb1dbee0-170e-448b-8a93-a0442854cc95, run=sm_scout_d55b53_2e85927187504c34946156289dd0a827
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-04 (AC-001): a run under Project A is told its folder after the Project section; the folder exists outside the workspace and the package
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_scout_d55b53_2e85927187504c34946156289dd0a827/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-04 (AC-001): a run under Project A is told its folder after the Project section; the folder exists outside the workspace and the package
+[22m[39mClosed agent session cb1dbee0-170e-448b-8a93-a0442854cc95
+Agent WebSocket disconnected: cb1dbee0-170e-448b-8a93-a0442854cc95
+
+ [32m✓[39m tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22mAgent semantic memory at the real server boundary[2m > [22mrun start paths (scripted AGY CLI)[2m > [22mSM-04 (AC-001): a run under Project A is told its folder after the Project section; the folder exists outside the workspace and the package[33m 319[2mms[22m[39m
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mReusing registered workspace ID: agent_ws_b66fa4b972dc0607be9239e5078d33249dcab5f1ba3690260285282c62a5af32
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mReusing registered workspace ID: agent_ws_b66fa4b972dc0607be9239e5078d33249dcab5f1ba3690260285282c62a5af32
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mAGY compaction detection off for run sm_scout_d55b53_0704bd89894f4f60a4606b035642e6dd: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_scout_d55b53_0704bd89894f4f60a4606b035642e6dd/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mAgent websocket attached for run sm_scout_d55b53_0704bd89894f4f60a4606b035642e6dd
+Created agent session 82739653-b066-4e40-b747-d5542260e539 for run sm_scout_d55b53_0704bd89894f4f60a4606b035642e6dd
+Agent WebSocket connected: session=82739653-b066-4e40-b747-d5542260e539, run=sm_scout_d55b53_0704bd89894f4f60a4606b035642e6dd
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_scout_d55b53_0704bd89894f4f60a4606b035642e6dd/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mClosed agent session 82739653-b066-4e40-b747-d5542260e539
+Agent WebSocket disconnected: 82739653-b066-4e40-b747-d5542260e539
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mAgent Team Definition created successfully with ID: sm-team-d55b53
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mReusing registered workspace ID: agent_ws_b66fa4b972dc0607be9239e5078d33249dcab5f1ba3690260285282c62a5af32
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mCreated agent session ee9aa835-aba0-4038-b649-a5669ca39dfc for run sm_team_d55b53_3b3c5b5e5d1640ce92f79ff8346e516f
+Agent team websocket attached for team run sm_team_d55b53_3b3c5b5e5d1640ce92f79ff8346e516f
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mAgent Team WebSocket connected: session=ee9aa835-aba0-4038-b649-a5669ca39dfc, run=sm_team_d55b53_3b3c5b5e5d1640ce92f79ff8346e516f
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mReusing registered workspace ID: agent_ws_b66fa4b972dc0607be9239e5078d33249dcab5f1ba3690260285282c62a5af32
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mAGY compaction detection off for run sm_scout_d55b53_2cc3f78859b04cbb92e2bdfb27977493: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agent_teams/sm_team_d55b53_3b3c5b5e5d1640ce92f79ff8346e516f/sm_scout_d55b53_2cc3f78859b04cbb92e2bdfb27977493/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mReusing registered workspace ID: agent_ws_b66fa4b972dc0607be9239e5078d33249dcab5f1ba3690260285282c62a5af32
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mAGY compaction detection off for run sm_manager_d55b53_a55d2093894e4cefa9f9cdb11c43d5df: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mClosed agent session ee9aa835-aba0-4038-b649-a5669ca39dfc
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agent_teams/sm_team_d55b53_3b3c5b5e5d1640ce92f79ff8346e516f/sm_manager_d55b53_a55d2093894e4cefa9f9cdb11c43d5df/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mReusing registered workspace ID: agent_ws_b66fa4b972dc0607be9239e5078d33249dcab5f1ba3690260285282c62a5af32
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mReusing registered workspace ID: agent_ws_b66fa4b972dc0607be9239e5078d33249dcab5f1ba3690260285282c62a5af32
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mAGY compaction detection off for run sm_manager_d55b53_08a9e1101014434285078be3f45b1c9c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_manager_d55b53_08a9e1101014434285078be3f45b1c9c/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mAgent websocket attached for run sm_manager_d55b53_08a9e1101014434285078be3f45b1c9c
+Created agent session bd89d6d2-041b-44cb-9708-1d37248550d7 for run sm_manager_d55b53_08a9e1101014434285078be3f45b1c9c
+Agent WebSocket connected: session=bd89d6d2-041b-44cb-9708-1d37248550d7, run=sm_manager_d55b53_08a9e1101014434285078be3f45b1c9c
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_manager_d55b53_08a9e1101014434285078be3f45b1c9c/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_manager_d55b53_08a9e1101014434285078be3f45b1c9c/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_manager_d55b53_08a9e1101014434285078be3f45b1c9c/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_manager_d55b53_08a9e1101014434285078be3f45b1c9c/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_manager_d55b53_08a9e1101014434285078be3f45b1c9c/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_manager_d55b53_08a9e1101014434285078be3f45b1c9c/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_manager_d55b53_08a9e1101014434285078be3f45b1c9c/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mReusing registered workspace ID: agent_ws_b66fa4b972dc0607be9239e5078d33249dcab5f1ba3690260285282c62a5af32
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_manager_d55b53_08a9e1101014434285078be3f45b1c9c/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_manager_d55b53_08a9e1101014434285078be3f45b1c9c/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mReusing registered workspace ID: agent_ws_b66fa4b972dc0607be9239e5078d33249dcab5f1ba3690260285282c62a5af32
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_manager_d55b53_08a9e1101014434285078be3f45b1c9c/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mAGY compaction detection off for run sm_scout_d55b53_2ac79c8013aa4a998b4d9938767fda37: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_manager_d55b53_08a9e1101014434285078be3f45b1c9c/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_scout_d55b53_2ac79c8013aa4a998b4d9938767fda37/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_manager_d55b53_08a9e1101014434285078be3f45b1c9c/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder
+[22m[39mClosed agent session bd89d6d2-041b-44cb-9708-1d37248550d7
+Agent WebSocket disconnected: bd89d6d2-041b-44cb-9708-1d37248550d7
+
+ [32m✓[39m tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22mAgent semantic memory at the real server boundary[2m > [22mrun start paths (scripted AGY CLI)[2m > [22mSM-05 (AC-003, AC-004): a run under Project B, the agent as a shared team member and as a delegated copy are told the same folder[33m 1732[2mms[22m[39m
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-06 (AC-006): a team-local agent with the same local name, enabled in its package file, has its own folder
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-06 (AC-006): a team-local agent with the same local name, enabled in its package file, has its own folder
+[22m[39mReusing registered workspace ID: agent_ws_b66fa4b972dc0607be9239e5078d33249dcab5f1ba3690260285282c62a5af32
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-06 (AC-006): a team-local agent with the same local name, enabled in its package file, has its own folder
+[22m[39mCreated agent session 3864ab39-1db0-43aa-9705-9c688d0349f7 for run sm_pkg_team_d55b53_39b18d3ef51b40ce95ff05ebc844f3b2
+Agent team websocket attached for team run sm_pkg_team_d55b53_39b18d3ef51b40ce95ff05ebc844f3b2
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-06 (AC-006): a team-local agent with the same local name, enabled in its package file, has its own folder
+[22m[39mAgent Team WebSocket connected: session=3864ab39-1db0-43aa-9705-9c688d0349f7, run=sm_pkg_team_d55b53_39b18d3ef51b40ce95ff05ebc844f3b2
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-06 (AC-006): a team-local agent with the same local name, enabled in its package file, has its own folder
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-06 (AC-006): a team-local agent with the same local name, enabled in its package file, has its own folder
+[22m[39mReusing registered workspace ID: agent_ws_b66fa4b972dc0607be9239e5078d33249dcab5f1ba3690260285282c62a5af32
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-06 (AC-006): a team-local agent with the same local name, enabled in its package file, has its own folder
+[22m[39mAGY compaction detection off for run sm_scout_d55b53_a3e616521cf44efdb6c2280648c4d48f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-06 (AC-006): a team-local agent with the same local name, enabled in its package file, has its own folder
+[22m[39mClosed agent session 3864ab39-1db0-43aa-9705-9c688d0349f7
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-06 (AC-006): a team-local agent with the same local name, enabled in its package file, has its own folder
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agent_teams/sm_pkg_team_d55b53_39b18d3ef51b40ce95ff05ebc844f3b2/sm_scout_d55b53_a3e616521cf44efdb6c2280648c4d48f/raw_traces_manifest.json
+
+ [32m✓[39m tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22mAgent semantic memory at the real server boundary[2m > [22mrun start paths (scripted AGY CLI)[2m > [22mSM-06 (AC-006): a team-local agent with the same local name, enabled in its package file, has its own folder[33m 317[2mms[22m[39m
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mAgent Definition with ID sm-scout-d55b53 updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mReusing registered workspace ID: agent_ws_b66fa4b972dc0607be9239e5078d33249dcab5f1ba3690260285282c62a5af32
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mReusing registered workspace ID: agent_ws_b66fa4b972dc0607be9239e5078d33249dcab5f1ba3690260285282c62a5af32
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mAGY compaction detection off for run sm_scout_d55b53_7538ffa75dfa410b816bc9ae8b5d0a31: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_scout_d55b53_7538ffa75dfa410b816bc9ae8b5d0a31/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mAgent websocket attached for run sm_scout_d55b53_7538ffa75dfa410b816bc9ae8b5d0a31
+Created agent session 078a4cc4-1e4d-47ac-be81-23f321d2d61d for run sm_scout_d55b53_7538ffa75dfa410b816bc9ae8b5d0a31
+Agent WebSocket connected: session=078a4cc4-1e4d-47ac-be81-23f321d2d61d, run=sm_scout_d55b53_7538ffa75dfa410b816bc9ae8b5d0a31
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_scout_d55b53_7538ffa75dfa410b816bc9ae8b5d0a31/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mClosed agent session 078a4cc4-1e4d-47ac-be81-23f321d2d61d
+Agent WebSocket disconnected: 078a4cc4-1e4d-47ac-be81-23f321d2d61d
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mAgent Definition with ID sm-scout-d55b53 updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mReusing registered workspace ID: agent_ws_b66fa4b972dc0607be9239e5078d33249dcab5f1ba3690260285282c62a5af32
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mReusing registered workspace ID: agent_ws_b66fa4b972dc0607be9239e5078d33249dcab5f1ba3690260285282c62a5af32
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mAGY compaction detection off for run sm_scout_d55b53_151f23aa59de4d3a968bb0dc8eead283: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_scout_d55b53_151f23aa59de4d3a968bb0dc8eead283/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mAgent websocket attached for run sm_scout_d55b53_151f23aa59de4d3a968bb0dc8eead283
+Created agent session 9adf7e92-b7e4-4b84-bc83-e16930aeaa24 for run sm_scout_d55b53_151f23aa59de4d3a968bb0dc8eead283
+Agent WebSocket connected: session=9adf7e92-b7e4-4b84-bc83-e16930aeaa24, run=sm_scout_d55b53_151f23aa59de4d3a968bb0dc8eead283
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sm-e2e-Kkxcqu/memory/agents/sm_scout_d55b53_151f23aa59de4d3a968bb0dc8eead283/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again
+[22m[39mClosed agent session 9adf7e92-b7e4-4b84-bc83-e16930aeaa24
+Agent WebSocket disconnected: 9adf7e92-b7e4-4b84-bc83-e16930aeaa24
+
+ [32m✓[39m tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22mAgent semantic memory at the real server boundary[2m > [22mrun start paths (scripted AGY CLI)[2m > [22mSM-07 (AC-008): off → a new run has no section and the folder and document stay; on → the same folder again[33m 743[2mms[22m[39m
+[90mstdout[2m | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22m[2mAgent semantic memory at the real server boundary[2m > [22m[2mrun start paths (scripted AGY CLI)[2m > [22m[2mSM-08 (REQ-007): deleting the agent leaves its semantic memory folder
+[22m[39mAgent Definition with ID sm-scout-d55b53 deleted successfully.
+
+ [32m✓[39m tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22mAgent semantic memory at the real server boundary[2m > [22mrun start paths (scripted AGY CLI)[2m > [22mSM-10 (AC-001): the Memory page, memory search and memory sync do not list memory/semantic[32m 24[2mms[22m[39m
+ [32m✓[39m tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts[2m > [22mAgent semantic memory at the real server boundary[2m > [22mrun start paths (scripted AGY CLI)[2m > [22mSM-08 (REQ-007): deleting the agent leaves its semantic memory folder[32m 6[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/app-data-migrations/remove-retired-built-in-agents-startup.e2e.test.ts[2m > [22mRemoval of the retired built-in agents on startup (built Studio)[2m > [22mRRB-3 after the upgrade start, an agent's list_available_agents answer names neither retired agent
+[31m[1mAssertionError[22m: AgyDiscoveryError: Antigravity model discovery timed out; check the CLI and retry.: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2m❯[22m tests/e2e/app-data-migrations/remove-retired-built-in-agents-startup.e2e.test.ts:[2m180:46[22m[39m
+    [90m178|[39m       agentDefinitionId: "autobyteus-daily-assistant", workspaceRootPa…
+    [90m179|[39m       autoExecuteTools: true, runtimeKind: "antigravity_cli" } })).cre…
+    [90m180|[39m     [34mexpect[39m(created[33m.[39msuccess[33m,[39m created[33m.[39mmessage)[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+    [90m   |[39m                                              [31m^[39m
+    [90m181|[39m     const socket = new WebSocket(`${server.origin.replace(/^http/, "ws…
+    [90m182|[39m     [35mconst[39m frames[33m:[39m [33mArray[39m[33m<[39m{ type[33m:[39m string }[33m>[39m [33m=[39m [][33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts[2m > [22mtask agent own run: the built server upgrades a faithful released install at startup[2m > [22mTAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every file and are listed as runs of their own (461 REQ-007)
+[31m[1mError[22m: ENOENT: no such file or directory, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-agent-own-run-e2e-xnUglt/memory/episodic/index.md.3353af6b0373.tmp'[39m
+[36m [2m❯[22m walk tests/fixtures/app-data-migrations/released-task-agent-layout-fixtures.ts:[2m167:76[22m[39m
+    [90m165|[39m       [35mconst[39m full [33m=[39m path[33m.[39m[34mjoin[39m(current[33m,[39m entry[33m.[39mname)[33m;[39m
+    [90m166|[39m       [35mif[39m (entry[33m.[39m[34misDirectory[39m()) [35mawait[39m [34mwalk[39m(full)[33m;[39m
+    [90m167|[39m       else result[path.relative(dir, full)] = createHash("sha256").upd…
+    [90m   |[39m                                                                            [31m^[39m
+    [90m168|[39m     }
+    [90m169|[39m   }[33m;[39m
+[90m [2m❯[22m walk tests/fixtures/app-data-migrations/released-task-agent-layout-fixtures.ts:[2m166:32[22m[39m
+[90m [2m❯[22m snapshot tests/fixtures/app-data-migrations/released-task-agent-layout-fixtures.ts:[2m170:3[22m[39m
+[90m [2m❯[22m tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts:[2m403:74[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errno: -2, code: 'ENOENT', syscall: 'open', path: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-agent-own-run-e2e-xnUglt/memory/episodic/index.md.3353af6b0373.tmp' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m2 passed[39m[22m[90m (4)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m16 passed[39m[22m[90m (18)[39m
+[2m   Start at [22m 14:32:05
+[2m   Duration [22m 169.20s[2m (transform 10.30s, setup 201ms, import 13.15s, tests 154.81s, environment 0ms)[22m
+
+=== DEL-07-startup-e2e exit 1
