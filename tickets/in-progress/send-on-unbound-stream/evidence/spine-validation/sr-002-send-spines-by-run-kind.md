@@ -1,5 +1,7 @@
 # SR-002 spine re-walk: a send for every run kind and state
 
+> Superseded by `sr-003-send-spines-by-run-kind.md`: its "Lost after sending, retryable" row assumed the snapshot carries queued input (ARCH-REV-001 AR-001). Kept as the SR-002 record.
+
 Walked on design-spec.md (SR-002) against the base `914eb36577`. The composer is the same on desktop and phone
 (`MobileRunTargetView.vue:26` → `AgentEventMonitor` → `AgentUserInputForm`); the notice is mounted in `AgentEventMonitor`, so both get it.
 

@@ -2,8 +2,8 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-002`
-- Approved requirements baseline: `requirements-doc.md` at SR-002, approved by the Solution Designer within the direction of Task autobyteus-540 (user informed, 2026-11-18).
+- Current solution revision ID: `SR-003` (Design Impact from ARCH-REV-001 AR-001)
+- Approved requirements baseline: `requirements-doc.md` at SR-003, approved by the Solution Designer within the direction of Task autobyteus-540 (user informed, 2026-11-18).
 - Behavior-defining supplements: None.
 - User approval of the design: `Not required`.
 - Design status: `Ready`
@@ -21,9 +21,9 @@
 
 ## Task Size And Architectural Risk (Mandatory)
 
-- Task size: `Medium` — web only: about 12 source files (one new error type and its presentation in the shared failure owner, one notice component, the agent streaming service, the generalized rebind holder, three stores' send paths, the peer route, the Team and Org services' failure classification, AgentContext, localization) plus two probes and tests. No server source change.
-- Architectural risk: `High` — it changes the send contract inside the web app for every run kind (a send now resolves on the node's answer and can end as "not delivered"), adds lifecycle across reconnects (a send held until the rebind's snapshot decides), and moves draft restoration of Team and Org into the shared owner. Blast radius: every send on desktop and phone.
-- Escalation trigger: a need to change the node, a wire schema, or the snapshot application; or a runtime whose stored user message lacks its message id (ASM-001).
+- Task size: `Medium` — web: about 13 source files; node: 3 (the agent stream snapshot carries the active run's input state) (one new error type and its presentation in the shared failure owner, one notice component, the agent streaming service, the generalized rebind holder, three stores' send paths, the peer route, the Team and Org services' failure classification, AgentContext, localization) plus two probes and tests.
+- Architectural risk: `High` — it changes the send contract inside the web app for every run kind (a send now resolves on the node's answer and can end as "not delivered"), adds lifecycle across reconnects (a send held until the rebind's snapshot decides), and moves draft restoration of Team and Org into the shared owner. Blast radius: every send on desktop and phone. SR-003 adds a field to the `AGENT_STREAM_SNAPSHOT` payload (node and page in one change; DESIGN.md rule 9).
+- Escalation trigger (fired at SR-003 for the snapshot's input state, accepted): any further node or wire change, or a change to the snapshot application beyond applying the input state; or a runtime whose stored user message lacks its message id (ASM-001).
 
 ## Architecture Investigation Evidence
 
@@ -31,7 +31,9 @@
 | --- | --- | --- | --- |
 | Code | `AgentStreamingService.ts:115-117,141-150,289,300,309-323` | `CONNECTED` already observed; losses go through `rejectInFlight(reason, recovers)` | D-1, D-3 |
 | Code | `agentStreamSnapshotApplication.ts:39-47` | Snapshot replaces conversation, overlays queued input, replays turn frames | D-3 decides after the snapshot is fully applied |
-| Code | server `runtime-memory-event-accumulator.ts:88`; `agent-run-command-coordinator.ts:291-300`; web `runProjectionConversation.ts:281`, `userMessageProjection.ts:112` | Stored and queued user messages carry the page's message id (external runtimes: recorded from the input's metadata the coordinator sets) | D-3; ASM-001 to confirm for native |
+| Code | server `runtime-memory-event-accumulator.ts:86-89`; `agent-run-command-coordinator.ts:291-300`; `autobyteus-ts` `raw-trace-item.ts:76-80,106`, `raw-trace-ingestion.ts:152-160`; web `runProjectionConversation.ts:100` (a user entry keeps its `messageId`), `userMessageProjection.ts:112` | Stored user messages carry the page's message id on every runtime (external: from the input metadata the coordinator sets; native: in its raw traces); queued entries carry it | D-3; ASM-001 supported |
+| Code (SR-003) | `agent-stream-snapshot.ts:13-37` (snapshot = stored + turn frames), `runtime-memory-event-accumulator.ts:80-90` (a user message is stored once forwarded into a turn), `agent-stream-sequence.ts:100-108` (turn frames need a turn id), `agent-run.ts:478,510-511` (`getInputStateSnapshot`; `AGENT_INPUT_STATE` has no turn id), `agent-stream-connection.ts:17-40` (nothing sends input state on connect), `agent-run-input-admission-state.ts:157-185` (native/AGY/ACP queue input while a turn runs) | A queued message is in neither the stored part nor the turn frames, and a reconnecting page does not learn the input state | D-8; D-3 revised |
+| Code (SR-003) | `peer-agent-stream.ts:26-37`, `remote-run-view-provider.ts:134-146`, `run-agent-access.ts:26-36` | The peer relay builds the same snapshot through `RunAgentAccess`, which has no input-state read | D-8: peer snapshots carry `null`; the page answers `unknown` |
 | Code | `localUserSubmission.ts:151-180`; three callers | One failure owner exists | D-4 extends it |
 | Code | `interruptCommandAdmission.ts:59-79` | A holder for work across a reconnect | D-3 reuses it (generalized) |
 | Measurement | `evidence/reproduction/` | Node refuses before `CONNECTED`; takes everything after | D-1 |
@@ -40,7 +42,8 @@
 
 - **D-1 Ready means bound.** `AgentStreamingService` gets `whenBound(timeoutMs): Promise<void>`: resolves at once when `CONNECTED` has been received on the current connection, otherwise at the next `CONNECTED`; rejects `MessageNotDeliveredError('not_sent')` at the timeout. The bound flag is set on `CONNECTED` and cleared whenever the socket is lost or dropped. `ensureAgentStreamConnected` connects and awaits `whenBound(10_000)` (replacing its socket poll). The peer route awaits the same before sending.
 - **D-2 Every agent send waits for the node's answer.** `sendMessage` becomes `Promise<void>`: it resolves at the node's `AGENT_COMMAND_ACK` for that message, accepted or rejected (a rejected ack keeps today's presentation by the projector, `agentStreamMessageProjector.ts:143-154`); `sendMessageAwaitingAdmission` (sends with mentions) keeps rejecting on a rejected ack. A socket that is not open when sending → `MessageNotDeliveredError('not_sent')`.
-- **D-3 A send lost with its connection is decided after the rebind.** On a retryable loss (`handleDisconnect` retryable, `reopen`, `dropConnection`), waiting sends move to a rebind holder (the 533 holder generalized as `HeldUntilRebind`). After the new connection's `AGENT_STREAM_SNAPSHOT` has been applied (stored part, queued input and turn frames), each held send settles: the context's conversation has a user message with its message id → delivered (resolve); otherwise → `MessageNotDeliveredError('not_sent')`. At a final close (`disconnect()`, a non-retryable loss) held and waiting sends reject `MessageNotDeliveredError('unknown')`.
+- **D-3 A send lost with its connection is decided after the rebind.** On a retryable loss (`handleDisconnect` retryable, `reopen`, `dropConnection`), waiting sends move to a rebind holder (the 533 holder generalized as `HeldUntilRebind`). After the new connection's `AGENT_STREAM_SNAPSHOT` has been applied — its stored part, its `input_state` (D-8) through `handleAgentInputState`, then its replayed turn frames — each held send settles: the conversation has a user message with its message id (stored, live turn, or queued `pendingInput`) → delivered (resolve); missing and the snapshot carried an input state → `MessageNotDeliveredError('not_sent')`; missing and the snapshot's `input_state` is `null` (the run is not active, or a peer run) → `MessageNotDeliveredError('unknown')`. At a final close (`disconnect()`, a non-retryable loss) held and waiting sends reject `MessageNotDeliveredError('unknown')`.
+- **D-8 (SR-003) The snapshot carries the run's queued input.** `AgentStreamSnapshotPayload` gains `input_state: AgentInputStateDto | null`. `activeRunSnapshot(sequence, base, readStored, readInputState)` takes `readInputState: (() => AgentInputStateDto) | null` explicitly: the agent stream's connection passes the bound run's `() => activeRun.getInputStateSnapshot()` (`agent-stream-handler.ts:301`, `connectToActiveRun`); the peer relay (`peer-agent-stream.ts:35`) passes `null` (its run is reached through `RunAgentAccess`, which has no input state); `storedRunSnapshot` gives `null`. On the page, `applyAgentStreamSnapshot` applies a non-null `input_state` with `handleAgentInputState` after setting the conversation (it replaces pending marks with the node's current entries, so a stale `pendingInput` overlay from before the loss no longer counts); with `null` the current overlay stays as today. The revision check of `handleAgentInputState` keeps later `AGENT_INPUT_STATE` frames ordered.
 - **D-4 One owner for "not delivered".** New `MessageNotDeliveredError` (`certainty: 'not_sent' | 'unknown'`). `failLocalSubmission` handles it as a third outcome, `'returned_draft'`: removes the shown message from the conversation (`'not_sent'` only; for `'unknown'` the snapshot shows the truth), puts text, attachments, mentions and skill tags back when the message box is empty, sets `context.messageNotDelivered = certainty`, clears `submissionPending`, leaves the status alone, logs the detail with `console.warn`. A new send clears the notice (`beginLocalUserSubmission`, as it clears `collaboratorAddFailure`).
 - **D-5 Team and Org classify their transport failures.** Team: `ensureTeamStreamConnected` timeout and a socket send failure → `'not_sent'`; a send drained at a loss (`TeamSendAdmissions.drain`) → `'unknown'`. Org: not ready (`requireReadyContext`) and a socket send failure → `'not_sent'`; a `SEND_MESSAGE` pending at a close (`rejectPending`) → `'unknown'`. Both stores return on `'returned_draft'` and drop their own draft restore for it; Team no longer sets the member's status to Error for it. Other failures keep today's path.
 - **D-6 The notice.** `MessageNotDeliveredNotice.vue` beside `CollaboratorAddFailureNotice` in `AgentEventMonitor.vue` (desktop and phone), reading `activeWorkspaceTarget.context.messageNotDelivered`, with a dismiss button; texts (a)/(b) of REQ-004 under `agents.send.notDelivered.notSent` / `.unknown` (en, zh-CN).
@@ -50,12 +53,13 @@
 
 - In scope: UC-001…UC-004. Web: agent streaming readiness and send answers, the rebind holder, the shared failure owner and its notice, Team and Org failure classification, the peer route, localization, probes, tests, docs (`autobyteus-web/docs/agent_execution_architecture.md` send and readiness passages).
 - Derived consumers:
+  - `AGENT_STREAM_SNAPSHOT` payload (SR-003): built by `activeRunSnapshot` / `storedRunSnapshot` (agent stream connection, peer relay, `sendStoredSnapshot`); read by the page's envelope parse and `applyAgentStreamSnapshot`, and by the peer relay that forwards it as is (`peer-run-stream-session.ts:79`); tests that build or assert its shape (listed in sequence step 1).
   - `failLocalSubmission`'s three callers: adapted (return on `'returned_draft'`).
   - `sendMessage` callers: `agentRunStore.sendUserInputAndSubscribe` (awaits it), any other caller found by the typecheck (each awaits or handles the rejection).
   - `InterruptsAwaitingRebind` users (agent, Team, Org services): renamed use of the generalized holder, behavior unchanged.
   - `ensureAgentStreamConnected` callers other than send (search them): they get the stronger readiness, which is what a command needs.
   - Existing tests asserting the socket-level readiness or the raw failure segment for these cases: rewritten.
-- Deliberately left alone: the node (gate, protocol, dedupe); rejected acks' presentation; `isAgentStreamReady` (a view question, not a send gate); the open-time placeholder (533 FU-002 → 542); Team stream recovery (FU-005 → 541).
+- Deliberately left alone: the node's gate, protocol and dedupe (the only node change is D-8); rejected acks' presentation; `isAgentStreamReady` (a view question, not a send gate); the open-time placeholder (533 FU-002 → 542); Team stream recovery (FU-005 → 541).
 - Follow-ups: FU-001 (`agentOrgContextsStore.ts` and `agentOrgStreamingService.ts` are 506 lines, over the limit before this change) in `follow-ups.md`.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
@@ -120,7 +124,7 @@ Team / Org routes are unchanged up to their failures (DS-003).
 | Spine | Narrative | Owner |
 | --- | --- | --- |
 | DS-001 | The store shows the message, finalizes attachments, then waits for the stream to be bound; only then does the message leave. The send resolves at the node's ack; the composer's pending state ends as today (ack/status). | `AgentStreamingService` |
-| DS-002 | A loss while a send waits for its ack holds it. The reconnect (same service) brings `CONNECTED`, status and the snapshot; once the snapshot (stored part, queued input, replayed turn frames) is applied, each held send looks for its message id in the conversation: found → resolved (it shows, nothing else), missing → `not_sent`. A final close settles held and waiting sends `unknown`. | `AgentStreamingService`, `HeldUntilRebind` |
+| DS-002 | A loss while a send waits for its ack holds it. The reconnect (same service) brings `CONNECTED`, status and the snapshot; once the snapshot is applied (stored part, then the node's `input_state` — the run's queued input — then the replayed turn frames), each held send looks for its message id in the conversation: found (stored, live turn or queued) → resolved (it shows, nothing else); missing with an input state → `not_sent`; missing without one (run not active, peer run) → `unknown`. A final close settles held and waiting sends `unknown`. | `AgentStreamingService`, `HeldUntilRebind` |
 | DS-003 | Any route's `MessageNotDeliveredError` reaches `failLocalSubmission`, which returns the draft (if the box is empty), removes the shown message for `not_sent`, sets the notice, ends `submissionPending`, keeps the status. Stores return on `'returned_draft'`. | `failLocalSubmission` |
 
 ## Ownership Map
@@ -151,7 +155,7 @@ Team / Org routes are unchanged up to their failures (DS-003).
 
 ## Return Or Event Spine(s)
 
-- DS-002: `retryable loss -> sends to HeldUntilRebind -> reconnect -> CONNECTED (bound) -> AGENT_STATUS -> AGENT_STREAM_SNAPSHOT applied -> each held send: id in conversation ? resolve : reject not_sent -> store -> failLocalSubmission (not_sent) | normal end`; `disconnect() / non-retryable loss -> held and waiting reject unknown`.
+- DS-002: `retryable loss -> sends to HeldUntilRebind -> reconnect -> CONNECTED (bound) -> AGENT_STATUS -> AGENT_STREAM_SNAPSHOT [node: stored + input_state (active run: getInputStateSnapshot; else null) + turn frames] -> page applies stored, input_state, turn frames -> each held send: id in conversation ? resolve : (input_state ? reject not_sent : reject unknown) -> store -> failLocalSubmission | normal end`; `disconnect() / non-retryable loss -> held and waiting reject unknown`.
 - DS-003: `MessageNotDeliveredError -> store catch -> failLocalSubmission 'returned_draft' -> notice + draft`.
 
 ## Bounded Local / Internal Spines
@@ -208,7 +212,12 @@ Team / Org routes are unchanged up to their failures (DS-003).
 | `types/agent/AgentContext.ts` | Modify | `messageNotDelivered: 'not_sent' | 'unknown' | null` |
 | `components/agentInput/MessageNotDeliveredNotice.vue` | Add | notice |
 | `components/workspace/agent/AgentEventMonitor.vue` | Modify | mount the notice |
-| `services/agentStreaming/AgentStreamingService.ts` | Modify | bound, `whenBound`, send answers, held sends |
+| `services/agentStreaming/AgentStreamingService.ts` | Modify | bound, `whenBound`, send answers, held sends (decided after the snapshot, with or without its input state) |
+| `services/agentStreaming/protocol/agentStreamEnvelope.ts` | Modify | `input_state: AgentInputStateDto \| null` in the snapshot payload and its parse |
+| `services/agentStreaming/agentStreamSnapshotApplication.ts` | Modify | apply a non-null `input_state` with `handleAgentInputState` after the stored part, before the turn frames |
+| `autobyteus-server-ts/src/services/agent-streaming/agent-stream-snapshot.ts` | Modify | `input_state` in the payload; `activeRunSnapshot(…, readInputState)`; `storedRunSnapshot` → `null` |
+| `autobyteus-server-ts/src/services/agent-streaming/agent-stream-connection.ts`, `agent-stream-handler.ts` | Modify | pass the bound run's `getInputStateSnapshot` |
+| `autobyteus-server-ts/src/remote-collaboration/inbound/peer-agent-stream.ts` | Modify | pass `null` (reason in a comment) |
 | `services/agentStreaming/interruptCommandAdmission.ts` → holder in `services/agentStreaming/heldUntilRebind.ts` | Modify/Add | generalized holder |
 | `services/agentStreaming/TeamStreamingService.ts`, `teamSendAdmission.ts` | Modify | classify failures (`drain` → `unknown`) |
 | `services/agentOrgExecution/agentOrgStreamingService.ts` | Modify | classify failures; **no net growth** (506 lines) |
@@ -225,7 +234,7 @@ Team / Org routes are unchanged up to their failures (DS-003).
 | Topic | Good | Avoided | Why |
 | --- | --- | --- | --- |
 | Readiness | `await service.whenBound(10_000)` then `await service.sendMessage(…)` | `while (service.connectionState !== CONNECTED) sleep(50)` | The socket is not the session |
-| Lost in flight | after the snapshot: `conversation.messages.some(m => m.type === 'user' && m.messageId === id)` | resend with the same identity (forgotten after a node restart) or "not sent" at the drop (false when the node had it) | Truthful outcome |
+| Lost in flight | after the snapshot with its `input_state` applied: `conversation.messages.some(m => m.type === 'user' && m.messageId === id)` (stored, live turn or `pendingInput`); missing → `input_state ? 'not_sent' : 'unknown'` | resend with the same identity (forgotten after a node restart); "not sent" at the drop (false when the node had it); deciding from stored + turn frames only (a message a native/AGY/ACP run queued while Running is in neither: ARCH-REV-001 AR-001) | Truthful outcome |
 | Presentation | `failLocalSubmission(handle, new MessageNotDeliveredError('not_sent', detail))` → draft + notice | a raw "Error Occurred" segment the next snapshot erases | Survives the snapshot; plain words |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
@@ -237,7 +246,7 @@ Team / Org routes are unchanged up to their failures (DS-003).
 
 ## Change / Refactor Sequence
 
-1. Failing web unit tests first (investigation notes' reproduction): send before `CONNECTED`; send lost in flight (both branches); not-delivered presentation per kind.
+1. Failing web unit tests first (investigation notes' reproduction): send before `CONNECTED`; send lost in flight (found / not_sent / unknown branches, including a send that a native, AGY or ACP run queued while Running, lost with its ack and input state: it is found through the snapshot's `input_state` and not reported not_sent); not-delivered presentation per kind. Server unit: an active run's snapshot carries its input state; a stopped run's and a peer's carry `null`; update the snapshot shape in the server tests that build or assert it (`agent-stream-handler.test.ts`, `peer-agent-stream.test.ts`, `remote-run-view-provider.test.ts`, `peer-run-stream-session.test.ts`, `tests/e2e/helpers/agent-stream-frames.ts`, web `agentRunStreamReconnection.spec.ts`, `peerRunStreams.spec.ts`).
 2. `MessageNotDeliveredError`, `AgentContext.messageNotDelivered`, `failLocalSubmission` outcome, notice + localization.
 3. `HeldUntilRebind` (generalize; 533 users renamed).
 4. `AgentStreamingService` bound/whenBound/send answers/held sends; `ensureAgentStreamConnected`; agent store awaits the send.
@@ -251,7 +260,8 @@ Team / Org routes are unchanged up to their failures (DS-003).
 
 ## Risks
 
-- R-1 (ASM-001): the native runtime's stored user message may lack the message id; implementation checks it (unit on the native memory path) before relying on D-3; if missing → Design Impact.
+- R-1 (ASM-001): supported by ARCH-REV-001 (native raw traces write `message_id`); implementation keeps a unit on each runtime's stored path.
+- R-4 (SR-003): peer runs answer `unknown` for a message lost in flight and not yet in the conversation (no input state through `RunAgentAccess`); acceptable (text (b) is true); a later ticket may add an input-state read to `RunAgentAccess`.
 - R-2: an ack that never comes on an open, bound stream (node defect) leaves the send pending until a loss; no timer added (DESIGN.md: no speculative machinery).
 - R-3: Org files over the line limit (FU-001).
 

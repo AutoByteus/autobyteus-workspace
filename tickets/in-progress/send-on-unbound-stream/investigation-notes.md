@@ -10,7 +10,7 @@
 - Finalization target: `origin` / `personal` (RELEASE.md)
 - Bootstrap result: worktree created; `pnpm install --frozen-lockfile` and server `prebuild` passed (Node v22.23.1).
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-003`
 - Authorities read (2026-11-18, this conversation): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`; `TESTING.md`; `DESIGN.md`; `reflections/lessons.md`.
 - Investigation status: complete for requirements.
 
@@ -35,6 +35,9 @@
 | 2026-11-18 | Code | `autobyteus-web/stores/delegatedRunsStore.ts:145-155` (`peerInteractionOf.send`) | Peer run send: no connection wait; `sendMessageAwaitingAdmission` throws when the socket is not open (`WebSocketClient.send`), the draft stays, the error goes to the console only |
 | 2026-11-18 | Code | `autobyteus-server-ts/src/agent-execution/services/agent-run-command-registry.ts:25-26`, `agent-run-command-coordinator.ts:225-238` | The node keeps each message's identity per run in memory and answers a repeat `duplicate_*`; lost on a node restart |
 | 2026-11-18 | Code | `autobyteus-web/tests/e2e/stop-generation-probe.mjs:234-257`, `mobile-stop-generation-cases.mjs:110-129` | The probes record a lost send (`sendStalls`) and send again once; only a second loss fails the case, so a single loss passes |
+| 2026-11-18 | Code (SR-003, ARCH-REV-001 AR-001) | server `agent-stream-snapshot.ts:13-37`; `runtime-memory-event-accumulator.ts:80-90`; `agent-stream-sequence.ts:100-108`; `agent-run.ts:478,510-511`; `agent-stream-connection.ts:17-40`; `agent-run-input-admission-state.ts:157-185`; web `agentInputStateHandler.ts:7-16` | The agent snapshot is the stored part plus turn frames; a user message is stored only once forwarded into a turn; `AGENT_INPUT_STATE` carries no turn id and nothing sends it on a new connection; native, AGY and ACP queue a message sent while a turn runs. So a queued message lost with its ack and input state is invisible to a reconnecting page. `AgentRun.getInputStateSnapshot()` gives the current input state |
+| 2026-11-18 | Code (SR-003) | `peer-agent-stream.ts:26-37`; `remote-run-view-provider.ts:134-146`; `run-agent-access.ts:26-36` | The peer relay builds its snapshot with the same `activeRunSnapshot`, reaching the run through `RunAgentAccess`, which has no input-state read |
+| 2026-11-18 | Code (ARCH-REV-001 note) | `autobyteus-ts` `raw-trace-item.ts:76-80,106`, `raw-trace-ingestion.ts:152-160` | Native raw traces store the user message's `message_id` (ASM-001 supported); correction: the stored user id is kept at web `runProjectionConversation.ts:100`, not `:281` (a system task notification's id) |
 | 2026-11-18 | Code | `components/mobile/runScreen/MobileRunTargetView.vue:26` → `AgentEventMonitor` → `AgentUserInputForm` | The phone uses the same composer and stores |
 
 ## Relevant Existing Behavior And Supported Product Paths
