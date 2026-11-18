@@ -14,15 +14,15 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-003, ARCH-REV-004
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: implementation engineer's IR-001 handoff (code `deacacf948`, documents `3c606ea1d9`, branch `codex/list-running-agents`, base `origin/personal` `bd2053ee51`)
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: `2`
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence (round >1): `a4848a8441..5f89ecbdf5` changes 3 files only: the cross-node branch of `_admit` in the contract model (CR-001) and two comments (CR-002). No production logic, interface or data shape changed, so round 1's structural checks and scores carry forward except the rows these findings held down.
+- Trigger: implementation engineer's IR-002 (fix `5f89ecbdf5`, documents `7e7e184787`); round 1 was IR-001 (`deacacf948`, base `origin/personal` `bd2053ee51`)
+- Prior Review Round Reviewed: 1 (CRR-001)
+- Latest Authoritative Round: 2
 - Coverage Investigation / Execution Coverage / API-E2E records: N/A (implementation review)
 - Delivery Revision Record: N/A
 - Failing Scenario IDs / Commands / Evidence: N/A
@@ -41,14 +41,14 @@
 - Files / areas reviewed: `agent-collaboration/running/*`; `communication/cross-run-message-delivery.ts`, `cross-run-accept-input.ts`; `execution/communication/root-communication-engine.ts`; `execution/remote/{remote-endpoint,remote-message-send,remote-run-links,remote-run-channel,remote-refusal-codes,peer-discovery-channel}.ts`; `execution/services/active-collaboration-root-directory.ts`; `agent-communication/services/*` (router, parser, dispatcher, contract); the three roots and their message deliveries; `remote-collaboration/{channel,inbound,discovery,domain}`; `run-history/store/run-own-agents-reader.ts`; `agent-tools/agent-discovery/list-running-agents-*`, the MCP provider and exposure; the four compositions and `running-agents-composition.ts`.
 - Explicit exclusions: E2E suites (API/E2E's, listed in the handoff); `typecheck-baseline.json` (generated); ticket documents.
 
-Checks: I did not rerun the recorded checks (IMP-01 … IMP-07); no code changed after them. One probe of my own, for CR-001: `/tmp/cr492/probe_row13.py`, run with `python3 -I` against the updated model (output under CR-001).
+Checks: round 1 did not rerun IMP-01 … IMP-07 (no code changed after them); it ran one probe of its own for CR-001, `/tmp/cr492/probe_row13.py` against the updated model. Round 2 reran that probe and `export_contract_states.py … --check` against `5f89ecbdf5` (results under CR-001), and read IMP-08 (`evidence/IMP-08-row13-probe.{py,log}`).
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Approved requirements basis understood: Yes. The run ID is the address (DEC-001, DEC-002). An unrelated message reaches only a running agent and wakes nothing (DEC-003). Task wake, reopen and CLOSED are preserved, including the fenced peer run for every sender on the node that holds the Task (DEC-011). A team is reached through its coordinator (DEC-012). Unrelated messages stay out of run views (DEC-014). The list holds running Agent and Team roots a person started (DEC-004, DEC-013).
 - Design-spec behavior map verified against the implementation: Yes, every spine DS-001 … DS-006 and entry-form rows 1–14 (below).
 - Design review report and round confirmed: ARCH-REV-004 Pass. AR-008 (resolveActive) is implemented in `compositions/collaboration-root-resolver.ts:28-32, 82-88`.
-- Behavior-basis status: `Confirmed` for the production code.
+- Behavior-basis status: `Confirmed`.
 - Changed or newly discovered behavior: None.
 - Remaining material ambiguity: None.
 
@@ -57,7 +57,7 @@ Checks: I did not rerun the recorded checks (IMP-01 … IMP-07); no code changed
 | BEH-002 | Confirmed | `RunningAgentsListing.list` (`running-agents-listing.ts:34-71`): live roots minus Org and caller; `listingFactsOf` (`run-own-agents-reader.ts:139-152`), `startedByPerson = !delegatedFrom` (local and peer); entry agent must be non-offline; entry builder `running-agent-entry.ts:49-54`. Peer: `PeerNodeDiscovery.listRunningAgents` → `PeerClient.runningAgents` (strict `runningAgentsOf`) → `PeerGateway.listRunningAgents` (admit first). IMP-06 AC-001/AC-004 | — |
 | BEH-003 | Confirmed | `CrossRunMessageDelivery.route` → `admit` returns `unrelated` (`:197-220`) → `deliverUnrelated` (`:153-164`): `RunningAgents.rootOf` → `activeReceiverRoot` (`resolveActive`, never restores) → prepare/accept(`publishToViews: false`)/commit. PRB-002 green in IMP-06 | — |
 | BEH-004 | Confirmed | Router `deliverToPeer` (`global-agent-run-message-router.ts:188-205`): `findPeer` → `closedPeerRunRefusal` → root `deliverToPeerRun` → `RemoteMessageSend.sendToPeerRun`/`choose` (`remote-message-send.ts:40-53`) → `/rest/remote/run-messages` → `RemoteMessageReceiver.acceptRunMessage` (`remote-message-receiver.ts:385-401`) → root `acceptPeerRunMessage` (in-gate liveness) → `engine.acceptFromRemote` | — |
-| BEH-005 | Confirmed (code) | `admit` unchanged for related/reopened/closed; `closedPeerRunRefusal` (`:141-147`) called from the router's `node` path and `route`'s peer-run branch (`:106-108`); the linking root's own `assertDeliveryAllowed` still fences linked and unlinked sends (`prepareRemoteSend`). The contract model disagrees: CR-001 | CR-001 concerns the executable model only |
+| BEH-005 | Confirmed | `admit` unchanged for related/reopened/closed; `closedPeerRunRefusal` (`:141-147`) called from the router's `node` path and `route`'s peer-run branch (`:106-108`); the linking root's own `assertDeliveryAllowed` still fences linked and unlinked sends (`prepareRemoteSend`). The contract model agrees since round 2 (CR-001 resolved) | — |
 | BEH-006 | Confirmed | Local: router `:116-119`; peer: `acceptRunMessage` → `RunningAgents.teamCoordinatorOf` (team's own root only); A's wording `remote-refusals.ts` `TARGET_IS_TEAM_RUN` | — |
 | BEH-007 | Confirmed | Every new path ends in `commitReserved` (engine), the reservation path | — |
 | BEH-008 | Confirmed | `delegate_task` not touched | — |
@@ -107,7 +107,7 @@ Checks: I did not rerun the recorded checks (IMP-01 … IMP-07); no code changed
 | File placement | Pass | — | — |
 | Flat-vs-over-split | Pass | — | — |
 | Interface/API boundary clarity | Pass | `/run-messages` vs `/messages` split by subject; `node` only with run ID | — |
-| Naming / one vocabulary | Pass | `unlinked_run`, `run_message`, entry IDs as `delegate_task`'s | Stale comments: CR-002 |
+| Naming / one vocabulary | Pass | `unlinked_run`, `run_message`, entry IDs as `delegate_task`'s; CR-002 resolved in round 2 | — |
 | No unjustified duplication | Pass | Three roots' one-call delivery methods follow the existing per-root pattern | — |
 | Patch-on-patch complexity | Pass | — | — |
 | Dead code removed in touched files | Pass | `ownershipChain`, `refusals`, `notPermitted`, `OTHER_TASK_REFUSAL`, CONFLICT in the engine removed; no remnant in `src` | — |
@@ -142,13 +142,13 @@ All changed source files stay under 500 non-empty lines; no file grows by more t
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
-None in code. The stale comments are CR-002.
+None (CR-002's stale comments are corrected in round 2).
 
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes` (done in this change)
-- Why: CM-13 and § 1 terms in `collaboration_model.md`; `agent_communication.md`, `agent_tools.md`, `remote_collaboration.md` updated. CM-13 states row 13 correctly. The executable model does not (CR-001).
-- Files or areas likely affected: the contract model `model.py` (CR-001).
+- Why: CM-13 and § 1 terms in `collaboration_model.md`; `agent_communication.md`, `agent_tools.md`, `remote_collaboration.md` updated. CM-13 and the executable model now both state row 13 (CR-001 resolved).
+- Files or areas likely affected: none outstanding.
 
 ## Additional Material Premise Validation
 
@@ -159,13 +159,13 @@ None in code. The stale comments are CR-002.
 | MP-001 | Confirmed | Code: `closedPeerRunRefusal` on the `node` path |
 | MP-002 | Confirmed | `RunningAgents.teamCoordinatorOf` from the team's own root (unit test) |
 | MP-003 | Confirmed (not supported) | — |
-| MP-004 | Confirmed | Code: `route`'s peer-run branch. The model contradicts it (CR-001) |
+| MP-004 | Confirmed | Code: `route`'s peer-run branch; the model agrees since round 2 (CR-001 resolved) |
 
 No new premises.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score: 9.3/10 (simple average; not the decision rule)
+- Overall score: 9.4/10 (simple average; not the decision rule)
 
 | Priority | Category | Score | Why This Score | What Is Weak | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
@@ -174,30 +174,28 @@ No new premises.
 | 3 | API / Interface / Query / Command Clarity | 9.4 | Linked vs unlinked routes split by subject; `LinkedRemoteEndpoint` typing; `node` rules explicit | — | — |
 | 4 | Separation of Concerns and File Placement | 9.3 | New `running/` area; compositions show order | Per-kind status wiring written twice (C-06, wiring only) | — |
 | 5 | Shared-Structure / Data-Model Tightness | 9.4 | One entry union, one field set for builder and strict reader | — | — |
-| 6 | Naming Quality and Local Readability | 9.2 | Vocabulary consistent with CM-13 and `delegate_task` | Two comments still describe the removed "different Task" refusal (CR-002) | Correct them |
+| 6 | Naming Quality and Local Readability | 9.4 | Vocabulary consistent with CM-13 and `delegate_task`; CR-002's comments corrected | — | — |
 | 7 | API/E2E Readiness | 9.3 | In-process two-node test; E2E work listed precisely | Two-server E2E pending (UNK-001) | — |
-| 8 | Runtime Correctness And Behavioral Fidelity | 9.0 | Production code follows every entry-form row, tested | The contract's executable model, edited here, delivers row 13 where REQ-011/DEC-011 and the code refuse CLOSED (CR-001) | Fix the model's cross-node admission |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.4 | Production code follows every entry-form row, tested; the contract model now refuses row 13 for every sender on the Task's node (CR-001 resolved, probe and IMP-08) | Two-node HTTP behavior still unverified (UNK-001, API/E2E's) | — |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | Clean cut; no version handling | — | — |
-| 10 | Cleanup Completeness | 9.2 | Removal plan done and verified | CR-002's comments | — |
+| 10 | Cleanup Completeness | 9.4 | Removal plan done and verified; no stale "different Task" wording left in `src` | — | — |
 
 ## Findings
 
-### CR-001 — The updated contract model delivers row 13 (fenced peer run, sender not the delegator) instead of refusing CLOSED
+No open findings. Both round-1 findings are resolved; see `code-review-revision-record.md` CRR-002.
 
-- Protects: REQ-011, AC-008 (alternate outcome), DEC-011, entry-form row 13 (AR-001, AR-007), CM-13.
-- Where: `tickets/done/delegated-copies-outlive-delegator-461/evidence/collaboration-model/model.py:321-331`. In the cross-node branch, `if pf["delegatorAgentRunId"] != other: return "unrelated"` (line 327) runs before the closed-entry check (lines 328-330). So any agent of the node that holds the Task, other than the delegator, is "unrelated". `_send` then delivers while the fenced run runs.
-- Evidence: the probe runs the §5.1 story to S19 (M closes T7; `lead_0c11` on B is fenced), then sends by run ID:
-  - `solution_designer_65a9 -> DELIVERED … 'Delivered message to lead_0c11 on node "node-b".'`
-  - `M (delegator) -> REFUSED "This task agent's Task is closed. …"`
-  - The code refuses both senders with `TASK_AGENT_RESOURCE_CLOSED` (`closedPeerRunRefusal`, `cross-run-message-delivery.test.ts` "entry-form row 13 without node", router test row 13 with `node`).
-- Problem: the model is the collaboration contract's executable authority. The fixture and the gated contract-story E2E are generated from it (`export_contract_states.py:1-7`, `collaboration-contract-stories.e2e.test.ts:15-18`). It now states the opposite of the approved rule and of the code. The fixture `--check` passes only because no story step exercises row 13. The next contract change that adds such a step, or trusts the model, would encode the wrong rule.
-- Required action (Local Fix, implementation): in the cross-node branch, refuse `TASK_AGENT_RESOURCE_CLOSED` for any sender on the node that holds the Task when that node's entries for the peer run exist and are all closed. Keep returning `"unrelated"` only otherwise: an open entry with a non-delegator sender, or a sender on the run's own node or a third node (DEC-011, row 14). The delegator's path stays as it is. Then rerun `export_contract_states.py … --check`, and record the row 13/row 14 probe result as evidence. A new story step is not required.
+### CR-001 — Resolved (round 2)
 
-### CR-002 — Comments still describe the removed "different Task" refusal
+- Fix: `model.py:323-336` (`5f89ecbdf5`). The closed-entry list is read first. A sender other than the delegator, on the node that holds the Task (`a[0] == local[0]`), is refused `TASK_AGENT_RESOURCE_CLOSED` when that node's entries for the peer run exist and are all closed. Otherwise the message is "unrelated": an open entry, or a sender on the run's own node (row 14). The delegator's path is unchanged.
+- Verification:
+  - My probe after S19 now gives `solution_designer_65a9` → CLOSED and M → CLOSED.
+  - IMP-08: four senders of A are DELIVERED after S18 (entry open) and CLOSED after S19.
+  - `export_contract_states.py … --check`: "contract-states.json matches the model".
+  - This matches `closedPeerRunRefusal` in the code and CM-13.
 
-- Protects: CM-13 (Principle 15: one meaning in code and docs).
-- Where: `autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-engine.ts:127` ("The Task-scope refusal (a different Task, or a closed one)"), a touched file; and `root-message-append.ts:14` ("closed, or a different Task"). This change made both false: `taskScopeRefusalOf` now admits only `TASK_AGENT_RESOURCE_CLOSED`.
-- Required action (Local Fix, implementation): say "a closed Task" only.
+### CR-002 — Resolved (round 2)
+
+- `root-communication-engine.ts:127` and `root-message-append.ts:14` now say a closed Task. A grep of `src` finds no comment that still names a "different Task" refusal.
 
 ## Follow-ups
 
@@ -205,11 +203,11 @@ No new premises.
 
 ## Classification
 
-- `Local Fix` (implementation-owned): CR-001, CR-002. Both are bounded. No design or requirement change is needed.
+- N/A: the review passes.
 
 ## Recommended Recipient
 
-- Implementation engineer (`Local Fix`), the recipient `get_handoff_rules` returns for an implementation-owned fix. After the fix: source review again (targeted delta), then API/E2E.
+- API/E2E engineer (implementation review passed), the recipient `get_handoff_rules` returns for a pass; then the implementation engineer, informational.
 
 ## Residual Risks
 
@@ -220,11 +218,11 @@ No new premises.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (Local Fix)
+- Review Decision: `Pass` (round 2, CRR-002)
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.3/10 overall. Runtime Correctness And Behavioral Fidelity scores 9.0 (CR-001); every other category is at least 9.2.
-- Failure Origin: N/A (implementation review)
-- Recommended Recipient: implementation engineer
-- Notes: the production code is sound and every recorded deviation's reason holds (deviations 1–3, 5, 6 and 10: C-03 … C-05, C-09). Only the contract model edit (CR-001) and two comments (CR-002) need changes.
+- Score Summary: 9.4/10 overall; every category is at least 9.3.
+- Failure Origin: N/A
+- Recommended Recipient: API/E2E engineer
+- Notes: the production code is unchanged since round 1 apart from two comments, and every recorded deviation's reason holds. API/E2E must also rewrite the stale E2E assertions the handoff lists, and run the two-server E2E (UNK-001). The model's inbound direction (a fenced run on B messaging a non-delegator of A) is not specified by the requirements, which cover senders on the Task's node only. It was not reviewed as a behavior.

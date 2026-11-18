@@ -7,6 +7,7 @@ The latest `code-review-report.md` is authoritative for its current result.
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001, `deacacf948`) | N/A | Fail (Local Fix) | CR-001, CR-002 |
+| CRR-002 | `code-review-report.md` | Implementation Review, round 2 (IR-002, `5f89ecbdf5`) | Fail (Local Fix) | Pass | CR-001, CR-002 (resolved) |
 
 ## Revision Entries
 
@@ -34,3 +35,31 @@ None.
 - Material score or classification changes: Runtime Correctness And Behavioral Fidelity 9.0 (CR-001)
 - Recommended recipient: implementation engineer
 - Remaining risks or uncertainty: two-server E2E (UNK-001); stale E2E assertions for API/E2E.
+
+### CRR-002 — Delta review of IR-002: CR-001 and CR-002 resolved
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/list-running-agents/tickets/in-progress/list-running-agents/code-review-report.md`
+- Review entry point and round: Implementation Review, round 2
+- Review scope: `Targeted Delta Review`. `a4848a8441..5f89ecbdf5` touches 3 files, all within the prior findings: the model's cross-node `_admit` and two comments. No production logic, interface or data shape changed.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` / `implementation-revision-record.md` (IR-002); CR-001, CR-002
+- Relevant solution revision IDs: SR-006 … SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-003, ARCH-REV-004
+- Relevant implementation revision IDs: IR-001, IR-002
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail (Local Fix), CRR-001
+- Current authoritative result: Pass
+- What changed in the review result and why: both findings are fixed and verified (below), so the scores for Naming, Runtime Correctness and Cleanup rise to 9.4.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Open (Local Fix) | Resolved | IR-002, `5f89ecbdf5` | `model.py:323-336`: a sender on the Task's node is refused CLOSED when the node's entries for the peer run are all closed. My probe after S19: `solution_designer_65a9` and M both CLOSED. IMP-08: four senders DELIVERED after S18 (open), CLOSED after S19. `export_contract_states.py --check` matches the model. |
+| CR-002 | Open (Local Fix) | Resolved | IR-002, `5f89ecbdf5` | Both comments now say a closed Task; a grep of `src` finds no stale "different Task" refusal wording. |
+
+- New or remaining finding IDs: None; follow-up FU-004 stays recorded
+- Material score or classification changes: overall 9.3 → 9.4; Runtime Correctness 9.0 → 9.4
+- Recommended recipient: API/E2E engineer (primary); implementation engineer (informational)
+- Remaining risks or uncertainty: two-server E2E (UNK-001); stale E2E assertions listed in the handoff; contract-story U9 timing.
