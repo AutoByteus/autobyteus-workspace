@@ -1,6 +1,6 @@
 # Release Report — release-v1.5.13 (autobyteus-535): stable v1.5.13
 
-Status: **in progress: checks before tagging; one Grok smoke case needs the founder's words.** Nothing tagged.
+Status: **in progress: cutting (the founder waived Grok).**
 
 ## Scope
 
@@ -36,3 +36,5 @@ Status: **in progress: checks before tagging; one Grok smoke case needs the foun
 | Grok "different same-named skill" | FAIL discovery timed out | FAIL `429 … free-usage-exhausted` | run 2: solely a usage limit, covered |
 
 - Grok's free usage is now exhausted (rolling 24 h), so a further rerun cannot give a clean Grok result today. Evidence: `evidence/delivery/DR1-pretag-*`.
+- **The founder's Grok decision** (to delivery directly, 2026-11-18): "Waive for grok quota limit thanks". Delivery's reading, stated to him before the cut: the Grok runtime is waived for v1.5.13, all three cases (two failed solely on the quota; the third, `ACP_REQUEST_TIMEOUT: initialize did not respond in time`, cannot be rerun cleanly while the quota is exhausted). The other runtimes passed.
+
