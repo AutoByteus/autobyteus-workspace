@@ -19,7 +19,7 @@ All paths below are in `/Users/normy/autobyteus_org/autobyteus-worktrees/restore
 - Current implementation revision ID: `IR-002` (IR-001 baseline)
 - Related solution revision IDs: `SR-001`, `SR-002`
 - Related architecture-review revision IDs: `ARCH-REV-001` (Pass, SR-002, Medium / High)
-- Related code-review revision IDs: `CRR-001` (failure origin of F-1: Design Impact)
+- Related code-review revision IDs: `CRR-001` (failure origin of F-1: Design Impact), `CRR-002` (Pass, round 2: SR-002 / IR-002, CR-001 resolved, no findings; sent on to API/E2E by the code reviewer)
 - Related API/E2E revision IDs: `API-REV-001` (round 1: Fail F-1, the reminder card twice live)
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: `F-1`
