@@ -111,7 +111,10 @@ export class MemoryManager {
     workingContextSnapshotStore?: WorkingContextSnapshotStore | null;
     agentId?: string | null }) {
     this.store = options.store;
-    this.turnTracker = options.turnTracker ?? new TurnTracker();
+    // The run's complete stored raw-trace corpus (archived segments and the active file): a restored run's turn ids
+    // continue after its stored turns, and its tool lifecycle state is rebuilt from it.
+    const storedTraces = this.store.listTurnRawTraceCorpusOrdered();
+    this.turnTracker = options.turnTracker ?? TurnTracker.continuingAfter(storedTraces.map((item) => item.turnId));
     this.automaticCompactionConfiguration = options.memoryCompaction ?? DEFAULT_MEMORY_COMPACTION_CONFIGURATION;
     this.workingContextSnapshotStore = options.workingContextSnapshotStore ?? null;
     this.workingContextController = new MemoryManagerWorkingContextController({
@@ -125,7 +128,7 @@ export class MemoryManager {
       snapshotStore: this.workingContextSnapshotStore,
       agentId: options.agentId ?? this.workingContextSnapshotStore?.agentId ?? null,
     });
-    this.toolLifecycleState = new ToolTraceLifecycleState(this.store.listTurnRawTraceCorpusOrdered());
+    this.toolLifecycleState = new ToolTraceLifecycleState(storedTraces);
     this.llmRequestRecovery = new LlmRequestRecoveryBoundary({
       getWorkingContext: () => this.workingContextController.getContext(),
       setWorkingContext: (workingContext) => this.workingContextController.install(workingContext),

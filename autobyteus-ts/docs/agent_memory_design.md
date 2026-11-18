@@ -286,6 +286,14 @@ safe message. Repeated repair converges; an abandoned tool is not assumed to
 have succeeded. Archived raw history is not replayed as new conversation work.
 New-run initialization remains a separate path.
 
+Turn ids are `turn_NNNN`, numbered by the run's `TurnTracker`. A `MemoryManager`
+built over a run's stored memory (a restore) continues after the highest stored
+`turn_NNNN` in its complete raw-trace corpus, archived segments included
+(`TurnTracker.continuingAfter`); a new run starts at `turn_0001`. So a turn id
+names one turn of a run across any number of restores, which replay turn
+groups, stream buffers and the web's segment identity rely on (autobyteus-526).
+Runs restored before this keep the duplicate ids already stored.
+
 A tool called through tool search (`call_tool`; see
 `tool_schema_and_configuration.md` §4.8) has two records. The raw `tool_call`
 trace holds the real tool: `tool_name`, `tool_args` and `called_through`
