@@ -1,0 +1,38 @@
+# API-03 (autobyteus-524 round 2, API/E2E): whole server test:integration (AC-004)
+# Commands: pnpm -C autobyteus-server-ts test:integration:prepare; env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-server-ts test:integration
+# head f1b61d0c52 (source 2e5b0198e2); Node v22.23.1; 2026-11-18; full log not committed
+start 06:51:40  6:51  up 29 days, 16:30, 10 users, load averages: 55.32 57.02 59.28
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-002/AC-015(b)/QR-004: edits reach every reader; other agents never disappear during the refresh
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-006: a 50-file burst is coalesced into a bounded number of publications
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > DSN-003: a broken team-local agent keeps its last good version and its Team stays launchable
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-012: a root renamed away keeps its definitions and reports FOLDER_MISSING; restoring it resumes watching
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits file creation event with node metadata
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > captures rapid changes without dropping events
+ Test Files  2 failed | 86 passed | 20 skipped (108)
+      Tests  11 failed | 495 passed | 69 skipped (575)
+EXIT=1 end 07:00:55  7:00  up 29 days, 16:39, 10 users, load averages: 54.18 56.02 58.14
+
+== package-auto-refresh failure kinds
+   1   AssertionError: expected 6817 to be less than 5000
+   1   Error: Condition not met within 5000 ms; last value: "FOLDER_MISSING"
+   1   Error: Hook timed out in 10000ms.
+   1   Error: Timed out waiting for event
+
+== watch-event latency (API-03-fswatch-latency-probe.mjs, 07:02, fseventsd 153.7 %)
+{"latenciesMs":[6355,null,2822,null,12521]}
+
+== package-auto-refresh alone, branch source vs the base's (0570c47fd9) six changed src files swapped in (integration tests run src; restored after, git status clean)
+branch-1 07:05:37 load 50.24 51.53 55.28 ::    1       Tests  5 failed | 10 passed (15)    1 AssertionError: expected 8441 to be less than 5000    1 Error: Hook timed out in 10000ms. 
+base-src 07:08:36 load 51.09 53.57 55.54 ::    1       Tests  4 failed | 11 passed (15)    1 AssertionError: expected 5950 to be less than 5000    1 Error: Hook timed out in 10000ms. 
+branch-2 07:11:35 load 56.42 55.56 55.99 ::    1       Tests  5 failed | 10 passed (15)    1 AssertionError: expected 10452 to be less than 5000    1 Error: Hook timed out in 10000ms. 
+base-a 07:14:21 load 43.93 50.88 54.00 ::      × AC-001/AC-015(a): a new agent and a new Team written on disk a|     × AC-002/AC-015(b)/QR-004: edits reach every reader; other agent|     × AC-007: skill edits inside a package produce no reload and no |      Tests  3 failed | 12 passed (15)|
+branch-a 07:18:53 load 38.24 45.13 50.64 ::      × AC-001/AC-015(a): a new agent and a new Team written on disk a|     × autobyteus-324: a tool list edit on disk and an in-app save ea|     × AC-016: a lookup inside the settle window applies the detected|     × AC-003/AC-015(c): a deleted agent or Team is gone and delegati|     × AC-004: a broken edit keeps the last good agent usable with an|     × AC-006: a 50-file burst is coalesced into a bounded number of |     × AC-007: skill edits inside a package produce no reload and no |     × AC-011: an imported root is watched; a removed root is release|      Tests  8 failed | 7 passed (15)|
+base-b 07:21:40 load 51.10 47.80 50.73 ::      × AC-001/AC-015(a): a new agent and a new Team written on disk a|     × AC-002/AC-015(b)/QR-004: edits reach every reader; other agent|     × AC-006: a 50-file burst is coalesced into a bounded number of |     × AC-007: skill edits inside a package produce no reload and no |     × DSN-003: a broken team-local agent keeps its last good version|      Tests  5 failed | 10 passed (15)|
+branch-b 07:24:06 load 64.08 55.76 53.58 ::      × AC-001/AC-015(a): a new agent and a new Team written on disk a|     × AC-002/AC-015(b)/QR-004: edits reach every reader; other agent|     × AC-006: a 50-file burst is coalesced into a bounded number of |      Tests  3 failed | 12 passed (15)|
+Failed-case counts: base 4, 3, 5; branch 5, 5, 8, 3; the same cases move between runs. Reachability: the package watcher's normal path is unchanged (only stopForProcessExit added, called only at process shutdown, never by tests outside unit); SkillFolderWatcher.close() keeps its steps and order; closeStudioProcessResources moved with an identical body (diff checked). Cause: FSEvents delay, TESTING.md 'File watching on a busy Mac'.

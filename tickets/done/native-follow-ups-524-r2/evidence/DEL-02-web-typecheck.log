@@ -1,0 +1,11 @@
+# DEL-02 (autobyteus-524 r2 delivery): web typecheck on the merged state
+# Command: pnpm -C autobyteus-web typecheck (run alone, after the server typecheck)
+# Commit: be94117935; 2026-11-18
+
+[typecheck] Nuxt app (tsconfig.json): 60 errors, exit 2, 55.6s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.5s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 25.1s
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+exit 0

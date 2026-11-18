@@ -254,7 +254,13 @@ The frame names lists only; clients re-read through GraphQL.
   exposes `agentPackageDefinitions` (`{ store, reloader }`).
 - The studio server adds the hub and the watcher
   (`compositions/agent-package-definition-feed-composition.ts`). Shutdown closes
-  the watcher, then the hub, then the definition services.
+  the watcher, then the hub, then the definition services. At process shutdown the
+  server's cleanup first calls the watcher's `stopForProcessExit()`: it ends event
+  handling (catch-up timers, entries, late callbacks) without closing the OS
+  watches, whose close can block the main thread for seconds on a busy Mac; the
+  process exit releases them, and `close()` after it does nothing more. Every
+  other close (an in-process server in a test, a failed startup, a package
+  folder removed while running) closes the OS watches.
 
 ## Ownership Rules
 

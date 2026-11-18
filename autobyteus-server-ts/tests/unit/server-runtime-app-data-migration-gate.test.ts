@@ -32,9 +32,12 @@ const mocks = vi.hoisted(() => {
       resumeAfterRestart: vi.fn(async () => ({ recorded: 0, reminded: 0, skipped: 0, resumed: 0, failed: 0 })),
     },
   };
+  // autobyteus-524 FU-007: the shutdown cleanup ends the studio's file watches for the exit before the close.
+  const stopFileWatchesForProcessExit = vi.fn();
   return {
     app,
     lifecycle,
+    stopFileWatchesForProcessExit,
     agentToolsMcpHost,
     credentialProxyHost,
     restartResume,
@@ -45,6 +48,7 @@ const mocks = vi.hoisted(() => {
       credentialProxyHost,
       packageRegistryService: {},
       restartResume,
+      stopFileWatchesForProcessExit,
     })),
     initializePrisma: vi.fn(async () => undefined),
     disableEnvironmentKeySource: vi.fn(),
@@ -342,7 +346,7 @@ describe("Studio app-data migration startup", () => {
       const starting = startConfiguredServer({ host: '127.0.0.1', port: 0 });
       await entered; handlers.get('SIGTERM')!();
       expect(mocks.app.close).not.toHaveBeenCalled(); expect(mocks.shutdownPrisma).not.toHaveBeenCalled();
-      finish(phase === 'build' ? { fastify: mocks.app, applicationRuntime: { lifecycle: mocks.lifecycle }, agentToolsMcpHost: mocks.agentToolsMcpHost, credentialProxyHost: mocks.credentialProxyHost, restartResume: mocks.restartResume } : undefined);
+      finish(phase === 'build' ? { fastify: mocks.app, applicationRuntime: { lifecycle: mocks.lifecycle }, agentToolsMcpHost: mocks.agentToolsMcpHost, credentialProxyHost: mocks.credentialProxyHost, restartResume: mocks.restartResume, stopFileWatchesForProcessExit: mocks.stopFileWatchesForProcessExit } : undefined);
       await starting; await vi.waitFor(() => expect(process.exit).toHaveBeenCalled());
       if (phase === 'prisma') {
         expect(mocks.buildStudioServer).not.toHaveBeenCalled(); expect(mocks.shutdownPrisma).toHaveBeenCalledOnce();
@@ -351,6 +355,12 @@ describe("Studio app-data migration startup", () => {
         // autobyteus-285: the busy runs are recorded before the close interrupts anything.
         expect(mocks.restartResume.recorder.record).toHaveBeenCalledOnce();
         expect(mocks.restartResume.recorder.record.mock.invocationCallOrder[0])
+          .toBeLessThan(mocks.app.close.mock.invocationCallOrder[0]!);
+        // autobyteus-524 FU-007: record, then the file watches end for the exit, then the close.
+        expect(mocks.stopFileWatchesForProcessExit).toHaveBeenCalledOnce();
+        expect(mocks.stopFileWatchesForProcessExit.mock.invocationCallOrder[0])
+          .toBeGreaterThan(mocks.restartResume.recorder.record.mock.invocationCallOrder[0]!);
+        expect(mocks.stopFileWatchesForProcessExit.mock.invocationCallOrder[0])
           .toBeLessThan(mocks.app.close.mock.invocationCallOrder[0]!);
       }
       if (phase !== 'background') expect(mocks.restartResume.resumer.resumeAfterRestart).not.toHaveBeenCalled();

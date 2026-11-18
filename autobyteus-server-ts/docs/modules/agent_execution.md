@@ -329,7 +329,15 @@ callers record `terminatedAt`, so runs stopped by a shutdown stay resumable.
 
 **Bounded server shutdown.** `ServerProcessShutdown` (`src/shutdown/`) gives the
 server's own cleanup (`app.close()`) at most 10 s
-(`SERVER_SHUTDOWN_TIMEOUT_MS`), counted from when startup has settled. It then
+(`SERVER_SHUTDOWN_TIMEOUT_MS`), counted from when startup has settled. That
+cleanup (`server-runtime.ts`) records the busy runs, then ends the package-folder
+and skill-folder watchers (`studioServer.stopFileWatchesForProcessExit()`), then
+calls `app.close()`. The watcher stop ends event handling without closing the OS
+watches: closing a recursive watch blocks the main thread for seconds while
+macOS's file-event service is busy, and the process exit that follows releases
+them. Every other close of these watchers (an in-process server closed by a
+test, the startup-failure path, a package folder removed while the server runs)
+still closes the OS watches. It then
 always runs one process-tree sweep (`server-process-tree-sweep.ts`): it records
 the server's descendants in its own process group and the groups led by a
 descendant, sends SIGTERM, waits up to 1.5 s, SIGKILLs the recorded
