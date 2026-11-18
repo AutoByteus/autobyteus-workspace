@@ -4,6 +4,7 @@
 | Revision ID | Canonical report | Entry point / trigger | Prior result | Current result | Findings |
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | code-review-report.md | Implementation Review / IR-002 completion | N/A | Fail — Local Fix | F-CR-001, F-CR-002 |
+| CRR-002 | code-review-report.md | Implementation Review / IR-003 fixes | Fail | Pass | F-CR-001/002 resolved |
 
 ## Revision Entries
 ### CRR-001 — Managed failure-continuation review
@@ -23,3 +24,23 @@ None (initial baseline).
 - Score: **9.0/10** summary; runtime 7.0 and API/E2E readiness 7.5 drive failure, not averaging. No size/structural finding or follow-up introduced.
 - Recommended recipient: **/implementation_engineer**, source-review Local Fix rule; correct and return for source review before API/E2E.
 - Remaining risks: all IR-002 final graphical authorization, host sandbox, native ARM64/clean CI, full signed update/data, adverse transaction and release-admin gates remain mandatory. Reviewer probe does not discharge them. No API/E2E pass or delivery authority inferred.
+
+
+### CRR-002 — Verify policy eligibility and safe failed-restart settlement
+- Canonical report: `code-review-report.md`, implementation review round 2, 2026-11-18.
+- Scope: **Full Re-Audit**. The fix introduces an inter-owner snapshot interface and settled failure state, so all structural checks/full scorecard were reconsidered. Diff f8788f9700→aea6d7dd28 confirms only three production owners and two tests changed; unchanged launch/native/release/UI evidence remains valid for its original scope.
+- Trigger: Implementation Engineer IR-003, `implementation-handoff.md` and `implementation-revision-record.md`; prior CRR-001 F-CR-001/002. Source fix **eb470a0d31**; received HEAD **aea6d7dd28c391ea334b2b0fc1c387c1c2479eaa**.
+- Related authorities: **SR-012/013/014, DS-003, ARCH-REV-003, IR-003**, retained manual-refusal and stage-lifetime clarifications. API-REV / DR: **N/A**.
+- Prior result: **Fail — Local Fix**. Current result: **Pass**, **Large / High** unchanged.
+- Scenario/material-premise basis unchanged: SCN-004 independent automatic block and safe exit after unknown manual outcome. No new product requirement, hostile-actor or concurrent-workflow assumption.
+
+#### Prior Finding Resolution
+| Finding | Prior status | Current status | Related revisions | Verification evidence |
+| --- | --- | --- | --- | --- |
+| F-CR-001 | Open | Resolved | IR-003 / eb470a0d31 / CRR-002 | Notification-derived blocked version → updater initialization/applyState snapshot → managed dispatch check after stop; no activating event or automatic history clearing for blocked candidate. IMP-23 actual-owner continuation cases, IMP-25 zero activation/retained failure; IMP-22 fails on old source. Explicit manual success/refusal/receipt-loss remain supported. |
+| F-CR-002 | Open | Resolved | IR-003 / eb470a0d31 / CRR-002 | failed-restart clears pending/generation, refuses further staging/restart, lets next ordinary quit finish without candidate/relaunch; stop result reused once. IMP-23 unknown/failed-stop/unconfirmed-exit continuation tests and confirmed-server incomplete-stop control; IMP-25 later quit1/no relaunch; IMP-22 old source fails later-exit assertions. |
+
+- Evidence inspection: IMP-23 **126 tests / six suites**, IMP-24 both typechecks **0 production errors**, permitted baselines web87/server1012 unchanged; IMP-26 rerun selection. No repeated suites/probes by reviewer. Current 52-file source inventory `evidence/CRR-002-source-size.tsv`: AppUpdater491, session126, record244; all ≤500 nonempty, no >220 delta. No source/test fix by reviewer.
+- New/remaining findings: **None**. Follow-ups: **None**. Score **9.4/10**, runtime/readiness now9.3; all ten categories ≥9.2.
+- Recommended primary recipient: **/api_e2e_engineer**, implementation-review pass rule. Source pass is not execution acceptance.
+- Remaining limits: prior AppImage is **IR-002 bytes, without IR-003 TS fixes**. Build current package before real lifecycle acceptance. All graphical Ubuntu authorization, 22/24/26 renderer sandbox, native ARM64/clean branch CI, two genuine signed updates without cached grants, synthetic data continuity, failure/refusal/rollback matrix and signing administration gates remain mandatory. No production secret/push/release/host-policy operation performed.
