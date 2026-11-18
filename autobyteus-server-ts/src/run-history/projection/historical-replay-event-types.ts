@@ -89,6 +89,8 @@ export interface HistoricalReplaySystemTaskNotificationEvent {
   kind: "system_task_notification";
   senderId: string | null;
   content: string;
+  /** The notice's one id (autobyteus-526); null for a notice stored before it. */
+  messageId: string | null;
   ts: number | null;
 }
 

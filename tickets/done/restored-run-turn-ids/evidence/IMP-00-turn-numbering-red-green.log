@@ -1,0 +1,18 @@
+== base source (2e9ac1e65b), the new test
+     × a restored run continues after its highest stored turn, archived segments included 105ms
+     × a second restore continues again (turn_0004..turn_0005 stored → turn_0006) 2ms
+     × the highest stored turn counts, not the last one; ids that are not turn_NNNN are ignored 2ms
+Received: "turn_0001"
+Received: "turn_0001"
+Received: "turn_0001"
+      Tests  3 failed | 1 passed (4)
+== with the fix
+cbea910d08
+ ✓ tests/unit/memory/turn-tracker.test.ts > TurnTracker > increments turn ids with zero padding 1ms
+ ✓ tests/unit/memory/turn-tracker.test.ts > TurnTracker > respects custom start 0ms
+ ✓ tests/unit/memory/turn-tracker.test.ts > TurnTracker.continuingAfter (autobyteus-526) > continues one past the highest stored turn_NNNN; other ids do not count; none stored starts at turn_0001 0ms
+ ✓ tests/unit/memory/memory-manager-turn-numbering.test.ts > MemoryManager turn numbering across restores (autobyteus-526) > a new run starts at turn_0001 2ms
+ ✓ tests/unit/memory/memory-manager-turn-numbering.test.ts > MemoryManager turn numbering across restores (autobyteus-526) > a restored run continues after its highest stored turn, archived segments included 104ms
+ ✓ tests/unit/memory/memory-manager-turn-numbering.test.ts > MemoryManager turn numbering across restores (autobyteus-526) > a second restore continues again (turn_0004..turn_0005 stored → turn_0006) 2ms
+ ✓ tests/unit/memory/memory-manager-turn-numbering.test.ts > MemoryManager turn numbering across restores (autobyteus-526) > the highest stored turn counts, not the last one; ids that are not turn_NNNN are ignored 2ms
+      Tests  7 passed (7)

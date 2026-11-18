@@ -13,3 +13,12 @@ describe('TurnTracker', () => {
     expect(tracker.nextTurnId()).toBe('turn_0010');
   });
 });
+
+describe('TurnTracker.continuingAfter (autobyteus-526)', () => {
+  it('continues one past the highest stored turn_NNNN; other ids do not count; none stored starts at turn_0001', () => {
+    expect(TurnTracker.continuingAfter(['turn_0002', 'turn_0010', 'turn_0003']).nextTurnId()).toBe('turn_0011');
+    expect(TurnTracker.continuingAfter(['custom-id', 'turn_12a', 'turn_']).nextTurnId()).toBe('turn_0001');
+    expect(TurnTracker.continuingAfter([]).nextTurnId()).toBe('turn_0001');
+    expect(TurnTracker.continuingAfter(['turn_9999']).nextTurnId()).toBe('turn_10000');
+  });
+});

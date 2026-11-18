@@ -12,6 +12,7 @@ const mountSegment = (content: string, senderId = 'system') => mount(SystemTaskN
       type: 'system_task_notification',
       senderId,
       content,
+      messageId: null,
     },
   },
 });
@@ -175,5 +176,38 @@ describe('SystemTaskNotificationSegment', () => {
     expect(enCatalog['workspace.components.conversation.segments.SystemTaskNotificationSegment.runtimeChanged']).toBe('Agent runtime changed');
     expect(zhCatalog['workspace.components.conversation.segments.SystemTaskNotificationSegment.runtimeChanged']).toBeTruthy();
     expect(wrapper.text()).toContain('Agent runtime changed from Claude Agent SDK (sonnet) to Codex App Server (gpt-5).');
+  });
+
+  describe('the restart reminder (autobyteus-526 AC-003)', () => {
+    const REMINDER = [
+      '[Platform notice — application restarted]',
+      '',
+      'The application restarted at 2026-11-18 05:41 UTC (reason: a restart).',
+    ].join('\n');
+    const withViewerZone = (zone: string, run: () => void) => {
+      const previous = process.env.TZ;
+      process.env.TZ = zone;
+      try { run(); } finally { if (previous === undefined) delete process.env.TZ; else process.env.TZ = previous; }
+    };
+
+    it('shows the restart time in the viewer\'s zone (Europe/Berlin: 06:41 CET), by sender or by header; the segment keeps UTC', () => {
+      withViewerZone('Europe/Berlin', () => {
+        for (const wrapper of [mountSegment(REMINDER, 'system.restart_resume'), mountSegment(REMINDER)]) {
+          const text = wrapper.get('[data-testid="system-task-notification-segment"]').text();
+          expect(text).toContain('The application restarted at 18 Nov 2026, 06:41 CET (reason: a restart).');
+          expect(text).not.toContain('05:41 UTC');
+        }
+        const segment = { type: 'system_task_notification', senderId: 'system.restart_resume', content: REMINDER, messageId: 'n1' } as const;
+        mount(SystemTaskNotificationSegment, { props: { segment } });
+        expect(segment.content).toContain('2026-11-18 05:41 UTC');
+      });
+    });
+
+    it('leaves another notice\'s UTC text as it is', () => {
+      withViewerZone('Europe/Berlin', () => {
+        const other = mountSegment('You have a new task. Due 2026-11-18 05:41 UTC.');
+        expect(other.text()).toContain('2026-11-18 05:41 UTC');
+      });
+    });
   });
 });
