@@ -33,3 +33,4 @@
 - Intended behavior changed: refinement within the same direction (a message the node holds is never reported not sent; an honest "cannot tell" where the node cannot report its queue). Approval: Solution Designer within the direction; user informed.
 - Classification: unchanged, Medium / High (the escalation trigger for a node change fired and is accepted: one field in the snapshot payload, node and page in one change).
 - Handoff: `handoff-architecture-design-revised-sr-003.md` → `/architecture_reviewer`.
+- Review result (recorded 2026-11-18): ARCH-REV-002 **Pass** on SR-003 (AR-001 resolved), `design-review-report.md` / `architecture-review-revision-record.md`; routed to `/implementation_engineer`. Reviewer correction (non-blocking): applying `input_state` removes only the pending mark of a stale overlaid message, not the message itself; it matters only after a node restart, and the implementer has the note. No further Solution Designer action.
