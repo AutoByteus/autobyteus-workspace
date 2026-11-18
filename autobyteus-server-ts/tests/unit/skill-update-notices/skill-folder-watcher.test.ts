@@ -101,6 +101,35 @@ describe("SkillFolderWatcher", () => {
     await watcher.close();
   });
 
+  // autobyteus-524 FU-007: at process exit the watches end without their OS close; any other close releases them.
+  it("stops for a process exit without closing its OS watches, reports no change after it, and a later close() does nothing", async () => {
+    vi.useFakeTimers();
+    const watches = createFakeWatches();
+    const watcher = new SkillFolderWatcher({ createWatch: watches.factory });
+    const settled = vi.fn();
+    watcher.onSettledChange(settled);
+    watcher.syncWatchedFolders(["/skills/a", "/skills/b"]);
+    watches.of("/skills/a").emit("/skills/a/SKILL.md"); // pending when the process exits
+
+    watcher.stopForProcessExit();
+    watches.created[1]!.emit("/skills/b/SKILL.md");
+    watcher.syncWatchedFolders(["/skills/c"]);
+    await vi.advanceTimersByTimeAsync(5_000);
+    await watcher.close();
+
+    expect(watches.created.map((watch) => watch.close.mock.calls.length)).toEqual([0, 0]);
+    expect(watcher.watchedFolders()).toEqual([]);
+    expect(settled).not.toHaveBeenCalled();
+  });
+
+  it("closes every OS watch on close() without a process-exit stop", async () => {
+    const watches = createFakeWatches();
+    const watcher = new SkillFolderWatcher({ createWatch: watches.factory });
+    watcher.syncWatchedFolders(["/skills/a", "/skills/b"]);
+    await watcher.close();
+    expect(watches.created.map((watch) => watch.close.mock.calls.length)).toEqual([1, 1]);
+  });
+
   it("watches each listed folder with its own watch and closes it as soon as the folder is no longer listed (CR-005)", async () => {
     vi.useFakeTimers();
     const watches = createFakeWatches();

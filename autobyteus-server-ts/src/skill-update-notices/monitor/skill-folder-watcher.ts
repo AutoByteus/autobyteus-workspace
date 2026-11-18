@@ -87,14 +87,28 @@ export class SkillFolderWatcher {
   }
 
   async close(): Promise<void> {
+    const watches = [...this.watched.values()].map((folder) => folder.watch);
+    this.endEventHandling();
+    for (const watch of watches) this.closeWatch(watch);
+    await Promise.all([...this.closing]);
+  }
+
+  /**
+   * Process exit only: ends event handling at once without closing the OS watches, whose close can block the main
+   * thread for seconds on a busy Mac; the process exit releases them. `close()` after it does nothing more.
+   */
+  stopForProcessExit(): void {
+    this.endEventHandling();
+    this.closing.clear();
+  }
+
+  private endEventHandling(): void {
     this.closed = true;
     if (this.timer) clearTimeout(this.timer);
     this.timer = null;
     this.pending.clear();
     this.listeners.clear();
-    for (const folder of this.watched.values()) this.closeWatch(folder.watch);
     this.watched.clear();
-    await Promise.all([...this.closing]);
   }
 
   private startWatch(skillDir: string): WatchedFolder {
