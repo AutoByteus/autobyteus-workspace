@@ -1,0 +1,10 @@
+IMP-22 excerpt | 2026-11-18 | f8788f9700 production + new IR-003 tests | Ubuntu26 x64, Node22.23.2
+Full commands and output: IMP-22-regression-red.log.
+New continued-journey regression selection: Tests 6 failed | 1 passed | 38 skipped (45).
+F-CR-001: expected writer.activate not called after explicit Download + ordinary quit, but it was called.
+The success control (explicit manual success) passes on the old source.
+After ordering F-CR-002 ordinary-exit assertions before the late-stage assertion, focused selection: Tests 3 failed | 42 skipped (45).
+Unknown commit: expected quit spy called once, got 0.
+Stop failure / server exit unconfirmed: expected exit spy arguments [1], number of calls 0.
+Both commands exit1 as expected. Each temporarily restored baseline source, then restored IR-003 bytes in finally.
+Fixed source eb470a0d31: IMP-23-focused-green.log, 126/126 pass.

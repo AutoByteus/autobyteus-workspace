@@ -1,0 +1,318 @@
+IMP-22 | 2026-11-18 | Ubuntu26 x64, Node22 | baseline production f8788f9700 + new IR-003 regression tests
+Command: pnpm -C autobyteus-web test:electron run electron/updater/__tests__/appUpdater.spec.ts -t managed failure continuation
+Expected: lifecycle regression failures; original three source files restored byte-for-byte in finally.
+
+> autobyteus@1.5.13 test:electron /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web
+> vitest --config ./electron/vitest.config.ts run electron/updater/__tests__/appUpdater.spec.ts -t 'managed failure continuation'
+
+
+ RUN  v3.2.7 /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/electron
+
+ ❯ updater/__tests__/appUpdater.spec.ts (45 tests | 6 failed | 38 skipped) 757ms
+   ↓ AppUpdater > managed verification is the only readiness authority; automatic download never invokes native install
+   ↓ AppUpdater > lost managed receipt clears provisional failure across restart and re-stages a cached update automatically
+   × AppUpdater > managed failure continuation (CRR-001, BEH-004) > retains the automatic block after explicit Download, while allowing ordinary quit 121ms
+     → expected "spy" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st spy call:
+
+    Array [
+      Object {
+        "baseline": "old",
+        "channel": "stable",
+        "id": "stage",
+        "identity": Object {
+          "sha256": "new",
+          "version": "1.1.10",
+        },
+      },
+    ]
+
+
+Number of calls: 1
+
+   × AppUpdater > managed failure continuation (CRR-001, BEH-004) > retains the automatic block after explicit Download, while allowing manual refusal 170ms
+     → expected "spy" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st spy call:
+
+    Array [
+      Object {
+        "baseline": "old",
+        "channel": "stable",
+        "id": "stage",
+        "identity": Object {
+          "sha256": "new",
+          "version": "1.1.10",
+        },
+      },
+    ]
+
+
+Number of calls: 1
+
+   × AppUpdater > managed failure continuation (CRR-001, BEH-004) > retains the automatic block after explicit Download, while allowing manual receipt loss 169ms
+     → expected "spy" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st spy call:
+
+    Array [
+      Object {
+        "baseline": "old",
+        "channel": "stable",
+        "id": "stage",
+        "identity": Object {
+          "sha256": "new",
+          "version": "1.1.10",
+        },
+      },
+    ]
+
+
+Number of calls: 1
+
+   ✓ AppUpdater > managed failure continuation (CRR-001, BEH-004) > retains the automatic block after explicit Download, while allowing manual success 118ms
+   × AppUpdater > managed failure continuation (CRR-001, BEH-004) > allows a later ordinary exit after manual unknown commit, without retry or relaunch 60ms
+     → expected "spy" to be called once, but got 2 times
+   × AppUpdater > managed failure continuation (CRR-001, BEH-004) > allows a later ordinary exit after manual stop failed, without retry or relaunch 57ms
+     → expected "spy" to be called once, but got 2 times
+   × AppUpdater > managed failure continuation (CRR-001, BEH-004) > allows a later ordinary exit after manual server exit unconfirmed, without retry or relaunch 58ms
+     → expected "spy" to be called once, but got 2 times
+   ↓ AppUpdater > registers IPC handlers and broadcasts initial state on initialize
+   ↓ AppUpdater > runs startup auto-check only for packaged app
+   ↓ AppUpdater > maps update events to state and broadcasts progress
+   ↓ AppUpdater > classifies manual network check failures and keeps raw diagnostics out of state
+   ↓ AppUpdater > ignores duplicate provider error events without overwriting the original operation
+   ↓ AppUpdater > classifies missing latest metadata as a release-preparing safe error
+   ↓ AppUpdater > accepts install only after update-downloaded and triggers quitAndInstall
+   ↓ AppUpdater > awaits preparation before installation and does not install when preparation fails
+   ↓ AppUpdater > turns failed preparation into install error without invoking installation
+   ↓ AppUpdater > maps synchronous install invocation failure to updater error state
+   ↓ AppUpdater > update channel > defaults to stable without a saved preference and applies the stable policy
+   ↓ AppUpdater > update channel > loads a saved beta preference on initialize
+   ↓ AppUpdater > update channel > flags a running pre-release build
+   ↓ AppUpdater > update channel > re-applies the channel policy before every check
+   ↓ AppUpdater > update channel > persists, applies and re-checks when switching to beta while idle
+   ↓ AppUpdater > update channel > replaces a beta offer with the stable result when switching back to stable
+   ↓ AppUpdater > update channel > re-checks after an error state
+   ↓ AppUpdater > update channel > refuses a change while checking, downloading, downloaded or installing
+   ↓ AppUpdater > update channel > starts with no staged update and marks one staged on update-downloaded
+   ↓ AppUpdater > update channel > keeps the channel locked after a staged download and a manual check ending in available
+   ↓ AppUpdater > update channel > keeps the channel locked after a staged download and a manual check ending in no-update
+   ↓ AppUpdater > update channel > keeps the channel locked after a staged download and a manual check ending in error
+   ↓ AppUpdater > update channel > refuses an invalid channel value
+   ↓ AppUpdater > update channel > still applies the channel for the session when saving fails
+   ↓ AppUpdater > update channel > does not re-check in an unpackaged runtime
+   ↓ AppUpdater > update channel > never assigns autoUpdater.channel
+   ↓ AppUpdater > update notification (DS-004) > records a found version as a waiting, unread notification with the GitHub release page
+   ↓ AppUpdater > update notification (DS-004) > marks it read and keeps it after a restart, then handles it when the app runs the new version
+   ↓ AppUpdater > update notification (DS-004) > a newer version replaces the waiting notification and makes it unread again (REQ-005)
+   ↓ AppUpdater > update notification (DS-004) > removes a waiting notification when the version is no longer offered and nothing was updated (DEC-015)
+   ↓ AppUpdater > update notification (DS-004) > refuses to clear a waiting notification
+   ↓ AppUpdater > update notification (DS-004) > Download after a restart re-checks first, then downloads only when the update is available
+   ↓ AppUpdater > update notification (DS-004) > Download after a restart shows the check result and downloads nothing when no update is offered
+   ↓ AppUpdater > update notification (DS-004) > checks the generic test feed and gives no release page under it (REQ-019, DEC-017)
+   ↓ AppUpdater > update notification (DS-004) > never sets a feed URL without the test feed
+   ↓ AppUpdater > update notification (DS-004) > a found update never downloads by itself (REQ-015)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  updater/__tests__/appUpdater.spec.ts > AppUpdater > managed failure continuation (CRR-001, BEH-004) > retains the automatic block after explicit Download, while allowing ordinary quit
+AssertionError: expected "spy" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st spy call:
+
+    Array [
+      Object {
+        "baseline": "old",
+        "channel": "stable",
+        "id": "stage",
+        "identity": Object {
+          "sha256": "new",
+          "version": "1.1.10",
+        },
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ updater/__tests__/appUpdater.spec.ts:262:41
+    260|           s.session.willQuit({ preventDefault() {} });
+    261|           await vi.waitFor(() => expect(s.hooks.quit).toHaveBeenCalled…
+    262|           expect(s.writer.activate).not.toHaveBeenCalled();
+       |                                         ^
+    263|           expect(s.hooks.relaunch).not.toHaveBeenCalled();
+    264|         } else {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  updater/__tests__/appUpdater.spec.ts > AppUpdater > managed failure continuation (CRR-001, BEH-004) > retains the automatic block after explicit Download, while allowing manual refusal
+ FAIL  updater/__tests__/appUpdater.spec.ts > AppUpdater > managed failure continuation (CRR-001, BEH-004) > retains the automatic block after explicit Download, while allowing manual receipt loss
+AssertionError: expected "spy" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st spy call:
+
+    Array [
+      Object {
+        "baseline": "old",
+        "channel": "stable",
+        "id": "stage",
+        "identity": Object {
+          "sha256": "new",
+          "version": "1.1.10",
+        },
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ updater/__tests__/appUpdater.spec.ts:280:51
+    278|             continued.session.willQuit({ preventDefault() {} });
+    279|             await vi.waitFor(() => expect(continued.hooks.quit).toHave…
+    280|             expect(continued.writer.activate).not.toHaveBeenCalled();
+       |                                                   ^
+    281|           }
+    282|         }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  updater/__tests__/appUpdater.spec.ts > AppUpdater > managed failure continuation (CRR-001, BEH-004) > allows a later ordinary exit after manual unknown commit, without retry or relaunch
+ FAIL  updater/__tests__/appUpdater.spec.ts > AppUpdater > managed failure continuation (CRR-001, BEH-004) > allows a later ordinary exit after manual stop failed, without retry or relaunch
+ FAIL  updater/__tests__/appUpdater.spec.ts > AppUpdater > managed failure continuation (CRR-001, BEH-004) > allows a later ordinary exit after manual server exit unconfirmed, without retry or relaunch
+AssertionError: expected "spy" to be called once, but got 2 times
+ ❯ updater/__tests__/appUpdater.spec.ts:306:32
+    304|         autoUpdaterMock.emit('update-downloaded', { version: '1.1.10',…
+    305|         await Promise.resolve();
+    306|         expect(s.writer.stage).toHaveBeenCalledOnce();
+       |                                ^
+    307|         s.session.willQuit({ preventDefault() {} });
+    308|         if (failure === 'unknown commit') {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 1 passed | 38 skipped (45)
+   Start at  15:19:40
+   Duration  1.34s (transform 200ms, setup 0ms, collect 231ms, tests 757ms, environment 0ms, prepare 60ms)
+
+ ELIFECYCLE  Command failed with exit code 1.
+
+Process exit: 1
+
+IMP-22 continued | final assertion order: check ordinary-exit result before the additional no-new-stage assertion.
+Command: pnpm -C autobyteus-web test:electron run electron/updater/__tests__/appUpdater.spec.ts -t allows a later ordinary exit
+
+> autobyteus@1.5.13 test:electron /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web
+> vitest --config ./electron/vitest.config.ts run electron/updater/__tests__/appUpdater.spec.ts -t 'allows a later ordinary exit'
+
+
+ RUN  v3.2.7 /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/electron
+
+ ❯ updater/__tests__/appUpdater.spec.ts (45 tests | 3 failed | 42 skipped) 3201ms
+   ↓ AppUpdater > managed verification is the only readiness authority; automatic download never invokes native install
+   ↓ AppUpdater > lost managed receipt clears provisional failure across restart and re-stages a cached update automatically
+   ↓ AppUpdater > managed failure continuation (CRR-001, BEH-004) > retains the automatic block after explicit Download, while allowing ordinary quit
+   ↓ AppUpdater > managed failure continuation (CRR-001, BEH-004) > retains the automatic block after explicit Download, while allowing manual refusal
+   ↓ AppUpdater > managed failure continuation (CRR-001, BEH-004) > retains the automatic block after explicit Download, while allowing manual receipt loss
+   ↓ AppUpdater > managed failure continuation (CRR-001, BEH-004) > retains the automatic block after explicit Download, while allowing manual success
+   × AppUpdater > managed failure continuation (CRR-001, BEH-004) > allows a later ordinary exit after manual unknown commit, without retry or relaunch 1070ms
+     → expected "spy" to be called once, but got 0 times
+   × AppUpdater > managed failure continuation (CRR-001, BEH-004) > allows a later ordinary exit after manual stop failed, without retry or relaunch 1069ms
+     → expected "spy" to be called with arguments: [ 1 ]
+
+Number of calls: 0
+
+   × AppUpdater > managed failure continuation (CRR-001, BEH-004) > allows a later ordinary exit after manual server exit unconfirmed, without retry or relaunch 1060ms
+     → expected "spy" to be called with arguments: [ 1 ]
+
+Number of calls: 0
+
+   ↓ AppUpdater > registers IPC handlers and broadcasts initial state on initialize
+   ↓ AppUpdater > runs startup auto-check only for packaged app
+   ↓ AppUpdater > maps update events to state and broadcasts progress
+   ↓ AppUpdater > classifies manual network check failures and keeps raw diagnostics out of state
+   ↓ AppUpdater > ignores duplicate provider error events without overwriting the original operation
+   ↓ AppUpdater > classifies missing latest metadata as a release-preparing safe error
+   ↓ AppUpdater > accepts install only after update-downloaded and triggers quitAndInstall
+   ↓ AppUpdater > awaits preparation before installation and does not install when preparation fails
+   ↓ AppUpdater > turns failed preparation into install error without invoking installation
+   ↓ AppUpdater > maps synchronous install invocation failure to updater error state
+   ↓ AppUpdater > update channel > defaults to stable without a saved preference and applies the stable policy
+   ↓ AppUpdater > update channel > loads a saved beta preference on initialize
+   ↓ AppUpdater > update channel > flags a running pre-release build
+   ↓ AppUpdater > update channel > re-applies the channel policy before every check
+   ↓ AppUpdater > update channel > persists, applies and re-checks when switching to beta while idle
+   ↓ AppUpdater > update channel > replaces a beta offer with the stable result when switching back to stable
+   ↓ AppUpdater > update channel > re-checks after an error state
+   ↓ AppUpdater > update channel > refuses a change while checking, downloading, downloaded or installing
+   ↓ AppUpdater > update channel > starts with no staged update and marks one staged on update-downloaded
+   ↓ AppUpdater > update channel > keeps the channel locked after a staged download and a manual check ending in available
+   ↓ AppUpdater > update channel > keeps the channel locked after a staged download and a manual check ending in no-update
+   ↓ AppUpdater > update channel > keeps the channel locked after a staged download and a manual check ending in error
+   ↓ AppUpdater > update channel > refuses an invalid channel value
+   ↓ AppUpdater > update channel > still applies the channel for the session when saving fails
+   ↓ AppUpdater > update channel > does not re-check in an unpackaged runtime
+   ↓ AppUpdater > update channel > never assigns autoUpdater.channel
+   ↓ AppUpdater > update notification (DS-004) > records a found version as a waiting, unread notification with the GitHub release page
+   ↓ AppUpdater > update notification (DS-004) > marks it read and keeps it after a restart, then handles it when the app runs the new version
+   ↓ AppUpdater > update notification (DS-004) > a newer version replaces the waiting notification and makes it unread again (REQ-005)
+   ↓ AppUpdater > update notification (DS-004) > removes a waiting notification when the version is no longer offered and nothing was updated (DEC-015)
+   ↓ AppUpdater > update notification (DS-004) > refuses to clear a waiting notification
+   ↓ AppUpdater > update notification (DS-004) > Download after a restart re-checks first, then downloads only when the update is available
+   ↓ AppUpdater > update notification (DS-004) > Download after a restart shows the check result and downloads nothing when no update is offered
+   ↓ AppUpdater > update notification (DS-004) > checks the generic test feed and gives no release page under it (REQ-019, DEC-017)
+   ↓ AppUpdater > update notification (DS-004) > never sets a feed URL without the test feed
+   ↓ AppUpdater > update notification (DS-004) > a found update never downloads by itself (REQ-015)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  updater/__tests__/appUpdater.spec.ts > AppUpdater > managed failure continuation (CRR-001, BEH-004) > allows a later ordinary exit after manual unknown commit, without retry or relaunch
+AssertionError: expected "spy" to be called once, but got 0 times
+ ❯ updater/__tests__/appUpdater.spec.ts:308:55
+    306|         s.session.willQuit({ preventDefault() {} });
+    307|         if (failure === 'unknown commit') {
+    308|           await vi.waitFor(() => expect(s.hooks.quit).toHaveBeenCalled…
+       |                                                       ^
+    309|           const reentry = { preventDefault: vi.fn() }; s.session.willQ…
+    310|           expect(reentry.preventDefault).not.toHaveBeenCalled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  updater/__tests__/appUpdater.spec.ts > AppUpdater > managed failure continuation (CRR-001, BEH-004) > allows a later ordinary exit after manual stop failed, without retry or relaunch
+ FAIL  updater/__tests__/appUpdater.spec.ts > AppUpdater > managed failure continuation (CRR-001, BEH-004) > allows a later ordinary exit after manual server exit unconfirmed, without retry or relaunch
+AssertionError: expected "spy" to be called with arguments: [ 1 ]
+
+Number of calls: 0
+
+ ❯ updater/__tests__/appUpdater.spec.ts:314:55
+    312|           expect(s.writer.status).toHaveBeenCalledOnce();
+    313|         } else {
+    314|           await vi.waitFor(() => expect(s.hooks.exit).toHaveBeenCalled…
+       |                                                       ^
+    315|           expect(s.hooks.quit).not.toHaveBeenCalled();
+    316|         }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 42 skipped (45)
+   Start at  15:20:07
+   Duration  3.76s (transform 191ms, setup 0ms, collect 216ms, tests 3.20s, environment 0ms, prepare 89ms)
+
+ ELIFECYCLE  Command failed with exit code 1.
+
+Process exit: 1

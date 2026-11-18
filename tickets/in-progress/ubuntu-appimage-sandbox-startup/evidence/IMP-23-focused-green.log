@@ -1,0 +1,22 @@
+IMP-23 | 2026-11-18 | Ubuntu26 x64, Node22.23.2 | source eb470a0d31
+Command: pnpm -C autobyteus-web test:electron run electron/updater/__tests__/appUpdater.spec.ts electron/application/__tests__/managedUpdateSession.spec.ts electron/updater/__tests__/appUpdateNotificationRecord.spec.ts electron/updater/__tests__/appUpdaterAutomatic.spec.ts electron/updater/__tests__/appUpdaterAutomaticMac.spec.ts electron/updater/__tests__/appUpdaterAutoCheck.spec.ts
+
+> autobyteus@1.5.13 test:electron /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web
+> vitest --config ./electron/vitest.config.ts run electron/updater/__tests__/appUpdater.spec.ts electron/application/__tests__/managedUpdateSession.spec.ts electron/updater/__tests__/appUpdateNotificationRecord.spec.ts electron/updater/__tests__/appUpdaterAutomatic.spec.ts electron/updater/__tests__/appUpdaterAutomaticMac.spec.ts electron/updater/__tests__/appUpdaterAutoCheck.spec.ts
+
+
+ RUN  v3.2.7 /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup/autobyteus-web/electron
+
+ ✓ updater/__tests__/appUpdateNotificationRecord.spec.ts (19 tests) 33ms
+ ✓ updater/__tests__/appUpdaterAutoCheck.spec.ts (9 tests) 28ms
+ ✓ updater/__tests__/appUpdaterAutomatic.spec.ts (23 tests) 66ms
+ ✓ updater/__tests__/appUpdaterAutomaticMac.spec.ts (17 tests) 68ms
+ ✓ application/__tests__/managedUpdateSession.spec.ts (13 tests) 695ms
+ ✓ updater/__tests__/appUpdater.spec.ts (45 tests) 1253ms
+
+ Test Files  6 passed (6)
+      Tests  126 passed (126)
+   Start at  15:20:36
+   Duration  1.97s (transform 733ms, setup 0ms, collect 1.55s, tests 2.14s, environment 1ms, prepare 791ms)
+
+Process exit: 0
